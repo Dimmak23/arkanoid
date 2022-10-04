@@ -4,6 +4,13 @@
 #include <iostream>
 #include "game_objects.hpp"
 
+
+unsigned int initWindWidth{ 1200 };
+unsigned int initWindHeight{ 1900 };
+
+float scale_on_risize_X{};
+float scale_on_risize_Y{};
+
 //int WinMain()
 int main()
 {
@@ -12,10 +19,12 @@ int main()
     //Get user screen properties
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     //Specify opening screen ratio
-    sf::Vector2u screen_s(static_cast<unsigned int>(1900), static_cast<unsigned int>(1200));
+    sf::Vector2u screen_s(initWindHeight, initWindWidth);
     //desktop.bitsPerPixel --> gets depth of user screen (bits in pixels)
     sf::RenderWindow window(sf::VideoMode(screen_s, desktop.bitsPerPixel), "Arkanoid, produced by DimmaK (c)");
     window.setFramerateLimit(120);//!not sure if any reason in this line
+
+
 
     //=====Render sprites=====
 
@@ -47,14 +56,37 @@ int main()
     //set 1 for now
     dwgs_access->abilities.resize(1);
     //set in the specific location
-    dwgs_access->abilities.at(0).sprite.setPosition(sf::Vector2f(200.f, 350.f));
+    dwgs_access->abilities.at(0).sprite.setPosition(sf::Vector2f(5.f*x_step, 3.f*y_step));
     //set defaulted texture
     dwgs_access->abilities.at(0).sprite.setTexture(dwgs_access->abilities_texture.at(EMPTY));
     //resize
-    dwgs_access->resize_sprite(dwgs_access->abilities.at(0), sf::Vector2f(.5f, .5f));
+    dwgs_access->resize_sprite(dwgs_access->abilities.at(0), sf::Vector2f(.393f, .5f));
     
+
+    //TESTED BLOCK
+    dwgs_access->set_position(dwgs_access->blocks.at(3 + 3 * 5), x + static_cast<float>(3+3) * x_step, y + static_cast<float>(3) * y_step);
+    dwgs_access->set_position(dwgs_access->blocks.at(4 + 2 * 5), x + static_cast<float>(4+1) * x_step, y + static_cast<float>(2) * y_step);
         
-    //=====Game loop=====
+    //TESTED BALL
+
+    //set ball in the specific location
+    dwgs_access->ball.sprite.setPosition(sf::Vector2f(7.f * x_step, 6.f * y_step));
+    //set defaulted texture
+    dwgs_access->ball.sprite.setTexture(dwgs_access->balls_texture.at(SMALL), true);
+    //resize
+    //dwgs_access->resize_sprite(dwgs_access->ball, sf::Vector2f(.393f, .5f));
+
+    //TESTED PADDLE
+
+    //set paddle in the specific location
+    dwgs_access->paddle.sprite.setPosition(sf::Vector2f(3.f * x_step, 9.f * y_step));
+    //set defaulted texture
+    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(TINY), true);
+    //resize
+    dwgs_access->resize_sprite(dwgs_access->paddle, sf::Vector2f(.25f, .25f));
+
+
+    //==========GAME LOOP==========
 
     //create an event
     sf::Event game_event{};//!! Usually this line inside game loop, don't see much necassity
@@ -62,6 +94,20 @@ int main()
     //create loop
     while(window.isOpen())
     {
+        //RESIZE sprites when window have resized
+        /*
+        This will update the render area to the dimensions of the window every
+        time the window is resized rather than scaling the render area to fit the window.
+        */
+        if (game_event.type == sf::Event::Resized)
+        {
+            sf::Vector2f origin(0, 0);
+            sf::Vector2f new_size(static_cast<float>(game_event.size.width), static_cast<float>(game_event.size.height));
+
+            sf::FloatRect resized_view(origin, new_size);
+            window.setView(sf::View(resized_view));
+        }
+
 
         // check the type of the event...
         while (window.pollEvent(game_event))
@@ -76,6 +122,8 @@ int main()
             // key pressed
             else if (game_event.type == sf::Event::KeyPressed)
             {
+                //CHANGE ABILITIES
+                
                 if (game_event.key.code == sf::Keyboard::A)
                     dwgs_access->abilities.at(0).sprite.setTexture(dwgs_access->abilities_texture.at(PLUS_50));
                 else if (game_event.key.code == sf::Keyboard::S)
@@ -112,6 +160,35 @@ int main()
                     dwgs_access->abilities.at(0).sprite.setTexture(dwgs_access->abilities_texture.at(WITH_TOKEN));
                 else if (game_event.key.code == sf::Keyboard::E)
                     dwgs_access->abilities.at(0).sprite.setTexture(dwgs_access->abilities_texture.at(EMPTY));
+
+                //CHANGE BALLS
+                else if (game_event.key.code == sf::Keyboard::U)
+                    dwgs_access->ball.sprite.setTexture(dwgs_access->balls_texture.at(SMALL), true);
+                else if (game_event.key.code == sf::Keyboard::I)
+                    dwgs_access->ball.sprite.setTexture(dwgs_access->balls_texture.at(MEDIUM), true);
+                else if (game_event.key.code == sf::Keyboard::O)
+                    dwgs_access->ball.sprite.setTexture(dwgs_access->balls_texture.at(LARGE), true);
+                else if (game_event.key.code == sf::Keyboard::P)
+                    dwgs_access->ball.sprite.setTexture(dwgs_access->balls_texture.at(EXTRA_LARGE), true);
+
+                //CHANGE PADDLES
+                else if (game_event.key.code == sf::Keyboard::Num1)
+                    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(CAPSULE_1), true);
+                else if (game_event.key.code == sf::Keyboard::Num2)
+                    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(CAPSULE_2), true);
+                else if (game_event.key.code == sf::Keyboard::Num3)
+                    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(CAPSULE_3), true);
+                else if (game_event.key.code == sf::Keyboard::Num4)
+                    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(CONNECTOR_1), true);
+                else if (game_event.key.code == sf::Keyboard::Num5)
+                    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(CONNECTOR_2), true);
+                else if (game_event.key.code == sf::Keyboard::Num6)
+                    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(CONNECTOR_3), true);
+                else if (game_event.key.code == sf::Keyboard::Num7)
+                    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(WIDE), true);
+                else if (game_event.key.code == sf::Keyboard::Num8)
+                    dwgs_access->paddle.sprite.setTexture(dwgs_access->paddles_texture.at(TINY), true);
+
             }
 
 
@@ -130,8 +207,14 @@ int main()
             dwgs_access->draw_object(window, block);
         }
 
-        //Draw abilities
+        //Draw ABILITIES
         dwgs_access->draw_object(window, dwgs_access->abilities.at(0));
+
+        //Draw BALL
+        dwgs_access->draw_object(window, dwgs_access->ball);
+
+        //Draw PADDLE
+        dwgs_access->draw_object(window, dwgs_access->paddle);
 
         //Display everything to the screen
         window.display();
