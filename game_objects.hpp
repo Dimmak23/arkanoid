@@ -124,9 +124,10 @@ class GameObjects
 
 			int dummy_texture_test{};
 			//Initialize sprites of the blocks
-			for (auto& block: blocks)
+			for (int index{}; index < blocks.size(); index++)
 			{
-				set_texture(block, blocks_texture, dummy_texture_test++);
+				if (!(index % 20)) dummy_texture_test = index;
+				blocks.at(index).sprite.setTexture(blocks_texture.at(index-dummy_texture_test), true);
 			}
 
 			
