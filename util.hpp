@@ -34,9 +34,33 @@
 //	return indi_sprite;
 //}
 
+namespace Util
+{
+	class staticUnits;
+	
+	class Process;
+
+	template <typename Parsable>
+	static void safe_parse(Parsable& destination, const std::string& path, const char* message) noexcept;
+	
+	static void initialize_text(
+		sf::Text& label,				//destination
+		const std::string& value,		//value that would be written
+		const sf::Font& font,			//what font
+		const int& char_s,				//characters size
+		const bool& self_centered,		//should it be self-centered
+		const float& pos_x,				//position by x
+		const float& pos_y,				//position by y
+		const uint32_t& style,			//Regular, Bold, Italic, Underlined, StrikeThrough
+		const sf::Color& color			//Black, White, Red, Green, Blue, Yellow, Magenta, Cyan, Transparent
+
+	) noexcept;
+
+};
+
 //This could be a template for Fonts and texture parse
 template <typename Parsable>
-static void safe_parse(Parsable& destination, const std::string& path, const char* message) noexcept
+inline void Util::safe_parse(Parsable& destination, const std::string& path, const char* message) noexcept
 {
 	bool parsing_result = destination.loadFromFile(path);
 	try
@@ -52,8 +76,8 @@ static void safe_parse(Parsable& destination, const std::string& path, const cha
 }
 
 //This could be used for other Texts in other namespaces
-static void initialize_text(
-	sf::Text& label,					//destination
+inline void Util::initialize_text(
+	sf::Text& label,				//destination
 	const std::string& value,		//value that would be written
 	const sf::Font& font,			//what font
 	const int& char_s,				//characters size
@@ -88,60 +112,17 @@ static void initialize_text(
 	label.setFillColor(color);
 }
 
-namespace Util
-{
-	class staticUnits;
-	class Process;
-
-};
-
 class Util::staticUnits
 {
 	public:
 
-		staticUnits()
-		{
-			safe_parse(logo_font, logoFontPath, logoFontParseError);
-			safe_parse(main_font, mainFontPath, mainFontParseError);
-
-			//=====LOGO SETTINGS=====
-		
-			initialize_text(
-				logo_label,
-				"(ARKANOID)",
-				logo_font,
-				80,
-				true,
-				to_f(outline.overall_width / 2),				//Position depend on the one that we have set up in the outline
-				to_f(outline.overall_height / 2),				//Position depend on the one that we have set up in the outline
-				sf::Text::Bold,
-				sf::Color::Blue
-			);
-
-			//=====INSTRUCTION TO START SETTINGS=====
-
-			initialize_text(
-				instruction_label,
-				"Please, press the ENTER key to start the game...",
-				main_font,
-				14,
-				true,
-				to_f(outline.overall_width / 2),				//Position depend on the one that we have set up in the outline
-				to_f(outline.overall_height / 2 + 140),		//Position depend on the one that we have set up in the outline
-				sf::Text::Bold,
-				sf::Color::Yellow
-			);
-
-		}
+		staticUnits();  //constructor declaration
 
 	public:
 
 		//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's property
 		sf::Font logo_font;
 		sf::Font main_font;
-
-		sf::Text logo_label;
-		sf::Text instruction_label;
 
 	private:
 
@@ -155,6 +136,14 @@ class Util::staticUnits
 		static inline const char* mainFontParseError{ "_____main font parse error...\n" };
 
 };
+
+//Constructor definition
+inline Util::staticUnits::staticUnits()
+{
+	safe_parse(logo_font, logoFontPath, logoFontParseError);
+	safe_parse(main_font, mainFontPath, mainFontParseError);
+
+}
 
 class Util::Process
 {
