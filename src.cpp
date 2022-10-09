@@ -12,6 +12,10 @@
 #include "outline.hpp"
 #include "util.hpp"
 #include "intro_page.hpp"
+#include "game_page.hpp"
+#include "game_page_statics.hpp"
+#include "game_page_dynamics.hpp"
+#include "game_page_process.hpp"
 //#include "game_objects.hpp"
 //#include "intro_window.hpp"
 
@@ -52,29 +56,19 @@ int main()
 	//First start timer update
 	Util::Process::resetStartPoint();
 	
-	//Initialize 'Intro::staticUnits' but never set up pointer
-	std::unique_ptr<Intro::staticUnits> fork_Intro_SUnits{ nullptr };
+	//Initialize pointer to object with texts property
+	std::unique_ptr<Intro::staticUnits> fork_Intro_SUnits = std::make_unique<Intro::staticUnits>(*fork_Util_SUnits);
 	
-	//Initialize 'Intro::Process' but never set up pointer
-	std::unique_ptr<Intro::Process> fork_Intro_Process{ nullptr };
+	//Initialize pointer to object with event property
+	std::unique_ptr<Intro::Process> fork_Intro_Process = std::make_unique<Intro::Process>();
 
 	while (application_window.isOpen())
 	{
 
 	//=============================INTRO PAGE============================
 
-		if (Intro::Process::running)
-		{
-			
-			//Initialize pointer to object with texts property
-			fork_Intro_SUnits = std::move(std::make_unique<Intro::staticUnits>(*fork_Util_SUnits));
-			//Initialize pointer to object with event property
-			fork_Intro_Process = std::move(std::make_unique<Intro::Process>());
-		}
-
 		while (Intro::Process::running)
 		{
-			
 			//Check timer and blink instruction
 			Intro::Process::blinkInstruction(*fork_Intro_SUnits);
 
@@ -95,10 +89,39 @@ int main()
 	//=============================GAME PAGE============================
 
 		//User could close the window, so we shouldn't waste resources on parsing next Texts, Textures, Frames,...
-		//if (application_window.isOpen())
-		//{
+		if (!(application_window.isOpen()))
+		{
+			break;
+		}
 
-		//}
+		//Initialize pointer to object with static units properties
+		std::unique_ptr<Game::staticUnits> fork_Game_SUnits = std::make_unique<Game::staticUnits>(*fork_Util_SUnits);
+
+		//Declare pointer to object with event property
+		std::unique_ptr<Game::Process> fork_Game_Process{ nullptr };
+
+		//Declare pointer to object with dynamic units properties
+		std::unique_ptr<Game::dynamicUnits> fork_Game_DUnits{ nullptr };
+
+		while (Game::Process::running)
+		{
+			//Declare pointer to object with event property
+			fork_Game_Process = std::make_unique<Game::Process>();
+
+			//Declare pointer to object with dynamics properties
+			fork_Game_DUnits = std::make_unique<Game::dynamicUnits>(*fork_Game_SUnits);
+
+			while (Game::Process::running)
+			{
+				//Render screen the Game static objects
+				fork_Game_Process->render(application_window, *fork_Game_SUnits);
+
+				//Check user inputs
+				fork_Game_Process->interact(application_window);
+			}
+
+		}
+
 	}
 	
 	return 0;

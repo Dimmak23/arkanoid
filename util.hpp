@@ -124,6 +124,9 @@ class Util::staticUnits
 		sf::Font logo_font;
 		sf::Font main_font;
 
+		//Sharable event
+		//static inline sf::Event event{};
+
 	private:
 
 		//Be sure that here we parse independently on the Debug, Release, and USAGE
@@ -163,7 +166,7 @@ class Util::Process
 
 };
 
-void Util::Process::resetStartPoint()
+inline void Util::Process::resetStartPoint()
 {
 	//Get CPU time
 	QueryPerformanceCounter(&frame_begin_time); // here we start to calculate time in the CPU units
@@ -174,7 +177,7 @@ void Util::Process::resetStartPoint()
 	perfomance_frequancy = to_f(perf.QuadPart); // this return how mane cycles(frames) in one second
 }
 
-void Util::Process::updateDelta()
+inline void Util::Process::updateDelta()
 {
 	// here we finish to calculate time in the CPU units
 	QueryPerformanceCounter(&frame_end_time);

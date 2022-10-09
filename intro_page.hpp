@@ -33,7 +33,11 @@ class Intro::staticUnits
 
 	staticUnits() = default;								//default-constructor declaration
 	staticUnits(const Util::staticUnits& utils);			//constructor dependable on 'Util::staticUnits' object declaration
-	staticUnits(Intro::staticUnits&& original);				//Move-constructor declaration
+	
+	//These constructors never been called
+	//! It's good!
+	staticUnits(Intro::staticUnits& original) noexcept;		//Copy-constructor declaration
+	staticUnits(Intro::staticUnits&& original) noexcept;	//Move-constructor declaration
 
 	//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's property
 	sf::Text logo_label;
@@ -71,8 +75,17 @@ inline Intro::staticUnits::staticUnits(const Util::staticUnits& utils)
 	);
 }
 
-inline Intro::staticUnits::staticUnits(Intro::staticUnits&& original)
+inline Intro::staticUnits::staticUnits(Intro::staticUnits& original) noexcept
 {
+	std::cout << "Copy constructor 'Intro::staticUnits' been called...\n";
+	this->logo_label = original.logo_label;
+	this->instruction_label = original.instruction_label;
+
+}
+
+inline Intro::staticUnits::staticUnits(Intro::staticUnits&& original) noexcept
+{
+	std::cout << "Move constructor 'Intro::staticUnits' been called...\n";
 	this->logo_label = original.logo_label;
 	this->instruction_label = original.instruction_label;
 
@@ -82,8 +95,7 @@ class Intro::Process
 {
 	public:
 		
-		Process() = default;								//default-constructor declaration
-		Process(Intro::Process&& original);				//Move-constructor declaration
+		Process() = default;										//default-constructor declaration
 
 		static void blinkInstruction(Intro::staticUnits& utils);
 		
@@ -98,12 +110,6 @@ class Intro::Process
 		
 		sf::Event event{};  //!NOT SURE IF I NEED ANY NON-STATIC MEMBERS
 };
-
-inline Intro::Process::Process(Intro::Process&& original)
-{
-	this->event = original.event;
-
-}
 
 inline void Intro::Process::blinkInstruction(Intro::staticUnits& utils)
 {
@@ -124,7 +130,7 @@ inline void Intro::Process::blinkInstruction(Intro::staticUnits& utils)
 
 inline void Intro::Process::render(sf::RenderWindow& window, const Intro::staticUnits& utils)
 {
-	//Before do anythin: clear screen
+	//Before do anything: clear screen
 	window.clear(sf::Color::Black);
 	
 	//Draw LOGO
@@ -160,7 +166,6 @@ inline void Intro::Process::interact(sf::RenderWindow& window)
 			else if (event.key.code == sf::Keyboard::Enter)
 			{
 				running = false;
-				window.close();
 				break;
 			}
 		}
