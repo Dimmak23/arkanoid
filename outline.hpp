@@ -17,7 +17,11 @@ namespace Default
 	//and they quantity in the line
 	constexpr int maxInLine{ 12 };
 	//and they quantity in the column
-	constexpr int maxRows{ 12 };
+	constexpr int maxRows{ 20 };
+	//maximum empty spaces in the line
+	constexpr int maxEmpties{ 4 };
+	//maximum empty spaces in the line
+	constexpr int maxAbilities{ 3 };
 }
 
 struct sizes

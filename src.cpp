@@ -14,8 +14,8 @@
 #include "intro_page.hpp"
 #include "game_page.hpp"
 #include "game_page_statics.hpp"
-#include "game_page_dynamics.hpp"
 #include "game_page_process.hpp"
+#include "game_page_dynamics.hpp"
 //#include "game_objects.hpp"
 //#include "intro_window.hpp"
 
@@ -28,6 +28,7 @@ int main()
 	//Because we have included "util.hpp"
 	//pointer 'fork_SUnits' to 'Util::staticUnits' class object will initialize
 	//access to the utilities. They (Texts, Fonts,...) can't be global, so we initialize them in the main function
+	//std::unique_ptr<Util::staticUnits> fork_Util_SUnits = std::make_unique<Util::staticUnits>();
 	std::unique_ptr<Util::staticUnits> fork_Util_SUnits = std::make_unique<Util::staticUnits>();
 
 
@@ -95,29 +96,70 @@ int main()
 		}
 
 		//Initialize pointer to object with static units properties
+		std::cout << "Game::staticUnits defined\n";
 		std::unique_ptr<Game::staticUnits> fork_Game_SUnits = std::make_unique<Game::staticUnits>(*fork_Util_SUnits);
+		//Game::staticUnits fork_Game_SUnits(*fork_Util_SUnits);
 
 		//Declare pointer to object with event property
+		std::cout << "Game::Process declared\n";
 		std::unique_ptr<Game::Process> fork_Game_Process{ nullptr };
 
 		//Declare pointer to object with dynamic units properties
+		std::cout << "Game::dynamicUnits declared\n";
 		std::unique_ptr<Game::dynamicUnits> fork_Game_DUnits{ nullptr };
+
+		//Reset start point before the first Game session
+		Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
 
 		while (Game::Process::running)
 		{
 			//Declare pointer to object with event property
-			fork_Game_Process = std::make_unique<Game::Process>();
+			std::cout << "Game::Process defined\n";
+			fork_Game_Process.reset(new Game::Process());
 
 			//Declare pointer to object with dynamics properties
-			fork_Game_DUnits = std::make_unique<Game::dynamicUnits>(*fork_Game_SUnits);
+			std::cout << "Game::dynamicUnits defined\n";
+			fork_Game_DUnits.reset(new Game::dynamicUnits(*fork_Game_SUnits, *fork_Util_SUnits));
+
+			//Reset start point before new Game session
+			Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
 
 			while (Game::Process::running)
 			{
+				//<-----fork_Game_DUnits->simulate();
+				
+				//Update paddle width because of the such ability
+				fork_Game_DUnits->adjustPaddle();
+
+				//Update cool electric paddle
+				fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
+				
+				//Check and extend conveyor belt, if time is come
+				fork_Game_DUnits->extendConveyor(*fork_Game_SUnits);
+
+				//Update game time interface
+				fork_Game_DUnits->updateGTime();
+
+				//<-----fork_Game_DUnits->simulate();
+				
 				//Render screen the Game static objects
-				fork_Game_Process->render(application_window, *fork_Game_SUnits);
+				fork_Game_Process->render(application_window, *fork_Game_SUnits, *fork_Game_DUnits);
 
 				//Check user inputs
 				fork_Game_Process->interact(application_window);
+
+				//We need to get new delta time
+				Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
+
+				//Update game time
+				Game::dynamicUnits::game_time += Util::Process::delta_time;
+
+				//Update conveyor belt extender timer
+				Game::dynamicUnits::extender_timer -= Util::Process::delta_time;
+
+				//Update paddle changer timer
+				Game::dynamicUnits::pdl_upd_timer += Util::Process::delta_time;
+
 			}
 
 		}

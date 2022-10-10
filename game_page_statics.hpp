@@ -21,46 +21,6 @@
 #include "util.hpp"
 #include "game_page.hpp"
 
-enum block_textures
-{
-	BLUE = 0,
-	SALAD = 2,
-	PURPLE = 4,
-	RED = 6,
-	ORANGE = 8,
-	SKY = 10,
-	YELLOW = 12,
-	GREEN = 14,
-	GRAY = 16,
-	BROWN = 18,
-
-	BLK_T_COUNT = 20 //10
-};
-
-enum ability_textures
-{
-	PLUS_50 = 0,
-	PLUS_100_1,
-	PLUS_100_2,
-	PLUS_100_3,
-	PLUS_100_4,
-	PLUS_100_5,
-	PLUS_100_6,
-	PLUS_250,
-	PLUS_500,
-	SLOW,
-	FAST,
-	THREE_BALLS,
-	//RED_FIRE,
-	//GREEN_FIRE,
-	MAKE_TINY,
-	MAKE_WIDE,
-	//WITH_TOKEN,
-	EMPTY,
-
-	ABILITY_COUNT //15, three textures currently not available NOW
-};
-
 enum status_lbls
 {
 	SCORE_LABEL = 0,
@@ -77,6 +37,7 @@ enum status_lbls
 namespace Game
 {
 	class staticUnits;  //forward declaration already declared class (game_page_statics.hpp)
+	class dynamicUnits;  //forward declaration already declared class (game_page_statics.hpp)
 
 	//forward declaration already declared function
 	static void initialize_frame(
@@ -89,7 +50,9 @@ namespace Game
 		const float& pos_x,
 		const float& pos_y
 	) noexcept;
+
 };
+
 
 //class definition
 class Game::staticUnits
@@ -118,16 +81,16 @@ class Game::staticUnits
 
 	static inline const std::vector<std::string> bd_names
 	{
-		"2 hit's to break, +5 points",
-		"3 hit's to break, +10 points",
-		"3 hit's to break, +10 points",
-		"3 hit's to break, +10 points",
-		"4 hit's to break, +15 points",
-		"4 hit's to break, +15 points",
-		"4 hit's to break, +15 points",
-		"6 hit's to break, +25 points",
-		"8 hit's to break, +30 points",
-		"10 hit's to break, +40 points"
+		"+1 points",
+		"+2 points",
+		"+5 points",
+		"+10 points",
+		"+15 points",
+		"+20 points",
+		"+25 points",
+		"+30 points",
+		"+35 points",
+		"+40 points"
 	};
 
 	//ABILITIES DESCRIPTIONS
@@ -154,6 +117,9 @@ class Game::staticUnits
 	std::vector<sf::Text> ball_parameters;
 	std::vector<sf::Text> paddle_parameters;
 
+	sf::Text timer_adder;
+	sf::Text countdown_adder;
+
 	static inline const std::vector<std::string> st_names
 	{
 		"Score:",
@@ -163,6 +129,8 @@ class Game::staticUnits
 		"Ball parameters:",
 		"Paddle parameters:"
 	};
+
+	static inline const std::string sec{ "sec" };
 
 	static inline const std::vector<float> pos_y_st_labels
 	{
@@ -194,9 +162,19 @@ class Game::staticUnits
 
 	//TEXTURES
 
+	//___BLOCKS
 	std::vector<sf::Texture> blk_textures;
-	std::vector<int> skipped_abl_textures_addresses{ 38, 44, 45, 48 };
+
+	//___ABILITY
+	std::vector<int> skipped_abl_textures_addresses{ 32, 33, 34, 35, 36, 37, 44, 45, 48 };
 	std::vector<sf::Texture> abl_textures;
+
+	//___BALL
+	sf::Texture bll_texture;
+
+	//___PADDLES
+	std::vector<int> skipped_pdl_textures_addresses{ 53, 54, 55 };
+	std::vector<sf::Texture> pdl_textures;
 
 	//SPRITES
 

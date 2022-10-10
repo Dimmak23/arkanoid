@@ -22,12 +22,21 @@
 #include "util.hpp"
 #include "game_page.hpp"
 //#include "game_page_statics.hpp"
+//#include "game_page_process.hpp"
+
+
+//DEFINES
+#define to_i(lvalue) static_cast<int>(lvalue)
+
 
 //Forward Game namespace declaration in the 'game_page_dynamics.hpp'
 namespace Game
 {
 	class staticUnits;  //forward declaration already declared class (game_page_dynamics.hpp)
 	class dynamicUnits;  //forward declaration already declared class (game_page_dynamics.hpp)
+	class Process;  //forward declaration already declared class (game_page_dynamics.hpp)
+	
+	enum ability_textures;
 
 };
 
@@ -35,97 +44,108 @@ class Game::dynamicUnits
 {
 	public:
 	
-	dynamicUnits() = default;								//default-constructor declaration
-	dynamicUnits(const Game::staticUnits& utils);			//constructor dependable on 'Util::dynamicUnits' object declaration
+	dynamicUnits() = default;																//default-constructor declaration
+	dynamicUnits(const Game::staticUnits& statics, const Util::staticUnits& utils);			//constructor dependable on 'Game::staticUnits' object declaration
 
-	void setLine(std::vector<sf::Sprite>& conveyor, std::vector<int> available_positions);
+	//set one line of the conveyor
+	void setLine(const Game::staticUnits& statics, const bool& first);
+
+	//get random number
+	int getRandomNumber(const int& limit);
+
+	//get random postions for game units: empties, abilities
+	void getRandomPositions(const int& maxUnits, std::vector<int>& donor_positions, std::vector<int>& recipient_positions);
+
+	//Update visibility of every '+100' ability block if there any such
+	//void updatePlusHundredAbility(const Game::staticUnits& utils);
+
+	//Update paddle texture depending on the time
+	void updateElectricPaddle(const Game::staticUnits& utils);
+
+	//Adjust paddle sprite
+	void adjustPaddle();
+
+	//Move down conveyor array
+	void extendConveyor(const Game::staticUnits& statics);
+
+	//Update game time
+	void updateGTime() noexcept;
+
+	//PROBABILITIES PATTERNS
+
+	std::vector<int> ability_probability
+	{
+		PLUS_50,PLUS_50,PLUS_50,PLUS_50,PLUS_50,PLUS_50,PLUS_50,PLUS_50,				//8 to 50  16%
+		PLUS_100,PLUS_100,PLUS_100,PLUS_100,PLUS_100,PLUS_100,							//6 to 50  12%
+		PLUS_250,PLUS_250,PLUS_250,PLUS_250,											//4 to 50  8%
+		PLUS_500,																		//1 to 50  2%
+		SLOW,SLOW,SLOW,																	//3 to 50  6%
+		FAST,FAST,FAST,FAST,FAST,FAST,													//6 to 50  12%
+		THREE_BALLS,THREE_BALLS,THREE_BALLS,THREE_BALLS,THREE_BALLS,THREE_BALLS,		//6 to 50  12%
+		MAKE_TINY,MAKE_TINY,															//2 to 50  4%
+		MAKE_WIDE,MAKE_WIDE,MAKE_WIDE,MAKE_WIDE,MAKE_WIDE,								//5 to 50  10%
+		EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY							//9 to 50  18%
+	};
+
+	std::vector<int> block_probability
+	{
+		BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,			//8 to 50
+		SALAD,SALAD,SALAD,SALAD,SALAD,SALAD,SALAD,			//7 to 50
+		PURPLE,PURPLE,PURPLE,PURPLE,PURPLE,PURPLE,PURPLE,	//7 to 50
+		RED,RED,RED,RED,RED,RED,RED,						//7 to 50
+		ORANGE,ORANGE,ORANGE,ORANGE,ORANGE,ORANGE,			//6 to 50
+		SKY,SKY,SKY,SKY,SKY,								//5 to 50
+		YELLOW,YELLOW,YELLOW,YELLOW,						//4 to 50
+		GREEN,GREEN,GREEN,									//3 to 50
+		GRAY,GRAY,											//2 to 50
+		BROWN												//1 to 50
+	};
 
 	//SPRITES
 
-	std::vector<sf::Sprite> conveyor;
+	//Conveyor
+	std::vector<std::unique_ptr<sf::Sprite>> conveyor;
 
-	//CONSTS
+	//Paddle
+	std::unique_ptr<sf::Sprite> paddle;
 
-	std::vector<int> available_positions;
+	//Ball
+	std::unique_ptr<sf::Sprite> ball;
+
+	//Lifes
+	std::vector<std::unique_ptr<sf::Sprite>> lifes_balls;
+
+	//TEXT PARAMETERS
+
+	sf::Text game_timer;
+	sf::Text extender_countdown;
+
+	//VARIABLES
+
+	//Timers
+
+	//static inline float plus_abl_updater{};
+	
+	//___Belt extender
+	static inline const float to_extend_await{ 15.f };
+	static inline float extender_timer{ to_extend_await };
+
+	//___
+	static inline float game_time{};
+
+	//___Paddle
+	static inline const float paddle_upd_await{ 0.05f };
+	static inline float pdl_upd_timer{};
+
+	static inline float paddle_scale_x{0.25f};
+	static inline const float paddle_scale_x_max{0.9f};
+	static inline const float paddle_scale_x_min{0.1f};
+	static inline const float paddle_scale_step{0.05f};
+
+	//Lifes
+	static inline int lifes{9};
+	static inline const int lifes_max{27};
+	
+	//static inline const float plus_abl_await{0.5f};
+
 };
-
-inline void Game::dynamicUnits::setLine(std::vector<sf::Sprite>& conveyor, std::vector<int> available_positions)
-{
-	std::vector<int> empty_positions;
-	std::vector<int> ability_positions;
-
-	std::random_device device;
-	std::mt19937 generator(device());
-	std::uniform_int_distribution<int> d_empty(0, 3);
-
-	int empty_qty{ d_empty(generator) }; //generate TRUE random number from [0, 3]
-	
-	std::cout << "Have been chosen: " << empty_qty << " empty spaces.\n";
-
-	std::cout << "Availabels qty: " << available_positions.size() << '\n';
-
-	if (empty_qty)
-	{
-		empty_positions.resize(empty_qty);
-
-		std::uniform_int_distribution<int> d_empty_pos(0, available_positions.size() - 1);
-
-		int index{};
-		auto it = available_positions.begin();
-		for (int index{}; index < empty_qty; index++)
-		{
-			empty_positions.at(index) = available_positions.at(d_empty_pos(generator));
-			std::cout << "At position " << empty_positions.at(index) << ".\n";
-			auto it = std::ranges::find(available_positions, empty_positions.at(index));
-			available_positions.erase(it);
-		}
-	}
-
-}
-
-	//Colossal class constructor moved here
-inline Game::dynamicUnits::dynamicUnits(const Game::staticUnits& utils)
-{
-
-//==================================CONVEYOR===============================
-
-	/*
-	Conveyor line consist with blocks, abilities and empty spaces... what are we living for.
-
-	So container parsed with different textures from:
-		- Game::staticUnits::std::vector<sf::Texture> blk_textures;
-		- Game::staticUnits::std::vector<sf::Texture> abl_textures;
-	*/
-
-	//Let's get conveyor line by line
-
-	//First line consist only from the blocks or empty spaces
-
-	//there is '12' blocks in the line: Default::maxInLine
-	//and Default::maxRows in column
-
-	available_positions.resize(Default::maxInLine);
-	int indexer{};
-	for (auto& position : available_positions)
-		position = indexer++;
-
-	setLine(conveyor, available_positions);
-
-	//randomQty(4, int empty_qty) -> for empty spaces, possible variants: {0, 1, 2, 3}
-	//randomPositionsInRow(empty_qty, std::vector<int>empty_positions, std::vector<int> available_positions) -> for empty positions, possible variants: {2, 6, 10}
-
-	//if(NOT first_line)
-	//	randomQty(4, int ability_qty) -> for abilities in the line, possible variants: {0, 1, 2, 3}
-
-	//randomPositionsInRow(ability_qty, std::vector<int>ability_positions, std::vector<int> available_positions) -> for abilities positions, possible variants (NOTE: {2, 6, 10} excluded!): {0, 1, 11}
-
-	//ALL other positions will be taked by blocks
-
-	//available_positions passed by value, that we will be delete numbers from there
-	
-	//==INITALIZE DEFAULT CONVEYOR ARRAY==
-
-	//init blocks with textures
-
-	//set blocks to the specific positions
-}
