@@ -216,6 +216,57 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 
 }
 
+//Adjust paddle if paddle level were changed
+void Game::dynamicUnits::adjustPaddle()
+{
+	if (paddle_scale_x >= paddle_scale_x_max)
+	{
+		paddle_scale_x = paddle_scale_x_max;
+		return;
+	}
+	else if (paddle_scale_x <= paddle_scale_x_min)
+	{
+		paddle_scale_x = paddle_scale_x_min;
+		return;
+	}
+	else if ((*paddle).getScale().x == paddle_scale_x)
+		return;
+	else
+	{
+		(*paddle).setScale(sf::Vector2f(paddle_scale_x, 0.25f));
+		(*paddle).setOrigin(sf::Vector2f((*paddle).getLocalBounds().width/2, 0.f));
+	}
+}
+
+//Update electric visibility paddle
+void Game::dynamicUnits::updateElectricPaddle(const Game::staticUnits& utils)
+{
+	if (pdl_upd_timer > paddle_upd_await)
+	{
+		if(
+			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_1))
+		)
+		{
+			//(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_2), true);
+		}
+		else if (
+			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_2))
+			)
+		{
+			//(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_3), true);
+		}
+		else if (
+			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_3))
+			)
+		{
+			//(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_1), true);
+		}
+
+		pdl_upd_timer = 0;
+	}
+}
+
+
 //Move down conveyor array
 
 void Game::dynamicUnits::extendConveyor(const Game::staticUnits& statics)
@@ -281,6 +332,7 @@ void Game::dynamicUnits::updateGTime() noexcept
 Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::staticUnits& utils)
 {
 	std::cout << "Games::dynamicUnits construction\n";
+
 //==================================CONVEYOR===============================
 
 	/*
@@ -373,5 +425,74 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		sf::Text::Regular,
 		sf::Color::Red
 	);
+
+	std::cout << "Timers were instatiated." << '\n';
+
+	//==INITIAL LIFES BALLS==
+
+	std::vector<int> indexer
+	{
+		0,1,2,9,10,11,18,19,20,
+		3,4,5,12,13,14,21,22,23,
+		6,7,8,15,16,17,24,25,26
+	};
+
+	for (int index{}; index < lifes; )
+	{
+		lifes_balls.emplace_back(std::make_unique<sf::Sprite>());
+
+		(*lifes_balls.back()).setTexture(statics.bll_texture, true);
+		(*lifes_balls.back()).setScale(sf::Vector2f(0.5f, 0.5f));	
+		(*lifes_balls.back()).setPosition(
+											sf::Vector2f(
+																	statics.lifes_outline.at(indexer.at(index)).getGlobalBounds().left + 2.5f,
+																	statics.lifes_outline.at(indexer.at(index)).getGlobalBounds().top + 2.6f
+																)
+		);
+
+		index++;
+	}
+
+	std::cout << "Lifes balls were drawn." << '\n';
+
+//==================================TOOLS===============================
+
+	//==PADDLE SPRITE==
+	
+	//Defined new paddle
+	paddle = std::make_unique<sf::Sprite>();
+
+	(*paddle).setTexture(statics.pdl_textures.at(CAPSULE_1), true);
+	(*paddle).setScale(sf::Vector2f(paddle_scale_x, 0.25f));
+	(*paddle).setOrigin(sf::Vector2f(((*paddle).getLocalBounds().width / 2), 0.f));
+	(*paddle).setPosition(
+		sf::Vector2f(
+								to_f(game_field.origin_x + game_field.overall_width / 2),
+								to_f(game_field.origin_y + game_field.overall_height - Default::block_height)
+							)
+	);
+
+	std::cout << "Paddle drawn." << '\n';
+
+	//==INIT BALL==
+
+	//Defined new ball
+	ball = std::make_unique<sf::Sprite>();
+
+	(*ball).setTexture(statics.bll_texture, true);
+	(*ball).setScale(sf::Vector2f(1.f, 1.f));
+	(*ball).setOrigin(sf::Vector2f(
+											((*ball).getLocalBounds().width / 2),
+											((*ball).getLocalBounds().height / 2)
+										)
+	);
+	(*ball).setPosition(
+		sf::Vector2f(
+								to_f(game_field.origin_x + game_field.overall_width / 2),
+								to_f(game_field.origin_y + (Default::maxRows + 1) * Default::block_height)
+							)
+	);
+
+	std::cout << "Ball drawn." << '\n';
 
 }

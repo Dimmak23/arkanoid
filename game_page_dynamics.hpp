@@ -59,6 +59,12 @@ class Game::dynamicUnits
 	//Update visibility of every '+100' ability block if there any such
 	//void updatePlusHundredAbility(const Game::staticUnits& utils);
 
+	//Update paddle texture depending on the time
+	void updateElectricPaddle(const Game::staticUnits& utils);
+
+	//Adjust paddle sprite
+	void adjustPaddle();
+
 	//Move down conveyor array
 	void extendConveyor(const Game::staticUnits& statics);
 
@@ -97,25 +103,49 @@ class Game::dynamicUnits
 
 	//SPRITES
 
+	//Conveyor
 	std::vector<std::unique_ptr<sf::Sprite>> conveyor;
 
-	//TIMERS
+	//Paddle
+	std::unique_ptr<sf::Sprite> paddle;
 
-	//static inline float plus_abl_updater{};
+	//Ball
+	std::unique_ptr<sf::Sprite> ball;
 
-	static inline const float to_extend_await{15.f};
-	static inline float extender_timer{ to_extend_await };
-
-	static inline float game_time{};
+	//Lifes
+	std::vector<std::unique_ptr<sf::Sprite>> lifes_balls;
 
 	//TEXT PARAMETERS
 
 	sf::Text game_timer;
 	sf::Text extender_countdown;
 
+	//VARIABLES
 
-	//CONSTS
+	//Timers
 
+	//static inline float plus_abl_updater{};
+	
+	//___Belt extender
+	static inline const float to_extend_await{ 15.f };
+	static inline float extender_timer{ to_extend_await };
+
+	//___
+	static inline float game_time{};
+
+	//___Paddle
+	static inline const float paddle_upd_await{ 0.05f };
+	static inline float pdl_upd_timer{};
+
+	static inline float paddle_scale_x{0.25f};
+	static inline const float paddle_scale_x_max{0.9f};
+	static inline const float paddle_scale_x_min{0.1f};
+	static inline const float paddle_scale_step{0.05f};
+
+	//Lifes
+	static inline int lifes{9};
+	static inline const int lifes_max{27};
+	
 	//static inline const float plus_abl_await{0.5f};
 
 };

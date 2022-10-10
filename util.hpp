@@ -77,6 +77,20 @@ enum block_textures
 	BLK_T_COUNT = 20 //10
 };
 
+enum paddle_textures
+{
+	CAPSULE_1 = 0,
+	CAPSULE_2,
+	CAPSULE_3,
+	//CONNECTOR_1,
+	//CONNECTOR_2,
+	//CONNECTOR_3,
+	//WIDE,			//NO NEED
+	//TINY,			//NO NEED
+
+	PADDLE_COUNT	//3: three not available now, 2 not needed
+};
+
 namespace Util
 {
 	class staticUnits;

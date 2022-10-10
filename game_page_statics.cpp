@@ -205,15 +205,15 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 		circle.setFillColor(sf::Color::Black);
 		circle.setOutlineColor(sf::Color::Red);
 		circle.setOutlineThickness(1.f);
-		circle.setOrigin(sf::Vector2f(circle.getGlobalBounds().width / 2, circle.getGlobalBounds().height / 2));
+		circle.setOrigin(sf::Vector2f(circle.getLocalBounds().width / 2, circle.getLocalBounds().height / 2));
 		circle.setPosition(
-			sf::Vector2f(
-			status_labels.at(LIFES_LABEL).getGlobalBounds().left + 10.f + hor_adder,
-			status_labels.at(LIFES_LABEL).getGlobalBounds().top
-			+ status_labels.at(LIFES_LABEL).getGlobalBounds().height
-			+ 40.f
-			+ vert_adder
-		)
+					sf::Vector2f(
+											status_labels.at(LIFES_LABEL).getGlobalBounds().left + 10.f + hor_adder,
+											status_labels.at(LIFES_LABEL).getGlobalBounds().top
+											+ status_labels.at(LIFES_LABEL).getGlobalBounds().height
+											+ 40.f
+											+ vert_adder
+										)
 		);
 
 		index++;
@@ -325,6 +325,8 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 
 	*/
 
+	//BLOCKS
+
 	int texture_address{ 1 };
 	blk_textures.resize(BLK_T_COUNT);
 	for (auto& texture : blk_textures)
@@ -336,6 +338,8 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 		);
 		texture_address++;
 	}
+
+	//ABILITIES
 
 	texture_address = 31;
 	abl_textures.resize(ABILITY_COUNT);
@@ -352,6 +356,33 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 		);
 		texture_address++;
 	}
+
+	//PADDLES
+
+	texture_address = 50;
+	pdl_textures.resize(PADDLE_COUNT);
+	for (auto& texture : pdl_textures)
+	{
+		while (std::ranges::find(skipped_pdl_textures_addresses, texture_address) != skipped_pdl_textures_addresses.end())
+		{
+			texture_address++;
+		}
+		Util::safe_parse(
+			texture,
+			(textures_path + std::to_string(texture_address) + adder_path),
+			(textures_path + std::to_string(texture_address) + adder_path + template_message).c_str()
+		);
+		texture_address++;
+	}
+
+	//BALL
+
+	texture_address = 63;
+	Util::safe_parse(
+		bll_texture,
+		(textures_path + std::to_string(texture_address) + adder_path),
+		(textures_path + std::to_string(texture_address) + adder_path + template_message).c_str()
+	);
 
 //================================SPRITES==============================	
 

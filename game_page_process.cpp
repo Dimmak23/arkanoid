@@ -43,6 +43,7 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 	window.draw(utils.timer_adder);
 	window.draw(utils.countdown_adder);
 
+	//LIFES CIRCLES
 	for (auto& circle : utils.lifes_outline)
 		window.draw(circle);
 
@@ -67,7 +68,19 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 	for (auto& unit : dynamo.conveyor)
 		window.draw((*unit));
 
+	//===========PADDLE=============
+
+	window.draw(*(dynamo.paddle));
+
+	//===========BALL=============
+
+	window.draw(*(dynamo.ball));
+
 	//===========STATUSES=============
+
+	//LIFE BALLS
+	for (auto& ball : dynamo.lifes_balls)
+		window.draw((*ball));
 
 	//GAME TIME
 	window.draw(dynamo.game_timer);
@@ -99,6 +112,7 @@ void Game::Process::interact(sf::RenderWindow& window)
 				window.close();
 				break;
 			}
+
 			////Press enter and winish Intro page
 			//else if (event.key.code == sf::Keyboard::Enter)
 			//{

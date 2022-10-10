@@ -126,11 +126,21 @@ int main()
 
 			while (Game::Process::running)
 			{
+				//<-----fork_Game_DUnits->simulate();
+				
+				//Update paddle width because of the such ability
+				fork_Game_DUnits->adjustPaddle();
+
+				//Update cool electric paddle
+				fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
+				
 				//Check and extend conveyor belt, if time is come
 				fork_Game_DUnits->extendConveyor(*fork_Game_SUnits);
 
 				//Update game time interface
 				fork_Game_DUnits->updateGTime();
+
+				//<-----fork_Game_DUnits->simulate();
 				
 				//Render screen the Game static objects
 				fork_Game_Process->render(application_window, *fork_Game_SUnits, *fork_Game_DUnits);
@@ -141,11 +151,14 @@ int main()
 				//We need to get new delta time
 				Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
 
+				//Update game time
+				Game::dynamicUnits::game_time += Util::Process::delta_time;
+
 				//Update conveyor belt extender timer
 				Game::dynamicUnits::extender_timer -= Util::Process::delta_time;
 
-				//Update game time
-				Game::dynamicUnits::game_time += Util::Process::delta_time;
+				//Update paddle changer timer
+				Game::dynamicUnits::pdl_upd_timer += Util::Process::delta_time;
 
 			}
 

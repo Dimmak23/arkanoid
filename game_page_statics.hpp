@@ -169,7 +169,12 @@ class Game::staticUnits
 	std::vector<int> skipped_abl_textures_addresses{ 32, 33, 34, 35, 36, 37, 44, 45, 48 };
 	std::vector<sf::Texture> abl_textures;
 
-	//___
+	//___BALL
+	sf::Texture bll_texture;
+
+	//___PADDLES
+	std::vector<int> skipped_pdl_textures_addresses{ 53, 54, 55 };
+	std::vector<sf::Texture> pdl_textures;
 
 	//SPRITES
 
