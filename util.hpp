@@ -34,6 +34,49 @@
 //	return indi_sprite;
 //}
 
+//Abilities textures enumerator from 'util.hpp'
+enum ability_textures
+{
+	PLUS_50 = 0,
+	//PLUS_100_1,
+	//PLUS_100_2,
+	//PLUS_100_3,
+	//PLUS_100_4,
+	//PLUS_100_5,
+	//PLUS_100_6,
+	PLUS_100,
+	PLUS_250,
+	PLUS_500,
+	SLOW,
+	FAST,
+	THREE_BALLS,
+	//RED_FIRE,
+	//GREEN_FIRE,
+	MAKE_TINY,
+	MAKE_WIDE,
+	//WITH_TOKEN,
+	EMPTY,
+
+	ABILITY_COUNT //10, 9 textures currently not available NOW
+};
+
+//Blocks textures enumerator from 'util.hpp'
+enum block_textures
+{
+	BLUE = 0,
+	SALAD = 2,
+	PURPLE = 4,
+	RED = 6,
+	ORANGE = 8,
+	SKY = 10,
+	YELLOW = 12,
+	GREEN = 14,
+	GRAY = 16,
+	BROWN = 18,
+
+	BLK_T_COUNT = 20 //10
+};
+
 namespace Util
 {
 	class staticUnits;
@@ -143,6 +186,8 @@ class Util::staticUnits
 //Constructor definition
 inline Util::staticUnits::staticUnits()
 {
+	std::cout << "Util::staticUnits construction\n";
+	
 	safe_parse(logo_font, logoFontPath, logoFontParseError);
 	safe_parse(main_font, mainFontPath, mainFontParseError);
 

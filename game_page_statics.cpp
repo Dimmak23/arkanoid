@@ -4,6 +4,7 @@
 
 Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 {
+	std::cout << "Games::staticUnits construction\n";
 
 //==================================GRID===============================
 
@@ -157,7 +158,41 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 		index++;
 	}
 
-	//=====LIFES OUTLINE CIRCLES SETTINGS=====
+	//=====TIMERS ADDITIONALS=====
+
+	//Game time:
+	
+	Util::initialize_text(
+		timer_adder,
+		sec,
+		utils.main_font,
+		10,
+		false,
+		status_labels.at(TIMER_LABEL).getGlobalBounds().left + 60.f,
+		status_labels.at(TIMER_LABEL).getGlobalBounds().top
+				+ status_labels.at(TIMER_LABEL).getGlobalBounds().height
+				+ 20.f,
+		sf::Text::Regular,
+		sf::Color::Red
+	);
+
+	//Countdown timer:
+
+	Util::initialize_text(
+		countdown_adder,
+		sec,
+		utils.main_font,
+		10,
+		false,
+		status_labels.at(REV_COUNT_LABEL).getGlobalBounds().left + 50.f,
+		status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top
+				+ status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height
+				+ 20.f,
+		sf::Text::Regular,
+		sf::Color::Red
+	);
+
+	//=====LIFES CIRCLES OUTLINE SETTINGS=====
 
 	lifes_outline.resize(MAX_LIFES);
 
@@ -173,7 +208,7 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 		circle.setOrigin(sf::Vector2f(circle.getGlobalBounds().width / 2, circle.getGlobalBounds().height / 2));
 		circle.setPosition(
 			sf::Vector2f(
-			status_field.origin_x + 40.f + hor_adder,
+			status_labels.at(LIFES_LABEL).getGlobalBounds().left + 10.f + hor_adder,
 			status_labels.at(LIFES_LABEL).getGlobalBounds().top
 			+ status_labels.at(LIFES_LABEL).getGlobalBounds().height
 			+ 40.f
@@ -282,6 +317,14 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 
 //===============================TEXTURES==============================	
 
+	/*
+	
+	NOTE:
+
+	These textures will be used in the Game::dynamicUnits
+
+	*/
+
 	int texture_address{ 1 };
 	blk_textures.resize(BLK_T_COUNT);
 	for (auto& texture : blk_textures)
@@ -318,11 +361,11 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 	for (auto& sprite : blk_sprites)
 	{
 		sprite.setTexture(blk_textures.at(index), true);
-		sprite.setScale(sf::Vector2f(0.125f, 0.125f));
+		sprite.setScale(sf::Vector2f(0.2f, 0.2f));
 		sprite.setPosition(
 			sf::Vector2f(
 			blocks_label.getGlobalBounds().left,
-			blocks_descriptions.at(src_index).getGlobalBounds().top - 20.f
+			blocks_descriptions.at(src_index).getGlobalBounds().top - 30.f
 		)
 		);
 		index += 2;
@@ -332,20 +375,15 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 
 	index = 0;
 	src_index = 0;
-	std::vector<int> not_for_legend_abl_textures{ 1,2,4,5,6 };
 	abl_sprites.resize(abilities_descriptions.size());
 	for (auto& sprite : abl_sprites)
 	{
-		while (std::ranges::find(not_for_legend_abl_textures, index) != not_for_legend_abl_textures.end())
-		{
-			index++;
-		}
 		sprite.setTexture(abl_textures.at(index), true);
-		sprite.setScale(sf::Vector2f(0.125f, 0.125f));
+		sprite.setScale(sf::Vector2f(0.16f, 0.2f));
 		sprite.setPosition(
 			sf::Vector2f(
 			abilities_label.getGlobalBounds().left,
-			abilities_descriptions.at(src_index).getGlobalBounds().top - 20.f
+			abilities_descriptions.at(src_index).getGlobalBounds().top - 30.f
 		)
 		);
 		index++;

@@ -20,12 +20,16 @@
 //Custom headers
 #include "util.hpp"
 #include "game_page.hpp"
+//#include "game_page_statics.hpp"
+//#include "game_page_dynamics.hpp"
 
 
 //Forward Game namespace declaration in the 'game_page_process.hpp'
 namespace Game
 {
-	class Process;  //forward declaration already declared class (game_page_process.hpp)
+	class staticUnits;		//forward declaration already declared class (game_page_process.hpp)
+	class dynamicUnits;		//forward declaration already declared class (game_page_process.hpp)
+	class Process;			//forward declaration already declared class (game_page_process.hpp)
 
 };
 
@@ -37,7 +41,7 @@ class Game::Process
 
 	static inline bool running{ true };
 
-	void render(sf::RenderWindow& window, const Game::staticUnits& utils);
+	void render(sf::RenderWindow& window, const Game::staticUnits& utils, const Game::dynamicUnits& dynamo);
 	void interact(sf::RenderWindow& window);
 
 	private:
