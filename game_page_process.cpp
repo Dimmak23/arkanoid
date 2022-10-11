@@ -78,6 +78,10 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 
 	//===========STATUSES=============
 
+	//SCORE
+	window.draw(dynamo.score_label);
+	window.draw(dynamo.score_add_label);
+
 	//LIFE BALLS
 	for (auto& ball : dynamo.lifes_balls)
 		window.draw((*ball));
@@ -88,6 +92,16 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 	//COUNTDOWN TO THE NEW LINE
 	window.draw(dynamo.extender_countdown);
 
+	//KINEMATIC PARAMETERS INTERFACE
+
+	for(auto& parameter: dynamo.ball_parameters)
+		window.draw(parameter);
+
+	for(auto& parameter: dynamo.paddle_parameters)
+		window.draw(parameter);
+
+//==================================DYNAMICS===============================
+	
 	//Now send drawings to the screen
 	window.display();
 }
@@ -113,6 +127,17 @@ void Game::Process::interact(sf::RenderWindow& window)
 				break;
 			}
 
+			//LEFT button we use for loosing speed in the X axis
+			else if (event.key.code == sf::Keyboard::Left)
+			{
+				Game::dynamicUnits::paddle_kinematics.at(V_X) -= Game::dynamicUnits::pdl_V_step;
+			}
+			//RIGHT button we use for increasing speed in the X axis
+			else if (event.key.code == sf::Keyboard::Right)
+			{
+				Game::dynamicUnits::paddle_kinematics.at(V_X) += Game::dynamicUnits::pdl_V_step;
+			}
+
 			////Press enter and winish Intro page
 			//else if (event.key.code == sf::Keyboard::Enter)
 			//{
@@ -122,4 +147,5 @@ void Game::Process::interact(sf::RenderWindow& window)
 			//}
 		}
 	}
+
 }
