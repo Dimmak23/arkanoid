@@ -144,11 +144,11 @@ class Game::staticUnits
 
 	static inline const std::vector<std::string> parameters_names
 	{
-		"x:",
-		"y:",
+		"dx:",
 		"Vx:",
-		"Vy:",
 		"Ax:",
+		"dy:",
+		"Vy:",
 		"Ay:"
 	};
 

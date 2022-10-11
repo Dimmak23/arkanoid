@@ -230,6 +230,8 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 	ball_parameters.resize(parameters_names.size());
 
 	index = 0;
+	hor_adder = 0;
+	float ver_adder{};
 	for (auto& parameter : ball_parameters)
 	{
 		Util::initialize_text(
@@ -238,17 +240,25 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 			utils.main_font,
 			9,
 			false,
-			to_f(status_field.origin_x + 20 + (status_field.overall_width / 2) * (index % 2)),
+			to_f(status_field.origin_x + 20 + hor_adder),
 			to_f(status_field.origin_y
-			+ status_labels.at(BALL_LABEL).getGlobalBounds().top
-			+ status_labels.at(BALL_LABEL).getGlobalBounds().height
-			+ 20
-			+ 30 * ((index - (index % 2)) / 2)
-		),
+						+ status_labels.at(BALL_LABEL).getGlobalBounds().top
+						+ status_labels.at(BALL_LABEL).getGlobalBounds().height
+						+ 20
+						+ ver_adder
+						),
 			sf::Text::Regular,
 			sf::Color::Red
 		);
+
 		index++;
+
+		if (index < 3) ver_adder = 30.f * index;
+		else ver_adder = 30.f * (index - 3);
+
+		if ( !(index % 3) )
+			hor_adder = to_f(status_field.overall_width / 2 - 10.f);
+
 	}
 
 	//=====BALL FRAMES SETTINGS=====
@@ -259,7 +269,7 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 	{
 		initialize_frame(
 			frame,
-			80.f,
+			90.f,
 			25.f,
 			sf::Color::Red,
 			sf::Color::Black,
@@ -285,15 +295,15 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 			false,
 			to_f(status_field.origin_x + 20),
 			to_f(status_field.origin_y
-			+ status_labels.at(PADDLE_LABEL).getGlobalBounds().top
-			+ status_labels.at(PADDLE_LABEL).getGlobalBounds().height
-			+ 20
-			+ 30 * (index / 2)
-		),
+						+ status_labels.at(PADDLE_LABEL).getGlobalBounds().top
+						+ status_labels.at(PADDLE_LABEL).getGlobalBounds().height
+						+ 20
+						+ 30 * index
+					),
 			sf::Text::Regular,
 			sf::Color::Red
 		);
-		index += 2;
+		index++;
 	}
 
 	//=====PADDLE FRAMES SETTINGS=====
@@ -304,7 +314,7 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 	{
 		initialize_frame(
 			frame,
-			80.f,
+			90.f,
 			25.f,
 			sf::Color::Red,
 			sf::Color::Black,

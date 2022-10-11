@@ -180,6 +180,7 @@ class Util::staticUnits
 		//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's property
 		sf::Font logo_font;
 		sf::Font main_font;
+		sf::Font score_font;
 
 		//Sharable event
 		//static inline sf::Event event{};
@@ -190,10 +191,12 @@ class Util::staticUnits
 		//<-
 		static inline const std::string logoFontPath{ "data/fonts/70-Breakout-Tiles.ttf" };
 		static inline const std::string mainFontPath{ "data/fonts/71-Breakout-Tiles.ttf" };
+		static inline const std::string scoreFontPath{ "data/fonts/73-Breakout-Tiles.ttf" };
 		//<-
 
 		static inline const char* logoFontParseError{ "_____logo font parse error...\n" };
 		static inline const char* mainFontParseError{ "_____main font parse error...\n" };
+		static inline const char* scoreFontParseError{ "_____score font parse error...\n" };
 
 };
 
@@ -204,6 +207,7 @@ inline Util::staticUnits::staticUnits()
 	
 	safe_parse(logo_font, logoFontPath, logoFontParseError);
 	safe_parse(main_font, mainFontPath, mainFontParseError);
+	safe_parse(score_font, scoreFontPath, scoreFontParseError);
 
 }
 

@@ -11,6 +11,7 @@
 //C++ headers
 #include <random>
 #include <ranges>
+#include <vector>
 
 
 //API
@@ -24,10 +25,21 @@
 //#include "game_page_statics.hpp"
 //#include "game_page_process.hpp"
 
-
 //DEFINES
 #define to_i(lvalue) static_cast<int>(lvalue)
 
+//ENUMERATORS
+
+enum t_kinematics
+{
+	DELTA_X = 0,
+	V_X,
+	A_X,
+	DELTA_Y,
+	V_Y,
+	A_Y
+
+};
 
 //Forward Game namespace declaration in the 'game_page_dynamics.hpp'
 namespace Game
@@ -47,6 +59,8 @@ class Game::dynamicUnits
 	dynamicUnits() = default;																//default-constructor declaration
 	dynamicUnits(const Game::staticUnits& statics, const Util::staticUnits& utils);			//constructor dependable on 'Game::staticUnits' object declaration
 
+	//INTERNAL CLASS UTILITIES
+
 	//set one line of the conveyor
 	void setLine(const Game::staticUnits& statics, const bool& first);
 
@@ -58,6 +72,14 @@ class Game::dynamicUnits
 
 	//Update visibility of every '+100' ability block if there any such
 	//void updatePlusHundredAbility(const Game::staticUnits& utils);
+
+	//INTERFACE
+
+	//update score status
+	void updateScore();
+
+	//blink adder in the interface
+	void blinkScoreAdder();
 
 	//Update lifes visibility
 	void updateLifeBalls(const Game::staticUnits& statics);
@@ -73,6 +95,13 @@ class Game::dynamicUnits
 
 	//Update game time
 	void updateGTime() noexcept;
+
+	//update ball/paddle kinematics interface
+	void updateParInterface(const std::vector<float>& kinematics, std::vector<sf::Text>& texts);
+
+	//SIMULATE PHYSICS
+
+	//void simulatePhysics(sf::RenderWindow& window, sf::Event& event, const float& d_time);
 
 	//PROBABILITIES PATTERNS
 
@@ -118,20 +147,38 @@ class Game::dynamicUnits
 	//Lifes
 	std::vector<std::unique_ptr<sf::Sprite>> lifes_balls;
 
-	//TEXT PARAMETERS
+	//TEXT STATUSES
+
+	sf::Text score_label;
+	sf::Text score_add_label;
 
 	sf::Text game_timer;
+	
 	sf::Text extender_countdown;
 
-	//VARIABLES
+	std::vector<sf::Text> ball_parameters;
+	std::vector<sf::Text> paddle_parameters;
 
-	//Timers
+	//VARIABLES PHYSICS
+
+	static inline std::vector<float> ball_kinematics;
+
+	static inline std::vector<float> paddle_kinematics;
+	static inline const float pdl_friction{6.0f};		//8.f	//4.f
+	static inline const float pdl_V_step{35.0f};		//20.f  //40.f
+	static inline const float pdl_bounce{0.8f};
+
+	//VARIABLES TIMERS
 
 	//static inline float plus_abl_updater{};
 	
 	//___Belt extender
 	static inline const float to_extend_await{ 15.f };
 	static inline float extender_timer{ to_extend_await };
+
+	//___Score adder blink
+	static inline const float score_adder_appear_await{ 1.f };
+	static inline float score_add_timer{};
 
 	//___
 	static inline float game_time{};
@@ -145,7 +192,12 @@ class Game::dynamicUnits
 	static inline const float paddle_scale_x_min{0.1f};
 	static inline const float paddle_scale_step{0.05f};
 
-	//Lifes
+	//VARIABLES STATUSES
+
+	static inline int score{};
+	static inline int score_adder{};   
+	static inline const int score_max{ 999999 };
+
 	static inline int lifes{9};
 	static inline const int lifes_max{27};
 

@@ -16,6 +16,10 @@
 #include "game_page_statics.hpp"
 #include "game_page_process.hpp"
 #include "game_page_dynamics.hpp"
+#include "game_page_physics.hpp"
+#include "game_page_movements.hpp"
+#include "game_page_collisions.hpp"
+//#include "physics.hpp"
 //#include "game_objects.hpp"
 //#include "intro_window.hpp"
 
@@ -126,30 +130,83 @@ int main()
 
 			while (Game::Process::running)
 			{
-				//<-----fork_Game_DUnits->simulate();
-				
-				//update lifes status
-				fork_Game_DUnits->updateLifeBalls(*fork_Game_SUnits);
+
+				//Check user inputs
+				fork_Game_Process->interact(application_window);
+
+
+				//<-----fork_Game_DUnits->simulations();
+
+				simulatePhysics(Util::Process::delta_time);
+
+				//<-----fork_Game_DUnits->simulations();
+
+
+
+
+
+				//<-----fork_Game_DUnits->collisions();
+
+				collideUnits(*fork_Game_DUnits);
+
+				//<-----fork_Game_DUnits->collisions();
+
+
+
+
+				//<-----fork_Game_DUnits->movements();
+
+				moveUnits(*fork_Game_DUnits);
+
+				//<-----fork_Game_DUnits->movements();
+
+
+
+
+				//<-----fork_Game_DUnits->tooling();
 
 				//Update paddle width because of the such ability
 				fork_Game_DUnits->adjustPaddle();
 
-				//Update cool electric paddle
-				fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
-				
 				//Check and extend conveyor belt, if time is come
 				fork_Game_DUnits->extendConveyor(*fork_Game_SUnits);
 
+				//<-----fork_Game_DUnits->tooling();
+
+
+
+
+				//<-----fork_Game_DUnits->interfaces();
+				
+				//update score
+				fork_Game_DUnits->updateScore();
+
+				//blink adder
+				fork_Game_DUnits->blinkScoreAdder();
+
+				//update lifes status
+				fork_Game_DUnits->updateLifeBalls(*fork_Game_SUnits);
+
+				//Update cool electric paddle
+				fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
+				
 				//Update game time interface
 				fork_Game_DUnits->updateGTime();
 
-				//<-----fork_Game_DUnits->simulate();
-				
+				//Update ball parameters interface
+				fork_Game_DUnits->updateParInterface(Game::dynamicUnits::ball_kinematics, fork_Game_DUnits->ball_parameters);
+
+				//Update paddle parameters interface
+				fork_Game_DUnits->updateParInterface(Game::dynamicUnits::paddle_kinematics, fork_Game_DUnits->paddle_parameters);
+
+				//<-----fork_Game_DUnits->interfaces();
+
+
+
+
 				//Render screen the Game static objects
 				fork_Game_Process->render(application_window, *fork_Game_SUnits, *fork_Game_DUnits);
 
-				//Check user inputs
-				fork_Game_Process->interact(application_window);
 
 				//We need to get new delta time
 				Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
@@ -162,6 +219,9 @@ int main()
 
 				//Update paddle changer timer
 				Game::dynamicUnits::pdl_upd_timer += Util::Process::delta_time;
+
+				//Update score adder blink timer
+				if(Game::dynamicUnits::score_adder) Game::dynamicUnits::score_add_timer += Util::Process::delta_time;
 
 			}
 

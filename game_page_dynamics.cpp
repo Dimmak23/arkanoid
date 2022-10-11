@@ -9,7 +9,11 @@
 #include "game_page_dynamics.hpp"
 #include "game_page_process.hpp"
 
-//METHODS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//<<<----UTILITIES
 
 int Game::dynamicUnits::getRandomNumber(const int& limit)
 {
@@ -216,6 +220,60 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 
 }
 
+//<<<----UTILITIES
+
+//<<<----INTERFACE
+
+//When we score have been changed we are sill not have been erase adder
+//we pop him up to the interface
+//and wait some time
+void Game::dynamicUnits::blinkScoreAdder()
+{
+	if (score_add_timer > score_adder_appear_await)
+	{
+		score_add_label.setFillColor(sf::Color::Black);
+		score_add_label.setPosition(sf::Vector2f(
+			score_label.getGlobalBounds().left + score_label.getGlobalBounds().width + 10.f,
+			score_label.getGlobalBounds().top
+		));
+
+		score_add_timer = 0;
+		score_adder = 0;
+	}
+
+}
+
+//So when score have neen changed it is visible on the label
+//and we also see adder poping up
+void Game::dynamicUnits::updateScore()
+{
+	std::cout << "Current score: " << score << '\n';
+
+	if (score > score_max)
+	{
+		score = score_max;
+		return;
+	}
+	else if (std::to_string(score) == score_label.getString())
+	{
+		return;
+	}
+	else
+	{
+		score_label.setString(std::to_string(score));
+
+		std::string to_s_adder = std::to_string(score_adder);
+		to_s_adder.insert(to_s_adder.begin(), '+');
+
+		score_add_label.setString(to_s_adder);
+		score_add_label.setFillColor(sf::Color::Yellow);
+		score_add_label.setPosition(sf::Vector2f(
+															score_label.getGlobalBounds().left + score_label.getGlobalBounds().width + 10.f,
+															score_label.getPosition().y /*+ score_label.getGlobalBounds().height*/
+		));
+	}
+}
+
 //So when life variable have been changed - update life status
 void Game::dynamicUnits::updateLifeBalls(const Game::staticUnits& statics)
 {
@@ -287,19 +345,19 @@ void Game::dynamicUnits::updateElectricPaddle(const Game::staticUnits& utils)
 			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_1))
 		)
 		{
-			//(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_2), true);
+			(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_2), true);
 		}
 		else if (
 			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_2))
 			)
 		{
-			//(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_3), true);
+			(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_3), true);
 		}
 		else if (
 			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_3))
 			)
 		{
-			//(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_1), true);
+			(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_1), true);
 		}
 
 		pdl_upd_timer = 0;
@@ -364,6 +422,53 @@ void Game::dynamicUnits::updateGTime() noexcept
 	game_timer.setString(streamer.str());
 }
 
+
+//so when ball kinematics have been changed, they would be updated here
+//and when paddle kinematics have been changed, they would be updated here
+void Game::dynamicUnits::updateParInterface(const std::vector<float>& kinematics, std::vector<sf::Text>& texts)
+{
+	std::stringstream streamer;
+	float buffer{};
+	
+	//go thru all text parameters
+	int indexer{};
+	for (auto& text : texts)
+	{
+		buffer = kinematics.at(indexer);
+		streamer.str("");
+
+		if ((buffer > 10) && (buffer < 100))
+			streamer << ((buffer < 0)? "-0": " 0") << std::fixed << std::setprecision(3) << ((buffer < 0) ? -buffer : buffer);
+		else if (buffer < 10)
+			streamer << ((buffer < 0) ? "-00" : " 00") << std::fixed << std::setprecision(3) << ((buffer < 0) ? -buffer : buffer);
+		else
+			streamer << ((buffer < 0) ? "-" : " ") << std::fixed << std::setprecision(3) << ((buffer < 0) ? -buffer : buffer);
+
+		if (text.getString() == streamer.str())
+		{
+			indexer++;
+			continue;
+		}
+		else
+		{
+			text.setString(streamer.str());
+		}
+
+		indexer++;
+	}
+}
+
+//<<<----INTERFACE
+
+//<<<----SIMULATE
+
+
+//<<<----SIMULATE
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //CONSTRUCTOR
 
 //Colossal class constructor moved here
@@ -415,6 +520,36 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 
 //==================================DYNAMIC STATUSES===============================
 
+	//==INITALIZE GAME SCORE STATUS TEXT==
+
+	Util::initialize_text(
+		score_label,
+		std::to_string(score),
+		utils.score_font,
+		35,
+		false,
+		statics.status_labels.at(SCORE_LABEL).getGlobalBounds().left,
+		statics.status_labels.at(SCORE_LABEL).getGlobalBounds().top
+		+ statics.status_labels.at(SCORE_LABEL).getGlobalBounds().height
+		+ 10.f,
+		sf::Text::Regular,
+		sf::Color::Red
+	);
+
+	//==INITALIZE GAME SCORE ADDER TEXT==
+
+	Util::initialize_text(
+		score_add_label,
+		std::to_string(score_adder),
+		utils.score_font,
+		35,
+		false,
+		0.f,
+		0.f,
+		sf::Text::Regular,
+		sf::Color::Black
+	);
+
 	//==INITALIZE GAME TIMER TEXT==
 
 	Util::initialize_text(
@@ -430,7 +565,6 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		sf::Text::Regular,
 		sf::Color::Red
 	);
-
 
 	//==INITALIZE EXTENDER COUNTDOWN TEXT==
 
@@ -486,6 +620,57 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	}
 
 	std::cout << "Lifes balls were drawn." << '\n';
+
+	//==INITALIZE BALL PARAMETERS STATUS TEXTS==
+
+	ball_kinematics.resize(statics.ball_parameters.size());
+
+	ball_parameters.resize(statics.ball_parameters.size());
+
+	int index{};
+	for (auto& parameter : ball_parameters)
+	{
+		Util::initialize_text(
+			parameter,
+			"000.000",
+			utils.main_font,
+			10,
+			false,
+			statics.ball_parameters.at(index).getPosition().x + 35.f,
+			statics.ball_parameters.at(index).getPosition().y,
+			sf::Text::Regular,
+			sf::Color::Red
+		);
+
+		index++;
+
+	}
+
+	//==INITALIZE PADDLE PARAMETERS STATUS TEXTS==
+
+	paddle_kinematics.resize(statics.paddle_parameters.size());
+
+	paddle_parameters.resize(statics.paddle_parameters.size());
+
+	index = 0;
+	for (auto& parameter : paddle_parameters)
+	{
+		Util::initialize_text(
+			parameter,
+			"000.000",
+			utils.main_font,
+			10,
+			false,
+			statics.paddle_parameters.at(index).getPosition().x + 35.f,
+			statics.paddle_parameters.at(index).getPosition().y,
+			sf::Text::Regular,
+			sf::Color::Red
+		);
+
+		index++;
+
+	}
+
 
 //==================================TOOLS===============================
 
