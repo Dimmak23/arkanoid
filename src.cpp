@@ -128,6 +128,9 @@ int main()
 			{
 				//<-----fork_Game_DUnits->simulate();
 				
+				//update lifes status
+				fork_Game_DUnits->updateLifeBalls(*fork_Game_SUnits);
+
 				//Update paddle width because of the such ability
 				fork_Game_DUnits->adjustPaddle();
 

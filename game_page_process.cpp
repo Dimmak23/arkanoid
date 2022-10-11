@@ -113,6 +113,15 @@ void Game::Process::interact(sf::RenderWindow& window)
 				break;
 			}
 
+			//TEST LIFE BALLS CHANGING
+			else if (event.key.code == sf::Keyboard::Q)
+			{
+				Game::dynamicUnits::lifes -= 1;
+			}
+			else if (event.key.code == sf::Keyboard::E)
+			{
+				Game::dynamicUnits::lifes += 1;
+			}
 			////Press enter and winish Intro page
 			//else if (event.key.code == sf::Keyboard::Enter)
 			//{

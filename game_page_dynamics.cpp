@@ -216,6 +216,46 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 
 }
 
+//So when life variable have been changed - update life status
+void Game::dynamicUnits::updateLifeBalls(const Game::staticUnits& statics)
+{
+	std::cout << "Current lifes: " << lifes << '\n';
+	
+	if (lifes > lifes_max)
+	{
+		lifes = lifes_max;
+		return;
+	}
+	else if (lifes < 0)
+	{
+		lifes = 0;
+		return;
+	}
+	else
+	{
+		if (lifes > lifes_balls.size())
+		{
+			lifes_balls.emplace_back(std::make_unique<sf::Sprite>());
+
+			(*lifes_balls.back()).setTexture(statics.bll_texture, true);
+			(*lifes_balls.back()).setScale(sf::Vector2f(0.5f, 0.5f));
+			(*lifes_balls.back()).setPosition(
+				sf::Vector2f(
+				statics.lifes_outline.at(lifes_indexer.at(lifes - 1)).getGlobalBounds().left + 2.5f,
+				statics.lifes_outline.at(lifes_indexer.at(lifes - 1)).getGlobalBounds().top + 2.6f
+			)
+			);
+
+		}
+		else if (lifes < lifes_balls.size())
+		{
+			lifes_balls.pop_back();
+		}
+		else
+			return;
+	}
+}
+
 //Adjust paddle if paddle level were changed
 void Game::dynamicUnits::adjustPaddle()
 {
@@ -265,7 +305,6 @@ void Game::dynamicUnits::updateElectricPaddle(const Game::staticUnits& utils)
 		pdl_upd_timer = 0;
 	}
 }
-
 
 //Move down conveyor array
 
@@ -430,13 +469,6 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 
 	//==INITIAL LIFES BALLS==
 
-	std::vector<int> indexer
-	{
-		0,1,2,9,10,11,18,19,20,
-		3,4,5,12,13,14,21,22,23,
-		6,7,8,15,16,17,24,25,26
-	};
-
 	for (int index{}; index < lifes; )
 	{
 		lifes_balls.emplace_back(std::make_unique<sf::Sprite>());
@@ -445,8 +477,8 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		(*lifes_balls.back()).setScale(sf::Vector2f(0.5f, 0.5f));	
 		(*lifes_balls.back()).setPosition(
 											sf::Vector2f(
-																	statics.lifes_outline.at(indexer.at(index)).getGlobalBounds().left + 2.5f,
-																	statics.lifes_outline.at(indexer.at(index)).getGlobalBounds().top + 2.6f
+																	statics.lifes_outline.at(lifes_indexer.at(index)).getGlobalBounds().left + 2.5f,
+																	statics.lifes_outline.at(lifes_indexer.at(index)).getGlobalBounds().top + 2.6f
 																)
 		);
 

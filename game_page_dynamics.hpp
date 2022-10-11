@@ -59,6 +59,9 @@ class Game::dynamicUnits
 	//Update visibility of every '+100' ability block if there any such
 	//void updatePlusHundredAbility(const Game::staticUnits& utils);
 
+	//Update lifes visibility
+	void updateLifeBalls(const Game::staticUnits& statics);
+
 	//Update paddle texture depending on the time
 	void updateElectricPaddle(const Game::staticUnits& utils);
 
@@ -145,6 +148,19 @@ class Game::dynamicUnits
 	//Lifes
 	static inline int lifes{9};
 	static inline const int lifes_max{27};
+
+	static inline const std::vector<int> lifes_indexer
+	{
+		0,9,18,
+		1,10,19,
+		2,11,20,
+		3,12,21,
+		4,13,22,
+		5,14,23,
+		6,15,24,
+		7,16,25,
+		8,17,26
+	};
 	
 	//static inline const float plus_abl_await{0.5f};
 
