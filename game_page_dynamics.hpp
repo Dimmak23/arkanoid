@@ -99,9 +99,11 @@ class Game::dynamicUnits
 	//update ball/paddle kinematics interface
 	void updateParInterface(const std::vector<float>& kinematics, std::vector<sf::Text>& texts);
 
-	//SIMULATE PHYSICS
+	//SIMULATE BALL AWAIT
 
-	//void simulatePhysics(sf::RenderWindow& window, sf::Event& event, const float& d_time);
+	//If ball werew lost we are waiting and then reset ball and paddle positions and kinematics
+	void waitForBall();
+	
 
 	//PROBABILITIES PATTERNS
 
@@ -146,6 +148,7 @@ class Game::dynamicUnits
 
 	//Lifes
 	std::vector<std::unique_ptr<sf::Sprite>> lifes_balls;
+	static inline bool lost_ball{};
 
 	//TEXT STATUSES
 
@@ -159,14 +162,23 @@ class Game::dynamicUnits
 	std::vector<sf::Text> ball_parameters;
 	std::vector<sf::Text> paddle_parameters;
 
+	//BASEMENT PAINTING
+
+	sf::RectangleShape basement;
+
 	//VARIABLES PHYSICS
 
 	static inline std::vector<float> ball_kinematics;
+	static inline const float bll_friction{ 6.0f };		
+	static inline const float bll_V_step{ 400.0f };		
+	static inline const float bll_A_step{ 1800.0f };		
+	static inline const float bll_bounce{ 1.f };
 
 	static inline std::vector<float> paddle_kinematics;
-	static inline const float pdl_friction{6.0f};		//8.f	//4.f
-	static inline const float pdl_V_step{35.0f};		//20.f  //40.f
-	static inline const float pdl_bounce{0.8f};
+	static inline const float pdl_friction{7.0f};	
+	//static inline const float pdl_V_step{1.0f};		
+	static inline const float pdl_A_step{180000.0f};		
+	static inline const float pdl_bounce{-0.2f};
 
 	//VARIABLES TIMERS
 
@@ -191,6 +203,10 @@ class Game::dynamicUnits
 	static inline const float paddle_scale_x_max{0.9f};
 	static inline const float paddle_scale_x_min{0.1f};
 	static inline const float paddle_scale_step{0.05f};
+
+	//___Lost ball awaiting
+	static inline const float to_new_ball_await{ 2.f };
+	static inline float ball_timer{};
 
 	//VARIABLES STATUSES
 

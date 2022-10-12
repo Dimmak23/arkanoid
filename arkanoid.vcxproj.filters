@@ -59,6 +59,15 @@
     <ClInclude Include="game_page_process.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="game_page_physics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game_page_movements.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game_page_collisions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="temp.md">

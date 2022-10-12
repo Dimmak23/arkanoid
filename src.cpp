@@ -131,8 +131,6 @@ int main()
 			while (Game::Process::running)
 			{
 
-				//Check user inputs
-				fork_Game_Process->interact(application_window);
 
 
 				//<-----fork_Game_DUnits->simulations();
@@ -147,7 +145,7 @@ int main()
 
 				//<-----fork_Game_DUnits->collisions();
 
-				collideUnits(*fork_Game_DUnits);
+				collideUnits(*fork_Game_DUnits, Util::Process::delta_time);
 
 				//<-----fork_Game_DUnits->collisions();
 
@@ -170,6 +168,9 @@ int main()
 
 				//Check and extend conveyor belt, if time is come
 				fork_Game_DUnits->extendConveyor(*fork_Game_SUnits);
+
+				//Check if ball have been lost and we need to reset the ball and paddle
+				fork_Game_DUnits->waitForBall();
 
 				//<-----fork_Game_DUnits->tooling();
 
@@ -207,6 +208,8 @@ int main()
 				//Render screen the Game static objects
 				fork_Game_Process->render(application_window, *fork_Game_SUnits, *fork_Game_DUnits);
 
+				//Check user inputs
+				fork_Game_Process->interact(application_window, *fork_Game_DUnits, Util::Process::delta_time);;
 
 				//We need to get new delta time
 				Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
@@ -215,13 +218,17 @@ int main()
 				Game::dynamicUnits::game_time += Util::Process::delta_time;
 
 				//Update conveyor belt extender timer
-				Game::dynamicUnits::extender_timer -= Util::Process::delta_time;
+				//NOTE: If we have lost ball, we don't wait to extend conveyor belt
+				if( !Game::dynamicUnits::lost_ball ) Game::dynamicUnits::extender_timer -= Util::Process::delta_time;
 
 				//Update paddle changer timer
 				Game::dynamicUnits::pdl_upd_timer += Util::Process::delta_time;
 
 				//Update score adder blink timer
 				if(Game::dynamicUnits::score_adder) Game::dynamicUnits::score_add_timer += Util::Process::delta_time;
+
+				//if ball was lost, then wait for the new one
+				if(Game::dynamicUnits::lost_ball) Game::dynamicUnits::ball_timer += Util::Process::delta_time;
 
 			}
 
