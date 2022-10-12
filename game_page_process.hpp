@@ -41,10 +41,16 @@ class Game::Process
 
 	static inline bool running{ true };
 
-	void render(sf::RenderWindow& window, const Game::staticUnits& utils, const Game::dynamicUnits& dynamo);
-	void interact(sf::RenderWindow& window);
+	void render(
+				sf::RenderWindow& window,
+				const Game::staticUnits& utils,
+				const Game::dynamicUnits& dynamo
+	);
 
-	private:
+	void interact(sf::RenderWindow& window, Game::dynamicUnits& dynamo, const float& d_time);
+
+	public:
 
 	sf::Event event{};  //!NOT SURE IF I NEED ANY NON-STATIC MEMBERS
+
 };

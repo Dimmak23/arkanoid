@@ -2,6 +2,12 @@
 #include "game_page_statics.hpp"
 #include "game_page_dynamics.hpp"
 #include "game_page_process.hpp"
+#include "game_page_physics.hpp"
+
+
+//DEFINES
+#define paddle(lvalue) Game::dynamicUnits::paddle_kinematics.at(lvalue)
+#define ball(lvalue) Game::dynamicUnits::ball_kinematics.at(lvalue)
 
 //METHODS
 
@@ -100,13 +106,19 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 	for(auto& parameter: dynamo.paddle_parameters)
 		window.draw(parameter);
 
+//==================================BASEMENT===============================
+
+	//This should help with hiding ball in the textures
+	window.draw(dynamo.basement);
+
+
 //==================================DYNAMICS===============================
 	
 	//Now send drawings to the screen
 	window.display();
 }
 
-void Game::Process::interact(sf::RenderWindow& window)
+void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynamo, const float& d_time)
 {
 	while (window.pollEvent(event))
 	{
@@ -119,6 +131,9 @@ void Game::Process::interact(sf::RenderWindow& window)
 		}
 		else if (event.type == sf::Event::KeyPressed)
 		{
+			//paddle(A_X) = 0;
+
+
 			//Also close by 'Esc' keyboard button
 			if (event.key.code == sf::Keyboard::Escape)
 			{
@@ -130,13 +145,23 @@ void Game::Process::interact(sf::RenderWindow& window)
 			//LEFT button we use for loosing speed in the X axis
 			else if (event.key.code == sf::Keyboard::Left)
 			{
-				Game::dynamicUnits::paddle_kinematics.at(V_X) -= Game::dynamicUnits::pdl_V_step;
+				//paddle(V_X) = -Game::dynamicUnits::pdl_V_step;
+				paddle(A_X) -= Game::dynamicUnits::pdl_A_step;
 			}
 			//RIGHT button we use for increasing speed in the X axis
 			else if (event.key.code == sf::Keyboard::Right)
 			{
-				Game::dynamicUnits::paddle_kinematics.at(V_X) += Game::dynamicUnits::pdl_V_step;
+				//paddle(V_X) = Game::dynamicUnits::pdl_V_step;
+				paddle(A_X) += Game::dynamicUnits::pdl_A_step;
 			}
+
+			//paddle(A_X) -= paddle(V_X) * Game::dynamicUnits::pdl_friction;
+			//paddle(DELTA_X) = paddle(V_X) * d_time + paddle(A_X) * d_time * d_time / 2.f;
+			//paddle(V_X) += paddle(A_X) * d_time;
+			
+			recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, Game::dynamicUnits::pdl_friction, d_time);
+
+			dynamo.paddle->move(sf::Vector2f(paddle(DELTA_X), 0));
 
 			////Press enter and winish Intro page
 			//else if (event.key.code == sf::Keyboard::Enter)

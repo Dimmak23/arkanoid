@@ -9,6 +9,13 @@
 #include "game_page_dynamics.hpp"
 #include "game_page_process.hpp"
 
+//DEFINES
+//It seems that here construction paddle_kinematics.at(L_VALUE) are spreading a lot,
+//so why not simpliy this moment
+
+#define paddle(lvalue) paddle_kinematics.at(lvalue)
+#define ball(lvalue) ball_kinematics.at(lvalue)
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,8 +240,8 @@ void Game::dynamicUnits::blinkScoreAdder()
 	{
 		score_add_label.setFillColor(sf::Color::Black);
 		score_add_label.setPosition(sf::Vector2f(
-			score_label.getGlobalBounds().left + score_label.getGlobalBounds().width + 10.f,
-			score_label.getGlobalBounds().top
+															score_label.getGlobalBounds().left + score_label.getGlobalBounds().width + 10.f,
+															score_label.getGlobalBounds().top
 		));
 
 		score_add_timer = 0;
@@ -430,6 +437,8 @@ void Game::dynamicUnits::updateParInterface(const std::vector<float>& kinematics
 	std::stringstream streamer;
 	float buffer{};
 	
+	int precision{};
+
 	//go thru all text parameters
 	int indexer{};
 	for (auto& text : texts)
@@ -437,12 +446,17 @@ void Game::dynamicUnits::updateParInterface(const std::vector<float>& kinematics
 		buffer = kinematics.at(indexer);
 		streamer.str("");
 
-		if ((buffer > 10) && (buffer < 100))
-			streamer << ((buffer < 0)? "-0": " 0") << std::fixed << std::setprecision(3) << ((buffer < 0) ? -buffer : buffer);
-		else if (buffer < 10)
-			streamer << ((buffer < 0) ? "-00" : " 00") << std::fixed << std::setprecision(3) << ((buffer < 0) ? -buffer : buffer);
+		if (std::abs(buffer) >= 100000) precision = 0;
+		else if (std::abs(buffer) >= 10000) precision = 1;
+		else if (std::abs(buffer) >= 1000) precision = 2;
+		else precision = 3;
+
+		if ((std::abs(buffer) > 10) && (std::abs(buffer) < 100))
+			streamer << ((buffer < 0)? "-0": " 0") << std::fixed << std::setprecision(precision) << ((buffer < 0) ? -buffer : buffer);
+		else if (std::abs(buffer) < 10)
+			streamer << ((buffer < 0) ? "-00" : " 00") << std::fixed << std::setprecision(precision) << ((buffer < 0) ? -buffer : buffer);
 		else
-			streamer << ((buffer < 0) ? "-" : " ") << std::fixed << std::setprecision(3) << ((buffer < 0) ? -buffer : buffer);
+			streamer << ((buffer < 0) ? "-" : " ") << std::fixed << std::setprecision(precision) << ((buffer < 0) ? -buffer : buffer);
 
 		if (text.getString() == streamer.str())
 		{
@@ -462,6 +476,49 @@ void Game::dynamicUnits::updateParInterface(const std::vector<float>& kinematics
 
 //<<<----SIMULATE
 
+void Game::dynamicUnits::waitForBall()
+{
+
+	if (ball_timer > to_new_ball_await)
+	{
+		//reset ball position
+		(*ball).setPosition(
+					sf::Vector2f(
+											to_f(game_field.origin_x + game_field.overall_width / 2),
+											(to_f(game_field.origin_y + game_field.overall_height - Default::block_height) - ((*ball).getLocalBounds().height / 2))
+										)
+		);
+
+		//reset ball kinematics
+		ball(DELTA_X) = 0;
+		ball(DELTA_Y) = 0;
+		ball(V_X) = -bll_V_step;
+		ball(V_Y) = -bll_V_step;
+		ball(A_X) = bll_A_step;
+		ball(A_Y) = bll_A_step;
+
+		//reset paddle position
+		//(*paddle).setPosition(
+		//				sf::Vector2f(
+		//										to_f(game_field.origin_x + game_field.overall_width / 2),
+		//										to_f(game_field.origin_y + game_field.overall_height - Default::block_height)
+		//									)
+		//);
+
+		//reset paddle kinematics
+		paddle(DELTA_X) = 0;
+		paddle(V_X) = 0;
+		paddle(A_X) = 0;
+
+		//reset timer
+		ball_timer = 0;
+
+		//we are not loosing ball anymore here
+		lost_ball = false;
+
+		//
+	}
+}
 
 //<<<----SIMULATE
 
@@ -544,8 +601,8 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		utils.score_font,
 		35,
 		false,
-		0.f,
-		0.f,
+		statics.status_labels.at(SCORE_LABEL).getGlobalBounds().left + statics.status_labels.at(SCORE_LABEL).getGlobalBounds().width + 10.f,
+		statics.status_labels.at(SCORE_LABEL).getGlobalBounds().top,
 		sf::Text::Regular,
 		sf::Color::Black
 	);
@@ -566,7 +623,7 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		sf::Color::Red
 	);
 
-	//==INITALIZE EXTENDER COUNTDOWN TEXT==
+	//==INITIALIZE EXTENDER COUNTDOWN TEXT==
 
 	std::stringstream streamer;
 
@@ -621,9 +678,19 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 
 	std::cout << "Lifes balls were drawn." << '\n';
 
-	//==INITALIZE BALL PARAMETERS STATUS TEXTS==
+	//==INITALIZE BALL KINEMATICS==
 
 	ball_kinematics.resize(statics.ball_parameters.size());
+
+	//Initial velocities for the ball
+	ball_kinematics.at(V_X) = -bll_V_step;
+	ball_kinematics.at(V_Y) = -bll_V_step;
+
+	//Initial acceleration for the ball
+	ball_kinematics.at(A_X) = bll_A_step;
+	ball_kinematics.at(A_Y) = bll_A_step;
+
+	//==INITALIZE BALL PARAMETERS STATUS TEXTS==
 
 	ball_parameters.resize(statics.ball_parameters.size());
 
@@ -646,9 +713,12 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 
 	}
 
-	//==INITALIZE PADDLE PARAMETERS STATUS TEXTS==
+	//==INITALIZE BALL KINEMATICS==
 
 	paddle_kinematics.resize(statics.paddle_parameters.size());
+	//all values goes to '0'
+
+	//==INITALIZE PADDLE PARAMETERS STATUS TEXTS==
 
 	paddle_parameters.resize(statics.paddle_parameters.size());
 
@@ -706,10 +776,17 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	(*ball).setPosition(
 		sf::Vector2f(
 								to_f(game_field.origin_x + game_field.overall_width / 2),
-								to_f(game_field.origin_y + (Default::maxRows + 1) * Default::block_height)
+								( to_f(game_field.origin_y + game_field.overall_height - Default::block_height) - ((*ball).getLocalBounds().height / 2) )
 							)
 	);
 
 	std::cout << "Ball drawn." << '\n';
+
+//==================================BASEMENT===============================
+
+	basement.setSize(sf::Vector2f(to_f(game_field.overall_width), to_f(game_field.overall_height)));
+	basement.setFillColor(sf::Color::Black);
+	basement.setPosition(sf::Vector2f(to_f(game_field.origin_x), to_f(game_field.origin_y + game_field.overall_height + game_field.outside_thk)));
+
 
 }
