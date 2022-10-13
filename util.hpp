@@ -27,6 +27,7 @@
 
 //Tired to write long hard readeble code
 #define to_f(lvalue) static_cast<float>(lvalue)
+#define to_i(lvalue) static_cast<int>(lvalue)
 
 //static sf::Vector2f individual_nscale(const float& nscale, sf::Vector2f indi_sprite)//???
 //{
@@ -112,6 +113,26 @@ namespace Util
 		const sf::Color& color			//Black, White, Red, Green, Blue, Yellow, Magenta, Cyan, Transparent
 
 	) noexcept;
+
+	static inline const std::vector<int> block_values
+	{
+		//points to add
+		1, 2, 5, 10, 15, 20, 25, 30, 35, 40
+	};
+
+	static inline const std::vector<int> ability_values
+	{
+		//points to add
+		50, 100, 250, 500,
+		//increase/decrease ball speed by 10% from current speed
+		10, -10,
+		//add 3 lifes
+		3,
+		//add/substract paddle width by 25% from inital width
+		25, -25,
+		//empty ability
+		0
+	};
 
 };
 

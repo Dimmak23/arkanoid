@@ -24,9 +24,12 @@
 #include "game_page.hpp"
 //#include "game_page_statics.hpp"
 //#include "game_page_process.hpp"
+//#include "game_page_executor.hpp"
 
 //DEFINES
-#define to_i(lvalue) static_cast<int>(lvalue)
+
+///FUNCTION POINTER
+using executor = void (*) (const int& operand);
 
 //ENUMERATORS
 
@@ -41,6 +44,7 @@ enum t_kinematics
 
 };
 
+
 //Forward Game namespace declaration in the 'game_page_dynamics.hpp'
 namespace Game
 {
@@ -49,6 +53,16 @@ namespace Game
 	class Process;  //forward declaration already declared class (game_page_dynamics.hpp)
 	
 	enum ability_textures;
+
+	//Forward declaration
+	struct block_map_variables
+	{
+		bool block;						//Here would be: true, if it is a block; and: false, if it is an ability
+		int operand;					//Here we are passing operand for executor function: points to add, multiplier for speed,...
+		executor function;				//pointer to function that have to be executed
+		std::vector<float> kinematics
+		{0.f,0.f,0.f,0.f,0.f,0.f};		//keep kinematic parameters for the abilities
+	};
 
 };
 
@@ -73,7 +87,7 @@ class Game::dynamicUnits
 	//Update visibility of every '+100' ability block if there any such
 	//void updatePlusHundredAbility(const Game::staticUnits& utils);
 
-	//INTERFACE
+	///<<<---INTERFACE
 
 	//update score status
 	void updateScore();
@@ -93,11 +107,16 @@ class Game::dynamicUnits
 	//Move down conveyor array
 	void extendConveyor(const Game::staticUnits& statics);
 
+	//Update awaiting time label
+	void updateExtAwaitTimer();
+
 	//Update game time
 	void updateGTime() noexcept;
 
 	//update ball/paddle kinematics interface
 	void updateParInterface(const std::vector<float>& kinematics, std::vector<sf::Text>& texts);
+
+	///<<<---INTERFACE
 
 	//SIMULATE BALL AWAIT
 
@@ -140,6 +159,9 @@ class Game::dynamicUnits
 	//Conveyor
 	std::vector<std::unique_ptr<sf::Sprite>> conveyor;
 
+	//To each conveyor unit we will link a map: what to do with it when we destroy
+	static inline std::vector<block_map_variables> conveyor_map;
+
 	//Paddle
 	std::unique_ptr<sf::Sprite> paddle;
 
@@ -158,6 +180,7 @@ class Game::dynamicUnits
 	sf::Text game_timer;
 	
 	sf::Text extender_countdown;
+	sf::Text extender_await;
 
 	std::vector<sf::Text> ball_parameters;
 	std::vector<sf::Text> paddle_parameters;
@@ -168,25 +191,34 @@ class Game::dynamicUnits
 
 	//VARIABLES PHYSICS
 
+	//BALL
 	static inline std::vector<float> ball_kinematics;
 	static inline const float bll_friction{ 6.0f };		
 	static inline const float bll_V_step{ 400.0f };		
-	static inline const float bll_A_step{ 1800.0f };		
+	//static inline const float bll_A_step{ 1800.0f };  //NOT so necessary	
 	static inline const float bll_bounce{ 1.f };
+	static inline const float bll_mult{ 8.0f };
 
+	//PADDLE
 	static inline std::vector<float> paddle_kinematics;
 	static inline const float pdl_friction{7.0f};	
 	//static inline const float pdl_V_step{1.0f};		
 	static inline const float pdl_A_step{180000.0f};		
 	static inline const float pdl_bounce{-0.2f};
 
+	//ABILITIES
+	static inline const float abl_friction{ 7.0f };
+	static inline const float abl_V_step{ 400.0f };
+	static inline const float abl_bounce{ 1.f };
+	static inline const float abl_mult{ 8.0f };
+
 	//VARIABLES TIMERS
 
 	//static inline float plus_abl_updater{};
 	
 	//___Belt extender
-	static inline const float to_extend_await{ 15.f };
-	static inline float extender_timer{ to_extend_await };
+	static inline float to_extend_await{};
+	static inline float extender_timer{};
 
 	//___Score adder blink
 	static inline const float score_adder_appear_await{ 1.f };
@@ -231,5 +263,55 @@ class Game::dynamicUnits
 	};
 	
 	//static inline const float plus_abl_await{0.5f};
+
+};
+
+static inline void increaseScore(const int& operand)
+{
+	Game::dynamicUnits::score += operand;
+	Game::dynamicUnits::score_adder = operand;
+}
+
+static inline void chageBallSpeed(const int& operand)
+{}
+
+static inline void increaseLifes(const int& operand)
+{}
+
+static inline void adjustPaddleSize(const int& operand)
+{}
+
+static inline void emptyFunc(const int& operand)
+{
+	return;
+}
+
+static inline std::vector<executor> abl_function_map
+{
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	chageBallSpeed,
+	chageBallSpeed,
+	increaseLifes,
+	adjustPaddleSize,
+	adjustPaddleSize,
+	emptyFunc
+
+};
+
+static inline std::vector<executor> blk_function_map
+{
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	increaseScore,
+	increaseScore
 
 };

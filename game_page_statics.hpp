@@ -15,7 +15,9 @@
 
 
 //SFML headers
-
+#include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/Vertex.hpp>
+#include <SFML/Graphics/PrimitiveType.hpp>
 
 //Custom headers
 #include "util.hpp"
@@ -68,6 +70,10 @@ class Game::staticUnits
 	sf::RectangleShape game_frame;
 	sf::RectangleShape status_frame;
 
+	//CONVEYOR EXTENSION LABEL LINES
+
+	std::vector<sf::RectangleShape> extension_lines;
+
 	//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's property
 
 	//LEGEND LABELS
@@ -79,19 +85,19 @@ class Game::staticUnits
 
 	std::vector<sf::Text> blocks_descriptions;
 
-	static inline const std::vector<std::string> bd_names
-	{
-		"+1 points",
-		"+2 points",
-		"+5 points",
-		"+10 points",
-		"+15 points",
-		"+20 points",
-		"+25 points",
-		"+30 points",
-		"+35 points",
-		"+40 points"
-	};
+	//static inline const std::vector<std::string> bd_names
+	//{
+	//	"+1 points",
+	//	"+2 points",
+	//	"+5 points",
+	//	"+10 points",
+	//	"+15 points",
+	//	"+20 points",
+	//	"+25 points",
+	//	"+30 points",
+	//	"+35 points",
+	//	"+40 points"
+	//};
 
 	//ABILITIES DESCRIPTIONS
 
@@ -117,8 +123,8 @@ class Game::staticUnits
 	std::vector<sf::Text> ball_parameters;
 	std::vector<sf::Text> paddle_parameters;
 
-	sf::Text timer_adder;
-	sf::Text countdown_adder;
+	//sf::Text timer_adder;
+	//sf::Text countdown_adder;
 
 	static inline const std::vector<std::string> st_names
 	{
@@ -130,7 +136,7 @@ class Game::staticUnits
 		"Paddle parameters:"
 	};
 
-	static inline const std::string sec{ "sec" };
+	//static inline const std::string sec{ "sec" };
 
 	static inline const std::vector<float> pos_y_st_labels
 	{

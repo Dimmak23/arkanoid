@@ -32,6 +32,14 @@
 #include "game_page_statics.hpp"
 #include "game_page_dynamics.hpp"
 
+
+//DEFINES
+//It seems that here construction paddle_kinematics.at(L_VALUE) and ball_kinematics.at(L_VALUE) are spreading a lot,
+//so why not simpliy this moment
+#define pdl(lvalue) Game::dynamicUnits::paddle_kinematics.at(lvalue)
+#define bll(lvalue) Game::dynamicUnits::ball_kinematics.at(lvalue)
+
+
 //First Game namespace declaration
 namespace Game
 {

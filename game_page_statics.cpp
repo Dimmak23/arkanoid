@@ -47,6 +47,23 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 		to_f(status_field.origin_y)
 	);
 
+	//==CONVEYOR_EXTENSIONS==
+
+	extension_lines.resize(Default::conveyor_mapping.size());
+
+	int index{};
+	for (auto& line : extension_lines)
+	{
+		line.setSize(sf::Vector2f(to_f(game_field.overall_width), to_f(outline.outside_thk)));
+		line.setFillColor(sf::Color::Red);
+		line.setPosition(
+			sf::Vector2f(
+									to_f(game_field.origin_x), 
+									to_f(game_field.origin_y + Default::conveyor_mapping.at(index++))
+								)
+		);
+	}
+
 //=============================LEGEND FRAME============================	
 
 	//=====BLOCKS LABEL SETTINGS=====
@@ -67,12 +84,17 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 
 	blocks_descriptions.resize(BLK_T_COUNT / 2);		//20: different blocks, but only 10 unique color
 
-	int index{};
+	index = 0;
+	std::string block_value_label;
 	for (auto& description : blocks_descriptions)
 	{
+		block_value_label = "+";
+		block_value_label += std::to_string(Util::block_values.at(index));
+		block_value_label += " points";
+
 		Util::initialize_text(
 			description,
-			bd_names.at(index),
+			block_value_label,
 			utils.main_font,
 			9,
 			false,
@@ -162,35 +184,35 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 
 	//Game time:
 	
-	Util::initialize_text(
-		timer_adder,
-		sec,
-		utils.main_font,
-		10,
-		false,
-		status_labels.at(TIMER_LABEL).getGlobalBounds().left + 60.f,
-		status_labels.at(TIMER_LABEL).getGlobalBounds().top
-				+ status_labels.at(TIMER_LABEL).getGlobalBounds().height
-				+ 20.f,
-		sf::Text::Regular,
-		sf::Color::Red
-	);
+	//Util::initialize_text(
+	//	timer_adder,
+	//	sec,
+	//	utils.main_font,
+	//	10,
+	//	false,
+	//	status_labels.at(TIMER_LABEL).getGlobalBounds().left + 60.f,
+	//	status_labels.at(TIMER_LABEL).getGlobalBounds().top
+	//			+ status_labels.at(TIMER_LABEL).getGlobalBounds().height
+	//			+ 20.f,
+	//	sf::Text::Regular,
+	//	sf::Color::Red
+	//);
 
 	//Countdown timer:
 
-	Util::initialize_text(
-		countdown_adder,
-		sec,
-		utils.main_font,
-		10,
-		false,
-		status_labels.at(REV_COUNT_LABEL).getGlobalBounds().left + 50.f,
-		status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top
-				+ status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height
-				+ 20.f,
-		sf::Text::Regular,
-		sf::Color::Red
-	);
+	//Util::initialize_text(
+	//	countdown_adder,
+	//	sec,
+	//	utils.main_font,
+	//	10,
+	//	false,
+	//	status_labels.at(REV_COUNT_LABEL).getGlobalBounds().left + 50.f,
+	//	status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top
+	//			+ status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height
+	//			+ 20.f,
+	//	sf::Text::Regular,
+	//	sf::Color::Red
+	//);
 
 	//=====LIFES CIRCLES OUTLINE SETTINGS=====
 

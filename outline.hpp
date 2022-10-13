@@ -8,6 +8,10 @@
 //										    												//
 //////////////////////////////////////////////////////////////////////////////////////////////
 
+//DEFINES
+#define to_i(lvalue) static_cast<int>(lvalue)
+
+
 namespace Default
 {
 	//Outline have been built on the block width
@@ -17,11 +21,31 @@ namespace Default
 	//and they quantity in the line
 	constexpr int maxInLine{ 12 };
 	//and they quantity in the column
-	constexpr int maxRows{ 20 };
+	constexpr int maxRows{ 1 };
 	//maximum empty spaces in the line
 	constexpr int maxEmpties{ 4 };
 	//maximum empty spaces in the line
 	constexpr int maxAbilities{ 3 };
+
+	//mapping for the line extensions
+	static inline const std::vector<int> conveyor_mapping
+	{
+		22 * block_height,
+		to_i(0.6f  * 22) * block_height,
+		to_i(0.3f * 22) * block_height,
+		to_i(0.15f * 22) * block_height,
+		to_i(0.05f * 22) * block_height
+	};
+
+	//mapping for waiting time of conveyor extentsion
+	static inline const std::vector<float> time_belt_ext_mapping
+	{
+		60.f,
+		45.f,
+		15.f,
+		5.f,
+		2.f
+	};
 }
 
 struct sizes

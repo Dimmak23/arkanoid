@@ -5,10 +5,6 @@
 #include "game_page_physics.hpp"
 
 
-//DEFINES
-#define paddle(lvalue) Game::dynamicUnits::paddle_kinematics.at(lvalue)
-#define ball(lvalue) Game::dynamicUnits::ball_kinematics.at(lvalue)
-
 //METHODS
 
 void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& utils, const Game::dynamicUnits& dynamo)
@@ -23,6 +19,11 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 	window.draw(utils.legend_frame);
 	window.draw(utils.game_frame);
 	window.draw(utils.status_frame);
+
+	//===========EXTENSION LINES=============
+
+	for (auto& line : utils.extension_lines)
+		window.draw(line);
 
 	//===========LABELS=============
 
@@ -46,8 +47,8 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 		window.draw(label);
 
 	//STATUS LABELS ADDERS
-	window.draw(utils.timer_adder);
-	window.draw(utils.countdown_adder);
+	//window.draw(utils.timer_adder);
+	//window.draw(utils.countdown_adder);
 
 	//LIFES CIRCLES
 	for (auto& circle : utils.lifes_outline)
@@ -98,6 +99,9 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 	//COUNTDOWN TO THE NEW LINE
 	window.draw(dynamo.extender_countdown);
 
+	//AWAIT FOR THE NEW LINE
+	window.draw(dynamo.extender_await);
+
 	//KINEMATIC PARAMETERS INTERFACE
 
 	for(auto& parameter: dynamo.ball_parameters)
@@ -146,22 +150,22 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 			else if (event.key.code == sf::Keyboard::Left)
 			{
 				//paddle(V_X) = -Game::dynamicUnits::pdl_V_step;
-				paddle(A_X) -= Game::dynamicUnits::pdl_A_step;
+				pdl(A_X) -= Game::dynamicUnits::pdl_A_step;
 			}
 			//RIGHT button we use for increasing speed in the X axis
 			else if (event.key.code == sf::Keyboard::Right)
 			{
 				//paddle(V_X) = Game::dynamicUnits::pdl_V_step;
-				paddle(A_X) += Game::dynamicUnits::pdl_A_step;
+				pdl(A_X) += Game::dynamicUnits::pdl_A_step;
 			}
 
 			//paddle(A_X) -= paddle(V_X) * Game::dynamicUnits::pdl_friction;
 			//paddle(DELTA_X) = paddle(V_X) * d_time + paddle(A_X) * d_time * d_time / 2.f;
 			//paddle(V_X) += paddle(A_X) * d_time;
 			
-			recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, Game::dynamicUnits::pdl_friction, d_time);
+			recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, d_time);
 
-			dynamo.paddle->move(sf::Vector2f(paddle(DELTA_X), 0));
+			dynamo.paddle->move(sf::Vector2f(pdl(DELTA_X), 0));
 
 			////Press enter and winish Intro page
 			//else if (event.key.code == sf::Keyboard::Enter)

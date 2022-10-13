@@ -25,19 +25,16 @@
 
 
 //DEFINES
-//It seems that here construction paddle_kinematics.at(L_VALUE) are spreading a lot,
-//so why not simpliy this moment
 
-#define paddle(lvalue) Game::dynamicUnits::paddle_kinematics.at(lvalue)
-#define ball(lvalue) Game::dynamicUnits::ball_kinematics.at(lvalue)
 
-inline static void recalculate1DKinematics(std::vector<float>& unit, const float& friction, const float& d_t)
+
+inline static void recalculate1DKinematics(std::vector<float>& unit, const float& d_t)
 {
 	//#2____________________________________________________________________________
 	//
 	//Friction between paddle and the surface will cause loss of acceleration
 
-	unit.at(A_X) -= unit.at(V_X) * friction;
+	unit.at(A_X) -= unit.at(V_X) * Game::dynamicUnits::pdl_friction;
 
 	//#3____________________________________________________________________________
 	//
@@ -53,14 +50,14 @@ inline static void recalculate1DKinematics(std::vector<float>& unit, const float
 	unit.at(V_X) += unit.at(A_X) * d_t;
 }
 
-inline static void recalculate2DKinematics(std::vector<float>& unit, const float& friction, const float& d_t, const bool& ball = false)
+inline static void recalculate2DKinematics(std::vector<float>& unit, const float& d_t)
 {
 	//#2____________________________________________________________________________
 	//
 	//Friction between paddle and the surface will cause loss of acceleration
 
-	unit.at(A_X) -= unit.at(V_X) * friction;
-	unit.at(A_Y) -= unit.at(V_Y) * friction;
+	unit.at(A_X) -= unit.at(V_X) * Game::dynamicUnits::bll_friction;
+	unit.at(A_Y) -= unit.at(V_Y) * Game::dynamicUnits::bll_friction;
 
 	//#3____________________________________________________________________________
 	//
@@ -78,8 +75,87 @@ inline static void recalculate2DKinematics(std::vector<float>& unit, const float
 	//NOTE: That only now we can update speed for the next iteration
 	//OTHERWISE algorithm doesn't make any sense
 
-	//unit.at(V_X) += unit.at(A_X) * d_t;
-	//unit.at(V_Y) += unit.at(A_Y) * d_t;
+	unit.at(V_X) += unit.at(A_X) * d_t;
+	unit.at(V_Y) += unit.at(A_Y) * d_t;
+
+	//After this equations - ball will loose speed
+
+	//#5____________________________________________________________________________
+	//
+	//So we have to speed up it
+
+	//Thru X axis
+	if ((unit.at(V_X) < Game::dynamicUnits::bll_V_step) && (unit.at(V_X) > 0))
+	{
+		unit.at(V_X) = Game::dynamicUnits::bll_V_step;
+	}
+	else if ((std::abs(unit.at(V_X)) < Game::dynamicUnits::bll_V_step) && (unit.at(V_X) < 0))
+	{
+		unit.at(V_X) = -Game::dynamicUnits::bll_V_step;
+	}
+
+	//Thru Y axis
+	if ((unit.at(V_Y) < Game::dynamicUnits::bll_V_step) && (unit.at(V_Y) > 0))
+	{
+		unit.at(V_Y) = Game::dynamicUnits::bll_V_step;
+	}
+	else if ((std::abs(unit.at(V_Y)) < Game::dynamicUnits::bll_V_step) && (unit.at(V_Y) < 0))
+	{
+		unit.at(V_Y) = -Game::dynamicUnits::bll_V_step;
+	}
+
+
+}
+
+inline static void recalculateAblKinematics(std::vector<float>& unit, const float& d_t)
+{
+	//#2____________________________________________________________________________
+	//
+	//Friction between paddle and the surface will cause loss of acceleration
+
+	unit.at(A_X) -= unit.at(V_X) * Game::dynamicUnits::abl_friction;
+	unit.at(A_Y) -= unit.at(V_Y) * Game::dynamicUnits::abl_friction;
+
+	//#3____________________________________________________________________________
+	//
+	//Increment/Decriment in the X axis calculated in the classical way
+
+	unit.at(DELTA_X) = unit.at(V_X) * d_t + unit.at(A_X) * d_t * d_t / 2.f;
+	unit.at(DELTA_Y) = unit.at(V_Y) * d_t + unit.at(A_Y) * d_t * d_t / 2.f;
+
+	//#4____________________________________________________________________________
+	//
+	//NOTE: That only now we can update speed for the next iteration
+	//OTHERWISE algorithm doesn't make any sense
+
+	unit.at(V_X) += unit.at(A_X) * d_t;
+	unit.at(V_Y) += unit.at(A_Y) * d_t;
+
+	//After this equations - ball will loose speed
+
+	//#5____________________________________________________________________________
+	//
+	//So we have to speed up it
+
+	//Thru X axis
+	if ((unit.at(V_X) < Game::dynamicUnits::abl_V_step) && (unit.at(V_X) > 0))
+	{
+		unit.at(V_X) = Game::dynamicUnits::abl_V_step;
+	}
+	else if ((std::abs(unit.at(V_X)) < Game::dynamicUnits::abl_V_step) && (unit.at(V_X) < 0))
+	{
+		unit.at(V_X) = -Game::dynamicUnits::abl_V_step;
+	}
+
+	//Thru Y axis
+	if ((unit.at(V_Y) < Game::dynamicUnits::abl_V_step) && (unit.at(V_Y) > 0))
+	{
+		unit.at(V_Y) = Game::dynamicUnits::abl_V_step;
+	}
+	else if ((std::abs(unit.at(V_Y)) < Game::dynamicUnits::abl_V_step) && (unit.at(V_Y) < 0))
+	{
+		unit.at(V_Y) = -Game::dynamicUnits::abl_V_step;
+	}
 }
 
 inline static void simulatePhysics(const float& d_time)
@@ -90,11 +166,11 @@ inline static void simulatePhysics(const float& d_time)
 	//according to the last frame data
 
 	//PADDLE
-	paddle(A_X) = 0;
+	pdl(A_X) = 0;
 
 	//BALL
-	ball(A_X) = 0;
-	ball(A_Y) = 0;
+	bll(A_X) = 0;
+	bll(A_Y) = 0;
 
 	//#?____________________________________________________________________________
 
@@ -172,14 +248,21 @@ inline static void simulatePhysics(const float& d_time)
 	////ball(V_Y) += ball(A_Y) * d_time;
 	/////<<<---It can be improoved
 
-	recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, Game::dynamicUnits::pdl_friction, d_time);
+	recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, d_time);
 
-	recalculate2DKinematics(Game::dynamicUnits::ball_kinematics, Game::dynamicUnits::bll_friction, d_time, true);
+	recalculate2DKinematics(Game::dynamicUnits::ball_kinematics,  d_time);
 
+	for (auto& ability : Game::dynamicUnits::conveyor_map)
+	{
+		if (ability.block) continue;
+		
+		ability.kinematics.at(A_X) = 0;
+		ability.kinematics.at(A_Y) = 0;
+
+		recalculateAblKinematics(ability.kinematics, d_time);
+	}
 
 	//That is pretty much all physics that we have
 
-	for (auto& kinematic : Game::dynamicUnits::ball_kinematics)
-		std::cout << "Parameter: " << kinematic << '\n';
 
 }
