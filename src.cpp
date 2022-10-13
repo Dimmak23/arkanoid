@@ -147,6 +147,8 @@ int main()
 
 				collideUnits(*fork_Game_DUnits, Util::Process::delta_time);
 
+				hitUnits(*fork_Game_DUnits, Util::Process::delta_time);
+
 				//<-----fork_Game_DUnits->collisions();
 
 
@@ -165,6 +167,9 @@ int main()
 
 				//Update paddle width because of the such ability
 				fork_Game_DUnits->adjustPaddle();
+
+				//Check do we need to change waiting time
+				fork_Game_DUnits->updateExtAwaitTimer();
 
 				//Check and extend conveyor belt, if time is come
 				fork_Game_DUnits->extendConveyor(*fork_Game_SUnits);
@@ -214,6 +219,8 @@ int main()
 				//We need to get new delta time
 				Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
 
+				///<-----TIMERS
+
 				//Update game time
 				Game::dynamicUnits::game_time += Util::Process::delta_time;
 
@@ -229,6 +236,8 @@ int main()
 
 				//if ball was lost, then wait for the new one
 				if(Game::dynamicUnits::lost_ball) Game::dynamicUnits::ball_timer += Util::Process::delta_time;
+
+				///<-----TIMERS
 
 			}
 

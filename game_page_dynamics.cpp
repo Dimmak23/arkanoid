@@ -10,11 +10,7 @@
 #include "game_page_process.hpp"
 
 //DEFINES
-//It seems that here construction paddle_kinematics.at(L_VALUE) are spreading a lot,
-//so why not simpliy this moment
 
-#define paddle(lvalue) paddle_kinematics.at(lvalue)
-#define ball(lvalue) ball_kinematics.at(lvalue)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +149,9 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 			//construct at the back ABILITY
 			conveyor.emplace_back(std::make_unique<sf::Sprite>());
 
+			//construct a map unit at he back
+			conveyor_map.emplace_back();
+
 			//#1. Sprite need texture
 
 			//Here we paste randomized texture from all avalable abilities
@@ -167,6 +166,26 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 			//Here we generate random index from the ability_probability container
 			int random_ability{getRandomNumber(to_i(ability_probability.size()-1))};
 			//int random_ability{getRandomNumber(ABILITY_COUNT -1)};
+
+			///<-
+			//Connect needed function from executor by ABILITY_TYPE
+			//ABILITY_TYPE from enum is the same number as ability_textures
+			int ABILITY_TYPE = ability_probability.at(random_ability);
+
+			//NOPE, it is not a block, it's an ability
+			conveyor_map.back().block = false;
+			//How many points to add?
+			conveyor_map.back().operand = Util::ability_values.at(ABILITY_TYPE);
+			//What we will do with the operand?
+			conveyor_map.back().function = abl_function_map.at(ABILITY_TYPE);
+
+			//Now set up initial kinematic parameters
+			//conveyor_map.back().kinematics.at(V_X) = 0;
+			conveyor_map.back().kinematics.at(V_Y) = abl_V_step;
+			//conveyor_map.back().kinematics.at(A_X) = 0;
+			//conveyor_map.back().kinematics.at(A_Y) = 0;
+
+			///<-
 
 			//Here we are passing NUMBER OF TEXTURE that correspond the number by the ability_probability at random index
 			(*conveyor.back()).setTexture(statics.abl_textures.at(ability_probability.at(random_ability)), true);
@@ -188,6 +207,9 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 			//construct at the back BLOCK
 			conveyor.emplace_back(std::make_unique<sf::Sprite>());
 
+			//construct a map unit at he back
+			conveyor_map.emplace_back();
+
 			//#1. Sprite need texture
 
 			//Here we paste randomized texture from all avalable abilities
@@ -202,6 +224,20 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 
 			int random_block{ getRandomNumber(to_i(block_probability.size() - 1)) };
 			//int random_block{ getRandomNumber(BLK_T_COUNT/2 - 1) };
+
+			///<-
+			//Connect needed function from executor by BLOCK_TYPE
+			//BLOCK_TYPE from enum is a twice smaller then enum for Game::staticUnits::blk_textures
+			int BLOCK_TYPE = block_probability.at(random_block) / 2; //NOTE: There is 20 textures loaded, we are using only every second from them
+
+			//YEP, it is a block
+			conveyor_map.back().block = true;
+			//How many points to add?
+			conveyor_map.back().operand = Util::block_values.at(BLOCK_TYPE);
+			//What we will do with the operand?
+			conveyor_map.back().function = blk_function_map.at(BLOCK_TYPE);
+
+			///<-
 
 			//Here we are passing NUMBER OF TEXTURE that correspond the number by the block_probability at random index
 			(*conveyor.back()).setTexture(statics.blk_textures.at(block_probability.at(random_block)), true);
@@ -372,7 +408,7 @@ void Game::dynamicUnits::updateElectricPaddle(const Game::staticUnits& utils)
 }
 
 //Move down conveyor array
-
+//Also update await extender label
 void Game::dynamicUnits::extendConveyor(const Game::staticUnits& statics)
 {
 	std::cout << "Calling Game::dynamicUnits::extendConveyor() method\n";
@@ -390,6 +426,8 @@ void Game::dynamicUnits::extendConveyor(const Game::staticUnits& statics)
 		streamer << "0" << std::fixed << std::setprecision(1) << extender_timer;
 	else 
 		streamer << std::fixed << std::setprecision(1) << extender_timer;
+
+	streamer << " sec";
 
 	//Update status_field timer for the countdown
 	extender_countdown.setString(streamer.str());
@@ -410,6 +448,38 @@ void Game::dynamicUnits::extendConveyor(const Game::staticUnits& statics)
 	}
 }
 
+//when blocks at the bottom go to the specific line we will change extender waiting timer
+//Wait for the new line:
+//	- Longer, if there a lot of blocks;
+//	- less, if there is a few blocks.
+void Game::dynamicUnits::updateExtAwaitTimer()
+{
+	std::stringstream streamer;
+	
+	for (int indexer{}; indexer < Default::time_belt_ext_mapping.size(); indexer++)
+	{
+		if ((conveyor.at(0)->getGlobalBounds().top + Default::block_height) >= to_f(Default::conveyor_mapping.at(indexer)))
+		{
+			to_extend_await = Default::time_belt_ext_mapping.at(indexer);
+			
+			//streamer.str("(");
+			streamer.str("");
+			streamer << "(";
+
+			if (to_extend_await < 10)
+				streamer << "0" << std::fixed << std::setprecision(1) << to_extend_await;
+			else
+				streamer << std::fixed << std::setprecision(1) << to_extend_await;
+
+			streamer << ")";
+
+			extender_await.setString(streamer.str());
+
+			return;
+		}
+	}
+}
+
 //Time
 
 void Game::dynamicUnits::updateGTime() noexcept
@@ -424,6 +494,8 @@ void Game::dynamicUnits::updateGTime() noexcept
 		streamer << "00" << std::fixed << std::setprecision(1) << game_time;
 	else
 		streamer << std::fixed << std::setprecision(1) << game_time;
+
+	streamer << " sec";
 
 	//Update status_field timer for the countdown
 	game_timer.setString(streamer.str());
@@ -476,6 +548,7 @@ void Game::dynamicUnits::updateParInterface(const std::vector<float>& kinematics
 
 //<<<----SIMULATE
 
+//Wait some time before reset game tools: BALL and PADDLE. Although paddle can be skipped
 void Game::dynamicUnits::waitForBall()
 {
 
@@ -490,12 +563,12 @@ void Game::dynamicUnits::waitForBall()
 		);
 
 		//reset ball kinematics
-		ball(DELTA_X) = 0;
-		ball(DELTA_Y) = 0;
-		ball(V_X) = -bll_V_step;
-		ball(V_Y) = -bll_V_step;
-		ball(A_X) = bll_A_step;
-		ball(A_Y) = bll_A_step;
+		bll(DELTA_X) = 0;
+		bll(DELTA_Y) = 0;
+		bll(V_X) = -bll_V_step;
+		bll(V_Y) = -bll_V_step;
+		//bll(A_X) = bll_A_step;
+		//bll(A_Y) = bll_A_step;
 
 		//reset paddle position
 		//(*paddle).setPosition(
@@ -506,9 +579,9 @@ void Game::dynamicUnits::waitForBall()
 		//);
 
 		//reset paddle kinematics
-		paddle(DELTA_X) = 0;
-		paddle(V_X) = 0;
-		paddle(A_X) = 0;
+		pdl(DELTA_X) = 0;
+		pdl(V_X) = 0;
+		pdl(A_X) = 0;
 
 		//reset timer
 		ball_timer = 0;
@@ -627,20 +700,12 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 
 	std::stringstream streamer;
 
-	//if ((to_extend_await > 10) && (to_extend_await < 100) )
-	//	streamer << "0" << std::fixed << std::setprecision(1) << to_extend_await;
-	//else if (to_extend_await < 10)
-	//	streamer << "00" << std::fixed << std::setprecision(1) << to_extend_await;
-	//else
-	//	streamer << std::fixed << std::setprecision(1) << to_extend_await;
-
 	if (to_extend_await < 10)
 		streamer << "0" << std::fixed << std::setprecision(1) << to_extend_await;
 	else
 		streamer << std::fixed << std::setprecision(1) << to_extend_await;
 
-	//Update status_field timer for the countdown
-	extender_countdown.setString(streamer.str());
+	streamer << " sec";
 
 	Util::initialize_text(
 		extender_countdown,
@@ -649,6 +714,31 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		10,
 		false,
 		statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().left,
+		statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top
+			+ statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height
+			+ 20.f,
+		sf::Text::Regular,
+		sf::Color::Red
+	);
+
+	//==INITIALIZE EXTENDER AWAITER TEXT==
+
+	streamer.str("(");
+
+	if (to_extend_await < 10)
+		streamer << "0" << std::fixed << std::setprecision(1) << to_extend_await;
+	else
+		streamer << std::fixed << std::setprecision(1) << to_extend_await;
+
+	streamer << ")";
+
+	Util::initialize_text(
+		extender_await,
+		streamer.str(),
+		utils.main_font,
+		10,
+		false,
+		extender_countdown.getGlobalBounds().left + extender_countdown.getGlobalBounds().width + 10.f,
 		statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top
 			+ statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height
 			+ 20.f,
@@ -687,8 +777,8 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	ball_kinematics.at(V_Y) = -bll_V_step;
 
 	//Initial acceleration for the ball
-	ball_kinematics.at(A_X) = bll_A_step;
-	ball_kinematics.at(A_Y) = bll_A_step;
+	//ball_kinematics.at(A_X) = bll_A_step;
+	//ball_kinematics.at(A_Y) = bll_A_step;
 
 	//==INITALIZE BALL PARAMETERS STATUS TEXTS==
 
