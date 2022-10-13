@@ -18,9 +18,6 @@
     <ClCompile Include="src.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="intro_window.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="game_page_statics.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -32,16 +29,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game_objects.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="util.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="outline.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="intro_window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="intro_page.hpp">
@@ -68,13 +59,5 @@
     <ClInclude Include="game_page_collisions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game_page_executor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="temp.md">
-      <Filter>Header Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

@@ -166,26 +166,19 @@
     <ClCompile Include="game_page_dynamics.cpp" />
     <ClCompile Include="game_page_process.cpp" />
     <ClCompile Include="game_page_statics.cpp" />
-    <ClCompile Include="intro_window.cpp" />
     <ClCompile Include="src.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="game_objects.hpp" />
     <ClInclude Include="game_page.hpp" />
     <ClInclude Include="game_page_collisions.hpp" />
     <ClInclude Include="game_page_dynamics.hpp" />
-    <ClInclude Include="game_page_executor.hpp" />
     <ClInclude Include="game_page_movements.hpp" />
     <ClInclude Include="game_page_physics.hpp" />
     <ClInclude Include="game_page_process.hpp" />
     <ClInclude Include="game_page_statics.hpp" />
     <ClInclude Include="intro_page.hpp" />
-    <ClInclude Include="intro_window.hpp" />
     <ClInclude Include="outline.hpp" />
     <ClInclude Include="util.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="temp.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
