@@ -4,7 +4,7 @@
 
 Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 {
-	std::cout << "Games::staticUnits construction\n";
+	//std::cout << "Games::staticUnits construction\n";
 
 //==================================GRID===============================
 

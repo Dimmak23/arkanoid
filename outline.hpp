@@ -40,7 +40,7 @@ namespace Default
 	//mapping for waiting time of conveyor extentsion
 	static inline const std::vector<float> time_belt_ext_mapping
 	{
-		60.f,
+		60.f,		//seconds
 		45.f,
 		15.f,
 		5.f,

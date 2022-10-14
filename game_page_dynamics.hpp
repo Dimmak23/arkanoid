@@ -157,7 +157,7 @@ class Game::dynamicUnits
 	//SPRITES
 
 	//Conveyor
-	std::vector<std::unique_ptr<sf::Sprite>> conveyor;
+	std::vector<sf::Sprite> conveyor;
 
 	//To each conveyor unit we will link a map: what to do with it when we destroy
 	static inline std::vector<block_map_variables> conveyor_map;
@@ -197,7 +197,7 @@ class Game::dynamicUnits
 	static inline const float bll_V_step{ 400.0f };		
 	//static inline const float bll_A_step{ 1800.0f };  //NOT so necessary	
 	static inline const float bll_bounce{ 1.f };
-	static inline const float bll_mult{ 8.0f };
+	static inline const float bll_mult{ 2.0f };
 
 	//PADDLE
 	static inline std::vector<float> paddle_kinematics;
@@ -232,6 +232,7 @@ class Game::dynamicUnits
 	static inline float pdl_upd_timer{};
 
 	static inline float paddle_scale_x{0.25f};
+	static inline float paddle_scale_y{0.25f};
 	static inline const float paddle_scale_x_max{0.9f};
 	static inline const float paddle_scale_x_min{0.1f};
 	static inline const float paddle_scale_step{0.05f};

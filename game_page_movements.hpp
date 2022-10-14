@@ -43,7 +43,7 @@ static void moveUnits(Game::dynamicUnits& dynamics)
 			continue;
 		}
 
-		dynamics.conveyor.at(index)->move(sf::Vector2f(ability.kinematics.at(DELTA_X), ability.kinematics.at(DELTA_Y)));
+		dynamics.conveyor.at(index).move(sf::Vector2f(ability.kinematics.at(DELTA_X), ability.kinematics.at(DELTA_Y)));
 		index++;
 	}
 

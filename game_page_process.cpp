@@ -73,7 +73,7 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 	//===========CONVEYOR BELT=============
 
 	for (auto& unit : dynamo.conveyor)
-		window.draw((*unit));
+		window.draw(unit);
 
 	//===========PADDLE=============
 

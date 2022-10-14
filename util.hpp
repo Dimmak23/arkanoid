@@ -144,7 +144,7 @@ inline void Util::safe_parse(Parsable& destination, const std::string& path, con
 	try
 	{
 		if (!(parsing_result)) throw std::exception(message);
-		else std::cout << "Parsed: " << path << "\n";
+		//else std::cout << "Parsed: " << path << "\n";
 
 	}
 	catch (const std::exception& logo_font_error)
@@ -224,12 +224,11 @@ class Util::staticUnits
 //Constructor definition
 inline Util::staticUnits::staticUnits()
 {
-	std::cout << "Util::staticUnits construction\n";
+	//std::cout << "Util::staticUnits construction\n";
 	
 	safe_parse(logo_font, logoFontPath, logoFontParseError);
 	safe_parse(main_font, mainFontPath, mainFontParseError);
 	safe_parse(score_font, scoreFontPath, scoreFontParseError);
-
 }
 
 class Util::Process

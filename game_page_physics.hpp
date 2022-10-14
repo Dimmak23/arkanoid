@@ -109,6 +109,8 @@ inline static void recalculate2DKinematics(std::vector<float>& unit, const float
 
 inline static void recalculateAblKinematics(std::vector<float>& unit, const float& d_t)
 {
+	unit.at(V_Y) = Game::dynamicUnits::abl_V_step;
+	
 	//#2____________________________________________________________________________
 	//
 	//Friction between paddle and the surface will cause loss of acceleration
