@@ -132,7 +132,7 @@ class Game::dynamicUnits
 
 	//PROBABILITIES PATTERNS
 
-	std::vector<int> ability_probability
+	static inline const std::vector<int> ability_probability
 	{
 		PLUS_50,PLUS_50,PLUS_50,PLUS_50,PLUS_50,PLUS_50,PLUS_50,PLUS_50,				//8 to 50  16%
 		PLUS_100,PLUS_100,PLUS_100,PLUS_100,PLUS_100,PLUS_100,							//6 to 50  12%
@@ -146,7 +146,7 @@ class Game::dynamicUnits
 		EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY							//9 to 50  18%
 	};
 
-	std::vector<int> block_probability
+	static inline const std::vector<int> block_probability
 	{
 		BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,BLUE,			//8 to 50
 		SALAD,SALAD,SALAD,SALAD,SALAD,SALAD,SALAD,			//7 to 50
@@ -219,8 +219,8 @@ class Game::dynamicUnits
 	static inline std::vector<float> ball_kinematics;
 	static inline const float bll_friction{ 6.0f };		
 	static inline float bll_V_step{ 400.0f };		
-	static inline float bll_max{ 1200.0f };		
-	static inline float bll_min{ 100.0f };		
+	static inline const float bll_max{ 1200.0f };		
+	static inline const float bll_min{ 100.0f };		
 	//static inline const float bll_A_step{ 1800.0f };  //NOT so necessary	
 	static inline const float bll_bounce{ 1.f };
 	static inline const float bll_mult{ 2.0f };
@@ -273,7 +273,7 @@ class Game::dynamicUnits
 	static inline int score_adder{};   
 	static inline const int score_max{ 999999 };
 
-	static inline int lifes{9};
+	static inline int lifes{1};
 	static inline const int lifes_max{27};
 
 	static inline const std::vector<int> lifes_indexer

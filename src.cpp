@@ -1,4 +1,5 @@
 //C++ headers
+#include <memory>
 
 //API
 
@@ -10,8 +11,11 @@
 
 //Custom headers
 #include "outline.hpp"
+
 #include "util.hpp"
+
 #include "intro_page.hpp"
+
 #include "game_page.hpp"
 #include "game_page_statics.hpp"
 #include "game_page_process.hpp"
@@ -19,6 +23,9 @@
 #include "game_page_physics.hpp"
 #include "game_page_movements.hpp"
 #include "game_page_collisions.hpp"
+
+#include "outro_page.hpp"
+
 //#include "physics.hpp"
 //#include "game_objects.hpp"
 //#include "intro_window.hpp"
@@ -27,7 +34,7 @@
 //int WinMain()
 int main()
 {
-	//==================PREPARE UTILITIES___PART ?___===================
+	//=========================PREPARE UTILITIES========================
 
 	//Because we have included "util.hpp"
 	//pointer 'fork_SUnits' to 'Util::staticUnits' class object will initialize
@@ -39,8 +46,6 @@ int main()
 	//Properties frame_begin_time, perfomance_frequancy, frame_end_time, delta_time
 	//are visible as well
 	//<--- we can calculate time now!
-
-
 	
 	//=========================APPLICATION WINDOW========================
 
@@ -61,10 +66,10 @@ int main()
 	//First start timer update
 	Util::Process::resetStartPoint();
 	
-	//Initialize pointer to object with texts property
+	//Initialize pointer to Intro object with texts property
 	std::unique_ptr<Intro::staticUnits> fork_Intro_SUnits = std::make_unique<Intro::staticUnits>(*fork_Util_SUnits);
 	
-	//Initialize pointer to object with event property
+	//Initialize pointer to Intro object with event property
 	std::unique_ptr<Intro::Process> fork_Intro_Process = std::make_unique<Intro::Process>();
 
 	while (application_window.isOpen())
@@ -72,6 +77,7 @@ int main()
 
 	//=============================INTRO PAGE============================
 
+		//Hold Intro page until user will respond
 		while (Intro::Process::running)
 		{
 			//Check timer and blink instruction
@@ -100,29 +106,25 @@ int main()
 		}
 
 		//Initialize pointer to object with static units properties
-		//std::cout << "Game::staticUnits defined\n";
 		std::unique_ptr<Game::staticUnits> fork_Game_SUnits = std::make_unique<Game::staticUnits>(*fork_Util_SUnits);
-		//Game::staticUnits fork_Game_SUnits(*fork_Util_SUnits);
 
 		//Declare pointer to object with event property
-		//std::cout << "Game::Process declared\n";
 		std::unique_ptr<Game::Process> fork_Game_Process{ nullptr };
 
 		//Declare pointer to object with dynamic units properties
-		//std::cout << "Game::dynamicUnits declared\n";
 		std::unique_ptr<Game::dynamicUnits> fork_Game_DUnits{ nullptr };
 
 		//Reset start point before the first Game session
 		Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
 
-		while (Game::Process::running)
+		while (Util::Process::running)
 		{
-			//Declare pointer to object with event property
-			//std::cout << "Game::Process defined\n";
+		
 			fork_Game_Process.reset(new Game::Process());
 
-			//Declare pointer to object with dynamics properties
-			//std::cout << "Game::dynamicUnits defined\n";
+			//std::cout << "&fork_Game_Process = " << fork_Game_Process.get() << '\n';
+			//std::cout << "Game::Process::running: " << std::boolalpha << Game::Process::running << '\n';
+
 			fork_Game_DUnits.reset(new Game::dynamicUnits(*fork_Game_SUnits, *fork_Util_SUnits));
 
 			//Reset start point before new Game session
@@ -180,7 +182,7 @@ int main()
 
 
 				//<-----fork_Game_DUnits->interfaces();
-				
+
 				//update score
 				fork_Game_DUnits->updateScore();
 
@@ -195,7 +197,7 @@ int main()
 
 				//Update cool electric paddle
 				fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
-				
+
 				//Update game time interface
 				fork_Game_DUnits->updateGTime();
 
@@ -226,39 +228,102 @@ int main()
 
 				//Update conveyor belt extender timer
 				//NOTE: If we have lost ball, we don't wait to extend conveyor belt
-				if( !Game::dynamicUnits::lost_ball ) Game::dynamicUnits::extender_timer -= Util::Process::delta_time;
+				if (!Game::dynamicUnits::lost_ball) Game::dynamicUnits::extender_timer -= Util::Process::delta_time;
 
 				//Update paddle changer timer
 				Game::dynamicUnits::pdl_upd_timer += Util::Process::delta_time;
 
 				//Update score adder blink timer
-				if(Game::dynamicUnits::score_adder) Game::dynamicUnits::score_add_timer += Util::Process::delta_time;
+				if (Game::dynamicUnits::score_adder) Game::dynamicUnits::score_add_timer += Util::Process::delta_time;
 
 				//if ball was lost, then wait for the new one
-				if(Game::dynamicUnits::lost_ball) Game::dynamicUnits::ball_timer += Util::Process::delta_time;
+				if (Game::dynamicUnits::lost_ball) Game::dynamicUnits::ball_timer += Util::Process::delta_time;
 
 				///<-----TIMERS
 
 				//Check if there is no lifes
 				if (!(Game::dynamicUnits::lifes))
 				{
-					//Proper reset pointer to object with event property
-					fork_Game_Process.reset();
-
-					//Declare pointer to object with dynamics properties
-					fork_Game_DUnits.reset();
-
 					//Reset bool state of the Game process
 					Game::Process::running = false;
 				}
 
 			}
-		//=============================OUTRO PAGE============================
+		
+			
+			//=============================OUTRO PAGE============================
+			//Proper reset pointer to object with event property
+			//fork_Game_Process.reset(nullptr);
+
+			//Declare pointer to object with dynamics properties
+			//fork_Game_DUnits.reset(nullptr);
+
+			//User could close the window, so we shouldn't waste resources on parsing next Texts, Textures, Frames,...
+			if (!(application_window.isOpen()))
+			{
+				break;
+			}
+
+			
+			//Initialize pointer to Outro object with texts property
+			//fork_Outro_SUnits.reset(new Outro::staticUnits(*fork_Util_SUnits));
+
+			//Initialize pointer to Outro object with event property
+			//fork_Outro_Process.reset(new Outro::Process());
+
+			//Declare pointer to Outro object with texts property
+			//std::unique_ptr<Outro::staticUnits> fork_Outro_SUnits{ nullptr };
+			std::unique_ptr<Outro::staticUnits> fork_Outro_SUnits = std::make_unique<Outro::staticUnits>(*fork_Util_SUnits);
+			//Outro::staticUnits fork_Outro_SUnits(*fork_Util_SUnits);
+
+			//Declare pointer to Outro object with event property
+			//std::unique_ptr<Outro::Process> fork_Outro_Process{ nullptr };
+			std::unique_ptr<Outro::Process> fork_Outro_Process = std::make_unique<Outro::Process>();
+			//Outro::Process fork_Outro_Process;
+
+			//Reset start point before new Game session
+			Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
+
+			//Hold Outro page until user will respond
+			while (Outro::Process::running)
+			{
+				//Check timer and blink instruction
+				Outro::Process::blinkInstruction(*fork_Outro_SUnits);
+
+				//Render screen the Intro objects
+				fork_Outro_Process->render(application_window, *fork_Outro_SUnits);
+
+				//Check user inputs
+				fork_Outro_Process->interact(application_window);
+
+				Util::Process::updateDelta();
+
+				Outro::Process::blink_timer += Util::Process::delta_time;
+			}
+
+			//Set to the application running status result of the user input
+			Util::Process::running = Outro::Process::result;
+			
+
+			//Reset pointer to Outro object with texts property
+			fork_Outro_SUnits.reset( nullptr );
+
+			//Reset pointer to Outro object with event property
+			fork_Outro_Process.reset( nullptr );
 
 		}
-
-
 	}
+
+	//
+	fork_Util_SUnits.reset(nullptr);
+
+	//Reset pointer to Intro object with texts property
+	fork_Intro_SUnits.reset(nullptr);
+
+	//Reset pointer to Intro object with event property
+	fork_Intro_Process.reset(nullptr);
+
+	///PROBABLY IT IS BETTER TO RESET OTHER POINTERS TOO
 	
 	return 0;
 }

@@ -127,10 +127,11 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 	while (window.pollEvent(event))
 	{
 		// application_window closed
-		if (event.type == sf::Event::Closed)
+		if (event.type == sf::Event::Closed)  ///RISK
 		{
 			running = false;  // also should be here
-			window.close();
+			//Game finished, but don't close window
+			//window.close();
 			break;
 		}
 		else if (event.type == sf::Event::KeyPressed)
@@ -142,7 +143,8 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 			if (event.key.code == sf::Keyboard::Escape)
 			{
 				running = false;  // also should be here
-				window.close();
+				//Game finished, but don't close window
+				//window.close();
 				break;
 			}
 
@@ -163,25 +165,7 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 
 			dynamo.paddle->move(sf::Vector2f(pdl(DELTA_X), 0));
 
-
-
-			////Press enter and winish Intro page
-			//else if (event.key.code == sf::Keyboard::Enter)
-			//{
-			//	running = false;
-			//	window.close();
-			//	break;
-			//}
 		}
-
-		////TEST QUICK BLOCK DELETION
-		//else if (event.type == sf::Event::MouseButtonPressed)
-		//{
-		//	if (event.mouseButton.button == sf::Mouse::Left)
-		//	{
-		//		dynamo.ball->setPosition(sf::Vector2f(to_f(event.mouseButton.x), to_f(event.mouseButton.y)));
-		//	}
-		//}
 
 	}
 

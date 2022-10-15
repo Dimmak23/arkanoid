@@ -37,20 +37,27 @@ class Game::Process
 {
 	public:
 
-	Process() = default;										//default-constructor declaration
+		Process();
+		~Process() = default;
 
-	static inline bool running{ true };
+		static inline bool running{ false };
 
-	void render(
-				sf::RenderWindow& window,
-				const Game::staticUnits& utils,
-				const Game::dynamicUnits& dynamo
-	);
+		void render(
+					sf::RenderWindow& window,
+					const Game::staticUnits& utils,
+					const Game::dynamicUnits& dynamo
+		);
 
-	void interact(sf::RenderWindow& window, Game::dynamicUnits& dynamo, const float& d_time);
+		void interact(sf::RenderWindow& window, Game::dynamicUnits& dynamo, const float& d_time);
 
 	public:
 
-	sf::Event event{};  //!NOT SURE IF I NEED ANY NON-STATIC MEMBERS
+		sf::Event event{};  //!NOT SURE IF I NEED ANY NON-STATIC MEMBERS
 
 };
+
+
+inline Game::Process::Process()
+{
+	running = true;
+}

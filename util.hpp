@@ -252,7 +252,7 @@ class Util::Process
 	public:
 	
 		static void resetStartPoint();
-
+		
 		static void updateDelta();
 	
 		static inline LARGE_INTEGER frame_begin_time{};		//main timer clock start point
@@ -263,6 +263,8 @@ class Util::Process
 
 		static inline float delta_time { 0.016666f };
 
+		//Running status of the Game
+		static inline bool running{ true };
 };
 
 inline void Util::Process::resetStartPoint()
