@@ -178,6 +178,7 @@
     <ClInclude Include="game_page_statics.hpp" />
     <ClInclude Include="intro_page.hpp" />
     <ClInclude Include="outline.hpp" />
+    <ClInclude Include="outro_page.hpp" />
     <ClInclude Include="util.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

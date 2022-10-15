@@ -127,62 +127,62 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 	while (window.pollEvent(event))
 	{
 		// application_window closed
-		if (event.type == sf::Event::Closed)
+		if (event.type == sf::Event::Closed)  ///RISK
 		{
 			running = false;  // also should be here
-			window.close();
+			//Game finished, but don't close window
+			//window.close();
 			break;
 		}
 		else if (event.type == sf::Event::KeyPressed)
 		{
 			//paddle(A_X) = 0;
 
-
 			//Also close by 'Esc' keyboard button
 			if (event.key.code == sf::Keyboard::Escape)
 			{
 				running = false;  // also should be here
-				window.close();
+				//Game finished, but don't close window
+				//window.close();
 				break;
 			}
 
 			//LEFT button we use for loosing speed in the X axis
 			else if (event.key.code == sf::Keyboard::Left)
 			{
-				//paddle(V_X) = -Game::dynamicUnits::pdl_V_step;
+				//pdl(V_X) -= Game::dynamicUnits::pdl_V_step;
 				pdl(A_X) -= Game::dynamicUnits::pdl_A_step;
 			}
 			//RIGHT button we use for increasing speed in the X axis
 			else if (event.key.code == sf::Keyboard::Right)
 			{
-				//paddle(V_X) = Game::dynamicUnits::pdl_V_step;
+				//pdl(V_X) += Game::dynamicUnits::pdl_V_step;
 				pdl(A_X) += Game::dynamicUnits::pdl_A_step;
 			}
 
 			recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, d_time);
 
 			dynamo.paddle->move(sf::Vector2f(pdl(DELTA_X), 0));
-
-
-
-			////Press enter and winish Intro page
-			//else if (event.key.code == sf::Keyboard::Enter)
-			//{
-			//	running = false;
-			//	window.close();
-			//	break;
-			//}
 		}
+		else if (event.type == sf::Event::KeyReleased)
+		{
+			//LEFT button we use for loosing speed in the X axis
+			if (event.key.code == sf::Keyboard::Left)
+			{
+				pdl(V_X) -= Game::dynamicUnits::pdl_V_step;
+				//pdl(A_X) -= Game::dynamicUnits::pdl_A_step;
+			}
+			//RIGHT button we use for increasing speed in the X axis
+			else if (event.key.code == sf::Keyboard::Right)
+			{
+				pdl(V_X) += Game::dynamicUnits::pdl_V_step;
+				//pdl(A_X) += Game::dynamicUnits::pdl_A_step;
+			}
 
-		////TEST QUICK BLOCK DELETION
-		//else if (event.type == sf::Event::MouseButtonPressed)
-		//{
-		//	if (event.mouseButton.button == sf::Mouse::Left)
-		//	{
-		//		dynamo.ball->setPosition(sf::Vector2f(to_f(event.mouseButton.x), to_f(event.mouseButton.y)));
-		//	}
-		//}
+			recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, d_time);
 
+			dynamo.paddle->move(sf::Vector2f(pdl(DELTA_X), 0));
+		}
 	}
 
 }

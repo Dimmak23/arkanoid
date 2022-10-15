@@ -651,7 +651,53 @@ void Game::dynamicUnits::waitForBall()
 
 Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::staticUnits& utils)
 {
-	//std::cout << "Games::dynamicUnits construction\n";
+
+//==================================RESET STATIC NON-CONSTS===============================
+
+	conveyor_map.clear();
+	
+	lost_ball = false;
+
+	//PADDLE TEXTURE CHANGE HANDLERS
+	paddle_state = 0;				
+	paddle_ext = 0;
+
+	//VARIABLES PHYSICS
+
+	//BALL
+	ball_kinematics.clear();
+	bll_V_step = 400.0f;
+
+	//PADDLE
+	paddle_kinematics.clear();
+
+	//VARIABLES TIMERS
+
+	//___Belt extender
+	to_extend_await = 0;
+	extender_timer = 0;
+
+	//___Score adder blink
+	score_add_timer = 0;
+
+	//___
+	game_time = 0;
+
+	//___Paddle
+	pdl_upd_timer = 0;
+
+	paddle_scale_x = 0.25f;
+	paddle_scale_y = 0.25f;
+
+	//___Lost ball awaiting
+	ball_timer = 0;
+
+	//VARIABLES STATUSES
+
+	score = 0;
+	score_adder = 0;
+
+	lifes = 9;
 
 //==================================CONVEYOR===============================
 

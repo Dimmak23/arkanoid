@@ -21,11 +21,11 @@ namespace Default
 	//and they quantity in the line
 	constexpr int maxInLine{ 12 };
 	//and they quantity in the column
-	constexpr int maxRows{ 3 };
+	constexpr int maxRows{ 12 };
 	//maximum empty spaces in the line
-	constexpr int maxEmpties{ 1 };
+	constexpr int maxEmpties{ 3 };
 	//maximum empty spaces in the line
-	constexpr int maxAbilities{ 8 };
+	constexpr int maxAbilities{ 4 };
 
 	//mapping for the line extensions
 	static inline const std::vector<int> conveyor_mapping
