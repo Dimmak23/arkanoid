@@ -98,15 +98,7 @@ inline Outro::staticUnits::staticUnits(const Util::staticUnits& utils)
 
 	game_over.setScale(sf::Vector2f(to_f(outline.overall_width) / 1024 / 2, to_f(outline.overall_height) / 651 / 2));
 
-	std::cout << "game_over.getGlobalBounds().width = " << game_over.getGlobalBounds().width << '\n';
-	std::cout << "game_over.getGlobalBounds().height = " << game_over.getGlobalBounds().height << '\n';
-
 	game_over.setOrigin(sf::Vector2f(game_over.getGlobalBounds().width / 2, game_over.getGlobalBounds().height / 2));
-
-	std::cout << "game_over.getOrigin().x = " << game_over.getOrigin().x << '\n';
-	std::cout << "game_over.getOrigin().y = " << game_over.getOrigin().y << '\n';
-	std::cout << "game_over.getGlobalBounds().left = " << game_over.getGlobalBounds().left << '\n';
-	std::cout << "game_over.getGlobalBounds().top = " << game_over.getGlobalBounds().top << '\n';
 
 	game_over.setPosition(
 						sf::Vector2f(
@@ -114,9 +106,6 @@ inline Outro::staticUnits::staticUnits(const Util::staticUnits& utils)
 												(to_f(outline.overall_height / 2) - 23.502f)
 											)
 	);
-
-	std::cout << "game_over.getGlobalBounds().left = " << game_over.getGlobalBounds().left << '\n';
-	std::cout << "game_over.getGlobalBounds().top = " << game_over.getGlobalBounds().top << '\n';
 
 }
 

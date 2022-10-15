@@ -76,7 +76,7 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 		false,
 		to_f(legend_field.origin_x + 20),
 		to_f(legend_field.origin_y + 20),
-		sf::Text::Underlined,
+		sf::Text::Underlined | sf::Text::Bold,
 		sf::Color::Red
 	);
 
@@ -126,7 +126,7 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 		+ blocks_descriptions.at(BLK_T_COUNT / 2 - 1).getGlobalBounds().height
 		+ 30
 	),
-		sf::Text::Underlined,
+		sf::Text::Underlined | sf::Text::Bold,
 		sf::Color::Red
 	);
 
@@ -174,7 +174,7 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 			false,
 			to_f(status_field.origin_x + 20),
 			to_f(status_field.origin_y + pos_y_st_labels.at(index)),
-			sf::Text::Underlined,
+			sf::Text::Underlined | sf::Text::Bold,
 			sf::Color::Red
 		);
 		index++;

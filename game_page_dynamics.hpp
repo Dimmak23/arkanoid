@@ -227,9 +227,9 @@ class Game::dynamicUnits
 
 	//PADDLE
 	static inline std::vector<float> paddle_kinematics;
-	static inline const float pdl_friction{7.0f};	
-	//static inline const float pdl_V_step{1.0f};		
-	static inline const float pdl_A_step{180000.0f};		
+	static inline const float pdl_friction{5.f};	//7.f
+	static inline const float pdl_V_step{1000.0f};		
+	static inline const float pdl_A_step{5000.0f};	//180000.f
 	static inline const float pdl_bounce{-0.2f};
 
 	//ABILITIES
@@ -273,7 +273,7 @@ class Game::dynamicUnits
 	static inline int score_adder{};   
 	static inline const int score_max{ 999999 };
 
-	static inline int lifes{1};
+	static inline int lifes{9};
 	static inline const int lifes_max{27};
 
 	static inline const std::vector<int> lifes_indexer
