@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <ranges>
+#include <algorithm>
 
 //Custom headers
 #include "game_page.hpp"
@@ -41,8 +43,8 @@ void Game::dynamicUnits::getRandomPositions(const int& maxUnits, std::vector<int
 	//How many units will be randomized?
 	int _qty_units{ getRandomNumber(maxUnits) }; //generate TRUE random number from [0, maxUnits]
 
-	std::cout << "Have been chosen: " << _qty_units << " units.\n";
-	std::cout << "Availables qty: " << donor_positions.size() << '\n';
+	//std::cout << "Have been chosen: " << _qty_units << " units.\n";
+	//std::cout << "Availables qty: " << donor_positions.size() << '\n';
 
 	if (_qty_units)
 	{
@@ -65,7 +67,7 @@ void Game::dynamicUnits::getRandomPositions(const int& maxUnits, std::vector<int
 			//Fullfilling emty_positions container with such generated position
 			recipient_positions.at(index) = *it;
 
-			std::cout << "Unit space at position " << *it << ".\n";
+			//std::cout << "Unit space at position " << *it << ".\n";
 
 			//We need to delete such position at the available_positions container
 			//so we don't come along it twice
@@ -73,7 +75,7 @@ void Game::dynamicUnits::getRandomPositions(const int& maxUnits, std::vector<int
 		}
 	}
 
-	std::cout << "Availables qty: " << donor_positions.size() << '\n';
+	//std::cout << "Availables qty: " << donor_positions.size() << '\n';
 }
 
 
@@ -97,7 +99,7 @@ void Game::dynamicUnits::getRandomPositions(const int& maxUnits, std::vector<int
 
 void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& first = false)
 {
-	std::cout << "Calling Game::dynamicUnits::setLine() method\n";
+	//std::cout << "Calling Game::dynamicUnits::setLine() method\n";
 	
 	std::vector<int> available_positions(Default::maxInLine);
 	//available_positions.resize(Default::maxInLine);
@@ -112,13 +114,13 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 	if(!first)
 	{
 		//Generate random positions for empties:
-		std::cout << "\nEmpty spaces:\n";
+		//std::cout << "\nEmpty spaces:\n";
 		//pass available_positions by reference, but it's copy in the setLine() method
 		//pass empty_postions by reference
 		getRandomPositions(Default::maxEmpties, available_positions, empty_positions);
 
 		//Generate random positions for abilities:
-		std::cout << "\nAbilities spaces:\n";
+		//std::cout << "\nAbilities spaces:\n";
 		//pass available_positions by reference, but it's copy in the setLine() method
 		//pass empty_postions by reference
 		getRandomPositions(Default::maxAbilities, available_positions, ability_positions);
@@ -147,7 +149,7 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 		if ( !first && (std::ranges::find(ability_positions, index) != ability_positions.end()) )
 		{
 			//construct at the back ABILITY
-			conveyor.emplace_back(std::make_unique<sf::Sprite>());
+			conveyor.emplace_back(sf::Sprite());
 
 			//construct a map unit at he back
 			conveyor_map.emplace_back();
@@ -174,30 +176,32 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 
 			//NOPE, it is not a block, it's an ability
 			conveyor_map.back().block = false;
-			//How many points to add?
+			//Operand?
 			conveyor_map.back().operand = Util::ability_values.at(ABILITY_TYPE);
 			//What we will do with the operand?
 			conveyor_map.back().function = abl_function_map.at(ABILITY_TYPE);
 
 			//Now set up initial kinematic parameters
 			//conveyor_map.back().kinematics.at(V_X) = 0;
-			conveyor_map.back().kinematics.at(V_Y) = abl_V_step;
+			//conveyor_map.back().kinematics.at(V_Y) = abl_V_step;
 			//conveyor_map.back().kinematics.at(A_X) = 0;
 			//conveyor_map.back().kinematics.at(A_Y) = 0;
 
 			///<-
 
 			//Here we are passing NUMBER OF TEXTURE that correspond the number by the ability_probability at random index
-			(*conveyor.back()).setTexture(statics.abl_textures.at(ability_probability.at(random_ability)), true);
+			conveyor.back().setTexture(statics.abl_textures.at(ability_probability.at(random_ability)), true);
 			//(*conveyor.back()).setTexture(utils.abl_textures.at(random_ability), true);
 
 			//#2. Sprite should be at before organized scale
 
-			(*conveyor.back()).setScale(sf::Vector2f(0.19793f, 0.25f));
+			conveyor.back().setScale(sf::Vector2f(0.19793f, 0.25f));
 
 			//#3. Sprite will be placed at the appropriate location
 
-			(*conveyor.back()).setPosition(sf::Vector2f(pos_x, pos_y));
+			conveyor.back().setPosition(sf::Vector2f(pos_x, pos_y));
+
+			//std::cout << "Ability #" << conveyor.size() << '\n';
 
 		}
 
@@ -205,7 +209,7 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 		else
 		{
 			//construct at the back BLOCK
-			conveyor.emplace_back(std::make_unique<sf::Sprite>());
+			conveyor.emplace_back(sf::Sprite());
 
 			//construct a map unit at he back
 			conveyor_map.emplace_back();
@@ -240,16 +244,18 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 			///<-
 
 			//Here we are passing NUMBER OF TEXTURE that correspond the number by the block_probability at random index
-			(*conveyor.back()).setTexture(statics.blk_textures.at(block_probability.at(random_block)), true);
+			conveyor.back().setTexture(statics.blk_textures.at(block_probability.at(random_block)), true);
 			//(*conveyor.back()).setTexture(utils.blk_textures.at(2*random_block), true);
 
 			//#2. Sprite should be at before organized scale
 
-			(*conveyor.back()).setScale(sf::Vector2f(0.25f, 0.25f));
+			conveyor.back().setScale(sf::Vector2f(0.25f, 0.25f));
 
 			//#3. Sprite will be placed at the appropriate location
 
-			(*conveyor.back()).setPosition(sf::Vector2f(pos_x, pos_y));
+			conveyor.back().setPosition(sf::Vector2f(pos_x, pos_y));
+
+			//std::cout << "Block #" << conveyor.size() << '\n';
 
 		}
 
@@ -290,8 +296,6 @@ void Game::dynamicUnits::blinkScoreAdder()
 //and we also see adder poping up
 void Game::dynamicUnits::updateScore()
 {
-	std::cout << "Current score: " << score << '\n';
-
 	if (score > score_max)
 	{
 		score = score_max;
@@ -320,8 +324,6 @@ void Game::dynamicUnits::updateScore()
 //So when life variable have been changed - update life status
 void Game::dynamicUnits::updateLifeBalls(const Game::staticUnits& statics)
 {
-	std::cout << "Current lifes: " << lifes << '\n';
-	
 	if (lifes > lifes_max)
 	{
 		lifes = lifes_max;
@@ -336,16 +338,23 @@ void Game::dynamicUnits::updateLifeBalls(const Game::staticUnits& statics)
 	{
 		if (lifes > lifes_balls.size())
 		{
-			lifes_balls.emplace_back(std::make_unique<sf::Sprite>());
+			int adder = to_i(lifes - lifes_balls.size());
+			
+			while(adder-- > 0)
+			{
+				int new_index{ to_i(lifes_balls.size()) };
 
-			(*lifes_balls.back()).setTexture(statics.bll_texture, true);
-			(*lifes_balls.back()).setScale(sf::Vector2f(0.5f, 0.5f));
-			(*lifes_balls.back()).setPosition(
-				sf::Vector2f(
-				statics.lifes_outline.at(lifes_indexer.at(lifes - 1)).getGlobalBounds().left + 2.5f,
-				statics.lifes_outline.at(lifes_indexer.at(lifes - 1)).getGlobalBounds().top + 2.6f
-			)
-			);
+				lifes_balls.emplace_back(std::make_unique<sf::Sprite>());
+
+				(*lifes_balls.back()).setTexture(statics.bll_texture, true);
+				(*lifes_balls.back()).setScale(sf::Vector2f(0.5f, 0.5f));
+				(*lifes_balls.back()).setPosition(
+					sf::Vector2f(
+					statics.lifes_outline.at(lifes_indexer.at(new_index)).getGlobalBounds().left + 2.5f,
+					statics.lifes_outline.at(lifes_indexer.at(new_index)).getGlobalBounds().top + 2.6f
+				)
+				);
+			}
 
 		}
 		else if (lifes < lifes_balls.size())
@@ -358,49 +367,90 @@ void Game::dynamicUnits::updateLifeBalls(const Game::staticUnits& statics)
 }
 
 //Adjust paddle if paddle level were changed
-void Game::dynamicUnits::adjustPaddle()
+//void Game::dynamicUnits::adjustPaddle()
+//{
+//	if (paddle_scale_x >= paddle_scale_x_max)
+//	{
+//		paddle_scale_x = paddle_scale_x_max;
+//		return;
+//	}
+//	else if (paddle_scale_x <= paddle_scale_x_min)
+//	{
+//		paddle_scale_x = paddle_scale_x_min;
+//		return;
+//	}
+//	else if ((*paddle).getScale().x == paddle_scale_x)
+//		return;
+//	else
+//	{
+//		(*paddle).setScale(sf::Vector2f(paddle_scale_x, 0.25f));
+//		(*paddle).setOrigin(sf::Vector2f((*paddle).getLocalBounds().width/2, 0.f));
+//	}
+//}
+
+//Get initial texture by current state
+int Game::dynamicUnits::getTextureNumber(const int& p_state)
 {
-	if (paddle_scale_x >= paddle_scale_x_max)
+	//Get true when current paddle state suit mapped paddle state
+	auto first_in_pair = [&](const std::pair<int, int>& unit)
 	{
-		paddle_scale_x = paddle_scale_x_max;
-		return;
-	}
-	else if (paddle_scale_x <= paddle_scale_x_min)
+		return (unit.first == p_state);
+	};
+
+	//Connect to the initial texture number by current paddle state
+	auto new_texture_it = std::ranges::find_if(paddle_map, first_in_pair);
+
+	if (new_texture_it != paddle_map.end()) return ((*new_texture_it).second);
+	else return CAPSULE_1;
+}
+
+//If there was such ability: resize paddle
+void Game::dynamicUnits::resizePaddle(const Game::staticUnits& utils)
+{
+	//Check if paddle have been adjusted
+	if (paddle_state != paddle_ext)
 	{
-		paddle_scale_x = paddle_scale_x_min;
-		return;
-	}
-	else if ((*paddle).getScale().x == paddle_scale_x)
-		return;
-	else
-	{
-		(*paddle).setScale(sf::Vector2f(paddle_scale_x, 0.25f));
-		(*paddle).setOrigin(sf::Vector2f((*paddle).getLocalBounds().width/2, 0.f));
+		//Change texture because of resize
+		paddle_state = paddle_ext;
+
+		(*paddle).setTexture(utils.pdl_textures.at(getTextureNumber(paddle_state)), true);
+			
+		(*paddle).setOrigin(sf::Vector2f((*paddle).getLocalBounds().width / 2, 0.f));
 	}
 }
 
 //Update electric visibility paddle
 void Game::dynamicUnits::updateElectricPaddle(const Game::staticUnits& utils)
 {
+	
 	if (pdl_upd_timer > paddle_upd_await)
 	{
-		if(
-			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_1))
-		)
+		int init_texture{ getTextureNumber(paddle_state) };
+
+		//If it's zero size texture we can reset timer and go back
+		if (init_texture == CAPSULE_0)
 		{
-			(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_2), true);
+			pdl_upd_timer = 0;
+			return;
 		}
-		else if (
-			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_2))
+		//BUT! If it's something else, we have to update paddle
+		else if(
+			(*paddle).getTexture() == &(utils.pdl_textures.at(init_texture))
 			)
 		{
-			(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_3), true);
+			(*paddle).setTexture(utils.pdl_textures.at(init_texture + 1), true);
 		}
 		else if (
-			(*paddle).getTexture() == &(utils.pdl_textures.at(CAPSULE_3))
+			(*paddle).getTexture() == &(utils.pdl_textures.at(init_texture + 1))
 			)
 		{
-			(*paddle).setTexture(utils.pdl_textures.at(CAPSULE_1), true);
+			(*paddle).setTexture(utils.pdl_textures.at(init_texture + 2), true);
+		}
+		else if (
+			(*paddle).getTexture() == &(utils.pdl_textures.at(init_texture + 2))
+			)
+		{
+			(*paddle).setTexture(utils.pdl_textures.at(init_texture), true);
 		}
 
 		pdl_upd_timer = 0;
@@ -411,16 +461,7 @@ void Game::dynamicUnits::updateElectricPaddle(const Game::staticUnits& utils)
 //Also update await extender label
 void Game::dynamicUnits::extendConveyor(const Game::staticUnits& statics)
 {
-	std::cout << "Calling Game::dynamicUnits::extendConveyor() method\n";
-	
 	std::stringstream streamer;
-
-	//if ((extender_timer > 10) && (extender_timer < 100))
-	//	streamer << "0" << std::fixed << std::setprecision(1) << extender_timer;
-	//else if (extender_timer < 10)
-	//	streamer << "00" << std::fixed << std::setprecision(1) << extender_timer;
-	//else
-	//	streamer << std::fixed << std::setprecision(1) << extender_timer;
 
 	if (extender_timer < 10)
 		streamer << "0" << std::fixed << std::setprecision(1) << extender_timer;
@@ -438,7 +479,7 @@ void Game::dynamicUnits::extendConveyor(const Game::staticUnits& statics)
 		//First of all move all the other units
 		for (auto& unit : conveyor)
 		{
-			(*unit).move(sf::Vector2f(0, to_f(Default::block_height)));
+			unit.move(sf::Vector2f(0, to_f(Default::block_height)));
 		}
 
 		//Now we are emplacing at the conveyor back new line
@@ -456,13 +497,20 @@ void Game::dynamicUnits::updateExtAwaitTimer()
 {
 	std::stringstream streamer;
 	
+	int con_index{};
+
 	for (int indexer{}; indexer < Default::time_belt_ext_mapping.size(); indexer++)
 	{
-		if ((conveyor.at(0)->getGlobalBounds().top + Default::block_height) >= to_f(Default::conveyor_mapping.at(indexer)))
+		if (!(conveyor_map.at(con_index).block))
+		{
+			con_index++;
+			continue;
+		}
+		
+		if ((conveyor.at(con_index).getGlobalBounds().top + Default::block_height) >= to_f(Default::conveyor_mapping.at(indexer)))
 		{
 			to_extend_await = Default::time_belt_ext_mapping.at(indexer);
 			
-			//streamer.str("(");
 			streamer.str("");
 			streamer << "(";
 
@@ -484,8 +532,6 @@ void Game::dynamicUnits::updateExtAwaitTimer()
 
 void Game::dynamicUnits::updateGTime() noexcept
 {
-	std::cout << "Calling Game::dynamicUnits::updateGTime() method\n";
-
 	std::stringstream streamer;
 
 	if ((game_time > 10) && (game_time < 100))
@@ -605,7 +651,7 @@ void Game::dynamicUnits::waitForBall()
 
 Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::staticUnits& utils)
 {
-	std::cout << "Games::dynamicUnits construction\n";
+	//std::cout << "Games::dynamicUnits construction\n";
 
 //==================================CONVEYOR===============================
 
@@ -633,7 +679,7 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		//First of all, let's move all the previously existing units
 		for (auto& unit : conveyor)
 		{
-			(*unit).move(sf::Vector2f(0, to_f(Default::block_height)));
+			unit.move(sf::Vector2f(0, to_f(Default::block_height)));
 		}
 
 		//<---
@@ -646,7 +692,7 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		setLine(statics);
 	}
 
-	std::cout << "Conveyor units were created: " << conveyor.size() << '\n';
+	//std::cout << "Conveyor units were created: " << conveyor.size() << '\n';
 
 //==================================DYNAMIC STATUSES===============================
 
@@ -746,7 +792,7 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		sf::Color::Red
 	);
 
-	std::cout << "Timers were instatiated." << '\n';
+	//std::cout << "Timers were instatiated." << '\n';
 
 	//==INITIAL LIFES BALLS==
 
@@ -766,7 +812,7 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 		index++;
 	}
 
-	std::cout << "Lifes balls were drawn." << '\n';
+	//std::cout << "Lifes balls were drawn." << '\n';
 
 	//==INITALIZE BALL KINEMATICS==
 
@@ -840,7 +886,7 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	paddle = std::make_unique<sf::Sprite>();
 
 	(*paddle).setTexture(statics.pdl_textures.at(CAPSULE_1), true);
-	(*paddle).setScale(sf::Vector2f(paddle_scale_x, 0.25f));
+	(*paddle).setScale(sf::Vector2f(paddle_scale_x, paddle_scale_y));
 	(*paddle).setOrigin(sf::Vector2f(((*paddle).getLocalBounds().width / 2), 0.f));
 	(*paddle).setPosition(
 		sf::Vector2f(
@@ -849,7 +895,7 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 							)
 	);
 
-	std::cout << "Paddle drawn." << '\n';
+	//std::cout << "Paddle drawn." << '\n';
 
 	//==INIT BALL==
 
@@ -870,7 +916,7 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 							)
 	);
 
-	std::cout << "Ball drawn." << '\n';
+	//std::cout << "Ball drawn." << '\n';
 
 //==================================BASEMENT===============================
 

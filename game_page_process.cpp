@@ -73,7 +73,7 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 	//===========CONVEYOR BELT=============
 
 	for (auto& unit : dynamo.conveyor)
-		window.draw((*unit));
+		window.draw(unit);
 
 	//===========PADDLE=============
 
@@ -159,13 +159,11 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 				pdl(A_X) += Game::dynamicUnits::pdl_A_step;
 			}
 
-			//paddle(A_X) -= paddle(V_X) * Game::dynamicUnits::pdl_friction;
-			//paddle(DELTA_X) = paddle(V_X) * d_time + paddle(A_X) * d_time * d_time / 2.f;
-			//paddle(V_X) += paddle(A_X) * d_time;
-			
 			recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, d_time);
 
 			dynamo.paddle->move(sf::Vector2f(pdl(DELTA_X), 0));
+
+
 
 			////Press enter and winish Intro page
 			//else if (event.key.code == sf::Keyboard::Enter)
@@ -175,6 +173,16 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 			//	break;
 			//}
 		}
+
+		////TEST QUICK BLOCK DELETION
+		//else if (event.type == sf::Event::MouseButtonPressed)
+		//{
+		//	if (event.mouseButton.button == sf::Mouse::Left)
+		//	{
+		//		dynamo.ball->setPosition(sf::Vector2f(to_f(event.mouseButton.x), to_f(event.mouseButton.y)));
+		//	}
+		//}
+
 	}
 
 }

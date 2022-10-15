@@ -100,16 +100,16 @@ int main()
 		}
 
 		//Initialize pointer to object with static units properties
-		std::cout << "Game::staticUnits defined\n";
+		//std::cout << "Game::staticUnits defined\n";
 		std::unique_ptr<Game::staticUnits> fork_Game_SUnits = std::make_unique<Game::staticUnits>(*fork_Util_SUnits);
 		//Game::staticUnits fork_Game_SUnits(*fork_Util_SUnits);
 
 		//Declare pointer to object with event property
-		std::cout << "Game::Process declared\n";
+		//std::cout << "Game::Process declared\n";
 		std::unique_ptr<Game::Process> fork_Game_Process{ nullptr };
 
 		//Declare pointer to object with dynamic units properties
-		std::cout << "Game::dynamicUnits declared\n";
+		//std::cout << "Game::dynamicUnits declared\n";
 		std::unique_ptr<Game::dynamicUnits> fork_Game_DUnits{ nullptr };
 
 		//Reset start point before the first Game session
@@ -118,11 +118,11 @@ int main()
 		while (Game::Process::running)
 		{
 			//Declare pointer to object with event property
-			std::cout << "Game::Process defined\n";
+			//std::cout << "Game::Process defined\n";
 			fork_Game_Process.reset(new Game::Process());
 
 			//Declare pointer to object with dynamics properties
-			std::cout << "Game::dynamicUnits defined\n";
+			//std::cout << "Game::dynamicUnits defined\n";
 			fork_Game_DUnits.reset(new Game::dynamicUnits(*fork_Game_SUnits, *fork_Util_SUnits));
 
 			//Reset start point before new Game session
@@ -165,9 +165,6 @@ int main()
 
 				//<-----fork_Game_DUnits->tooling();
 
-				//Update paddle width because of the such ability
-				fork_Game_DUnits->adjustPaddle();
-
 				//Check do we need to change waiting time
 				fork_Game_DUnits->updateExtAwaitTimer();
 
@@ -192,6 +189,9 @@ int main()
 
 				//update lifes status
 				fork_Game_DUnits->updateLifeBalls(*fork_Game_SUnits);
+
+				//User could catch some ability, so maybe we need to change paddle texture
+				fork_Game_DUnits->resizePaddle(*fork_Game_SUnits);
 
 				//Update cool electric paddle
 				fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
@@ -239,9 +239,24 @@ int main()
 
 				///<-----TIMERS
 
+				//Check if there is no lifes
+				if (!(Game::dynamicUnits::lifes))
+				{
+					//Proper reset pointer to object with event property
+					fork_Game_Process.reset();
+
+					//Declare pointer to object with dynamics properties
+					fork_Game_DUnits.reset();
+
+					//Reset bool state of the Game process
+					Game::Process::running = false;
+				}
+
 			}
+		//=============================OUTRO PAGE============================
 
 		}
+
 
 	}
 	

@@ -109,6 +109,8 @@ inline static void recalculate2DKinematics(std::vector<float>& unit, const float
 
 inline static void recalculateAblKinematics(std::vector<float>& unit, const float& d_t)
 {
+	//unit.at(V_Y) = Game::dynamicUnits::abl_V_step;
+	
 	//#2____________________________________________________________________________
 	//
 	//Friction between paddle and the surface will cause loss of acceleration
@@ -138,24 +140,24 @@ inline static void recalculateAblKinematics(std::vector<float>& unit, const floa
 	//So we have to speed up it
 
 	//Thru X axis
-	if ((unit.at(V_X) < Game::dynamicUnits::abl_V_step) && (unit.at(V_X) > 0))
-	{
-		unit.at(V_X) = Game::dynamicUnits::abl_V_step;
-	}
-	else if ((std::abs(unit.at(V_X)) < Game::dynamicUnits::abl_V_step) && (unit.at(V_X) < 0))
-	{
-		unit.at(V_X) = -Game::dynamicUnits::abl_V_step;
-	}
+	//if (
+	//		( std::abs(unit.at(V_X)) < Game::dynamicUnits::abl_V_step )
+	//		&&
+	//		( unit.at(DELTA_X) >= Default::block_height )
+	//	)
+	//{
+	//	unit.at(V_X) = ( (unit.at(V_X) > 0)? 1: -1 ) * Game::dynamicUnits::abl_V_step;
+	//}
 
 	//Thru Y axis
-	if ((unit.at(V_Y) < Game::dynamicUnits::abl_V_step) && (unit.at(V_Y) > 0))
-	{
-		unit.at(V_Y) = Game::dynamicUnits::abl_V_step;
-	}
-	else if ((std::abs(unit.at(V_Y)) < Game::dynamicUnits::abl_V_step) && (unit.at(V_Y) < 0))
-	{
-		unit.at(V_Y) = -Game::dynamicUnits::abl_V_step;
-	}
+	//if (
+	//	(std::abs(unit.at(V_Y)) < Game::dynamicUnits::abl_V_step)
+	//	&&
+	//	(unit.at(DELTA_Y) >= Default::block_height)
+	//	)
+	//{
+	//	unit.at(V_Y) = ((unit.at(V_Y) > 0) ? 1 : -1) * Game::dynamicUnits::abl_V_step;
+	//}
 }
 
 inline static void simulatePhysics(const float& d_time)

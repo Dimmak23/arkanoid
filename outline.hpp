@@ -21,11 +21,11 @@ namespace Default
 	//and they quantity in the line
 	constexpr int maxInLine{ 12 };
 	//and they quantity in the column
-	constexpr int maxRows{ 1 };
+	constexpr int maxRows{ 3 };
 	//maximum empty spaces in the line
-	constexpr int maxEmpties{ 4 };
+	constexpr int maxEmpties{ 1 };
 	//maximum empty spaces in the line
-	constexpr int maxAbilities{ 3 };
+	constexpr int maxAbilities{ 8 };
 
 	//mapping for the line extensions
 	static inline const std::vector<int> conveyor_mapping
@@ -40,7 +40,7 @@ namespace Default
 	//mapping for waiting time of conveyor extentsion
 	static inline const std::vector<float> time_belt_ext_mapping
 	{
-		60.f,
+		60.f,		//seconds
 		45.f,
 		15.f,
 		5.f,
