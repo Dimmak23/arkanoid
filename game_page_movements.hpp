@@ -32,8 +32,8 @@ static void moveUnits(Game::dynamicUnits& dynamics)
 	//Take deltas from kinematic container and move the ball
 	dynamics.ball->move(sf::Vector2f(bll(DELTA_X), bll(DELTA_Y)));
 
-	//Take deltas from abilities kinematics and throw them
 
+	//Take deltas from abilities kinematics and throw them
 	int index{};
 	for (auto& ability : Game::dynamicUnits::conveyor_map)
 	{

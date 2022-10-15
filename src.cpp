@@ -165,9 +165,6 @@ int main()
 
 				//<-----fork_Game_DUnits->tooling();
 
-				//Update paddle width because of the such ability
-				fork_Game_DUnits->adjustPaddle();
-
 				//Check do we need to change waiting time
 				fork_Game_DUnits->updateExtAwaitTimer();
 
@@ -192,6 +189,9 @@ int main()
 
 				//update lifes status
 				fork_Game_DUnits->updateLifeBalls(*fork_Game_SUnits);
+
+				//User could catch some ability, so maybe we need to change paddle texture
+				fork_Game_DUnits->resizePaddle(*fork_Game_SUnits);
 
 				//Update cool electric paddle
 				fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
@@ -239,9 +239,24 @@ int main()
 
 				///<-----TIMERS
 
+				//Check if there is no lifes
+				if (!(Game::dynamicUnits::lifes))
+				{
+					//Proper reset pointer to object with event property
+					fork_Game_Process.reset();
+
+					//Declare pointer to object with dynamics properties
+					fork_Game_DUnits.reset();
+
+					//Reset bool state of the Game process
+					Game::Process::running = false;
+				}
+
 			}
+		//=============================OUTRO PAGE============================
 
 		}
+
 
 	}
 	

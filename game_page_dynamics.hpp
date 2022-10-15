@@ -57,9 +57,9 @@ namespace Game
 	//Forward declaration
 	struct block_map_variables
 	{
-		bool block;						//Here would be: true, if it is a block; and: false, if it is an ability
-		int operand;					//Here we are passing operand for executor function: points to add, multiplier for speed,...
-		executor function;				//pointer to function that have to be executed
+		bool block{};					//Here would be: true, if it is a block; and: false, if it is an ability
+		int operand{};					//Here we are passing operand for executor function: points to add, multiplier for speed,...
+		executor function{};	//pointer to function that have to be executed
 		std::vector<float> kinematics
 		{0.f,0.f,0.f,0.f,0.f,0.f};		//keep kinematic parameters for the abilities
 	};
@@ -98,11 +98,17 @@ class Game::dynamicUnits
 	//Update lifes visibility
 	void updateLifeBalls(const Game::staticUnits& statics);
 
+	//Get initial texture by current state
+	int getTextureNumber(const int& p_state);
+
+	//If there was such ability: resize paddle
+	void resizePaddle(const Game::staticUnits& utils);
+
 	//Update paddle texture depending on the time
 	void updateElectricPaddle(const Game::staticUnits& utils);
 
 	//Adjust paddle sprite
-	void adjustPaddle();
+	//void adjustPaddle();
 
 	//Move down conveyor array
 	void extendConveyor(const Game::staticUnits& statics);
@@ -189,12 +195,32 @@ class Game::dynamicUnits
 
 	sf::RectangleShape basement;
 
+	//PADDLE TEXTURE CHANGE HANDLERS
+
+	static inline int paddle_state{};							//current state of paddle signalized that it's a basic CAPSULE_1 variant
+	static inline int paddle_ext{};								//container for new state
+	static inline const int paddle_max{75};						//we can extend paddle maximum by 75 pixels
+	static inline const int paddle_min{-75};					//we can adjust paddle maximum by 75 pixels
+
+	static inline const std::vector<std::pair<int, int>> paddle_map	//MAP to the new TEXTURE depending on the extension value
+	{
+		{-75, CAPSULE_0},
+		{-50, CAPSULE_1_M200},
+		{-25, CAPSULE_1_M100},
+		{ 0,  CAPSULE_1},
+		{ 25, CAPSULE_1_P100},
+		{ 50, CAPSULE_1_P200},
+		{ 75, CAPSULE_1_P300}
+	};
+
 	//VARIABLES PHYSICS
 
 	//BALL
 	static inline std::vector<float> ball_kinematics;
 	static inline const float bll_friction{ 6.0f };		
-	static inline const float bll_V_step{ 400.0f };		
+	static inline float bll_V_step{ 400.0f };		
+	static inline float bll_max{ 1200.0f };		
+	static inline float bll_min{ 100.0f };		
 	//static inline const float bll_A_step{ 1800.0f };  //NOT so necessary	
 	static inline const float bll_bounce{ 1.f };
 	static inline const float bll_mult{ 2.0f };
@@ -233,9 +259,9 @@ class Game::dynamicUnits
 
 	static inline float paddle_scale_x{0.25f};
 	static inline float paddle_scale_y{0.25f};
-	static inline const float paddle_scale_x_max{0.9f};
-	static inline const float paddle_scale_x_min{0.1f};
-	static inline const float paddle_scale_step{0.05f};
+	//static inline const float paddle_scale_x_max{0.9f};
+	//static inline const float paddle_scale_x_min{0.1f};
+	//static inline const float paddle_scale_step{0.05f};
 
 	//___Lost ball awaiting
 	static inline const float to_new_ball_await{ 2.f };
@@ -274,13 +300,40 @@ static inline void increaseScore(const int& operand)
 }
 
 static inline void chageBallSpeed(const int& operand)
-{}
+{
+	Game::dynamicUnits::bll_V_step += to_f(operand);
+
+	if (Game::dynamicUnits::bll_V_step > Game::dynamicUnits::bll_max)
+		Game::dynamicUnits::bll_V_step = Game::dynamicUnits::bll_max;
+
+	if (Game::dynamicUnits::bll_V_step < Game::dynamicUnits::bll_min)
+		Game::dynamicUnits::bll_V_step = Game::dynamicUnits::bll_min;
+}
 
 static inline void increaseLifes(const int& operand)
-{}
+{
+	Game::dynamicUnits::lifes += operand;
+}
 
 static inline void adjustPaddleSize(const int& operand)
-{}
+{
+	Game::dynamicUnits::paddle_ext += operand;
+
+	if (
+		(Game::dynamicUnits::paddle_ext > Game::dynamicUnits::paddle_max)
+		)
+	{
+		Game::dynamicUnits::paddle_ext = Game::dynamicUnits::paddle_max;
+		return;
+	}
+	else if (
+		(Game::dynamicUnits::paddle_ext < Game::dynamicUnits::paddle_min)
+		)
+	{
+		Game::dynamicUnits::paddle_ext = Game::dynamicUnits::paddle_min;
+		return;
+	}
+}
 
 static inline void emptyFunc(const int& operand)
 {

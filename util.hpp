@@ -80,9 +80,25 @@ enum block_textures
 
 enum paddle_textures
 {
-	CAPSULE_1 = 0,
+	CAPSULE_0 = 0,
+	CAPSULE_1_M200,
+	CAPSULE_2_M200,
+	CAPSULE_3_M200,
+	CAPSULE_1_M100,
+	CAPSULE_2_M100,
+	CAPSULE_3_M100,
+	CAPSULE_1,
 	CAPSULE_2,
 	CAPSULE_3,
+	CAPSULE_1_P100,
+	CAPSULE_2_P100,
+	CAPSULE_3_P100,
+	CAPSULE_1_P200,
+	CAPSULE_2_P200,
+	CAPSULE_3_P200,
+	CAPSULE_1_P300,
+	CAPSULE_2_P300,
+	CAPSULE_3_P300,
 	//CONNECTOR_1,
 	//CONNECTOR_2,
 	//CONNECTOR_3,
@@ -124,12 +140,12 @@ namespace Util
 	{
 		//points to add
 		50, 100, 250, 500,
-		//increase/decrease ball speed by 10% from current speed
-		10, -10,
+		//decrease/increase ball speed by 100 pix/sec from current speed
+		-100, 100,
 		//add 3 lifes
 		3,
-		//add/substract paddle width by 25% from inital width
-		25, -25,
+		//substract/add paddle width by 25 pix from inital width
+		-25, 25,
 		//empty ability
 		0
 	};

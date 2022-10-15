@@ -391,7 +391,7 @@ Game::staticUnits::staticUnits(const Util::staticUnits& utils)
 
 	//PADDLES
 
-	texture_address = 50;
+	texture_address = 82;
 	pdl_textures.resize(PADDLE_COUNT);
 	for (auto& texture : pdl_textures)
 	{

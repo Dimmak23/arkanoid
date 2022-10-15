@@ -85,20 +85,6 @@ class Game::staticUnits
 
 	std::vector<sf::Text> blocks_descriptions;
 
-	//static inline const std::vector<std::string> bd_names
-	//{
-	//	"+1 points",
-	//	"+2 points",
-	//	"+5 points",
-	//	"+10 points",
-	//	"+15 points",
-	//	"+20 points",
-	//	"+25 points",
-	//	"+30 points",
-	//	"+35 points",
-	//	"+40 points"
-	//};
-
 	//ABILITIES DESCRIPTIONS
 
 	std::vector<sf::Text> abilities_descriptions;
@@ -109,11 +95,11 @@ class Game::staticUnits
 		"+100 points",
 		"+250 points",
 		"+500 points",
-		"Drops blocks slower",
-		"Drops blocks faster",
+		"Makes ball slower by 100 px/sec",
+		"Makes ball faster by 100 px/sec",
 		"Add 3 lifes",
-		"Makes paddle tinier",
-		"Makes paddle wider",
+		"Makes paddle tinier by 25 px",
+		"Makes paddle wider by 25 px",
 		"Gives you nothing"
 	};
 
