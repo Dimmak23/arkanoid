@@ -222,7 +222,7 @@ class Game::dynamicUnits
 	static inline const float bll_max{ 1200.0f };		
 	static inline const float bll_min{ 100.0f };		
 	//static inline const float bll_A_step{ 1800.0f };  //NOT so necessary	
-	static inline const float bll_bounce{ 1.f };
+	static inline const float bll_bounce{ 0.6f };
 	static inline const float bll_mult{ 2.0f };
 
 	//PADDLE
@@ -235,7 +235,7 @@ class Game::dynamicUnits
 	//ABILITIES
 	static inline const float abl_friction{ 7.0f };
 	static inline const float abl_V_step{ 400.0f };
-	static inline const float abl_bounce{ 1.f };
+	static inline const float abl_bounce{ 0.3f };
 	static inline const float abl_mult{ 8.0f };
 
 	//VARIABLES TIMERS
