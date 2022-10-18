@@ -127,7 +127,7 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 	while (window.pollEvent(event))
 	{
 		// application_window closed
-		if (event.type == sf::Event::Closed)  ///RISK
+		if (event.type == sf::Event::Closed)
 		{
 			running = false;  // also should be here
 			//Game finished, but don't close window

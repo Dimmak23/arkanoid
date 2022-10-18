@@ -497,17 +497,27 @@ void Game::dynamicUnits::updateExtAwaitTimer()
 {
 	std::stringstream streamer;
 	
-	int con_index{};
+	int block_index{};
+	bool running{true};
 
 	for (int indexer{}; indexer < Default::time_belt_ext_mapping.size(); indexer++)
 	{
-		if (!(conveyor_map.at(con_index).block))
+		while (!(conveyor_map.at(block_index).block))
 		{
-			con_index++;
+			block_index++;
+			if (block_index == conveyor_map.size())
+			{
+				running = false;
+				return;
+			}
 			continue;
 		}
 		
-		if ((conveyor.at(con_index).getGlobalBounds().top + Default::block_height) >= to_f(Default::conveyor_mapping.at(indexer)))
+		if (
+			running
+			&&
+			(conveyor.at(block_index).getGlobalBounds().top + Default::block_height) >= to_f(Default::conveyor_mapping.at(indexer))
+			)
 		{
 			to_extend_await = Default::time_belt_ext_mapping.at(indexer);
 			

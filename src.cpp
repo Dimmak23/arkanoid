@@ -100,10 +100,7 @@ int main()
 	//=============================GAME PAGE============================
 
 		//User could close the window, so we shouldn't waste resources on parsing next Texts, Textures, Frames,...
-		if (!(application_window.isOpen()))
-		{
-			break;
-		}
+		if (!(application_window.isOpen())) break;
 
 		//Initialize pointer to object with static units properties
 		std::unique_ptr<Game::staticUnits> fork_Game_SUnits = std::make_unique<Game::staticUnits>(*fork_Util_SUnits);
@@ -132,7 +129,8 @@ int main()
 
 			while (Game::Process::running)
 			{
-
+				//User could close the window, so we shouldn't waste resources on processing
+				if (!(application_window.isOpen())) break;
 
 
 				//<-----fork_Game_DUnits->simulations();
@@ -149,7 +147,15 @@ int main()
 
 				collideUnits(*fork_Game_DUnits, Util::Process::delta_time);
 
-				hitUnits(*fork_Game_DUnits, Util::Process::delta_time);
+				ablHitPlayGround(*fork_Game_DUnits, Util::Process::delta_time);
+
+				ballHitBlocks(*fork_Game_DUnits, Util::Process::delta_time);
+				
+				ballHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
+
+				ablHitBlocks(*fork_Game_DUnits, Util::Process::delta_time);
+
+				ablHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
 				//<-----fork_Game_DUnits->collisions();
 
@@ -287,6 +293,9 @@ int main()
 			//Hold Outro page until user will respond
 			while (Outro::Process::running)
 			{
+				//User could close the window, so we shouldn't waste resources on processing
+				if (!(application_window.isOpen())) break;
+				
 				//Check timer and blink instruction
 				Outro::Process::blinkInstruction(*fork_Outro_SUnits);
 
@@ -323,7 +332,5 @@ int main()
 	//Reset pointer to Intro object with event property
 	fork_Intro_Process.reset(nullptr);
 
-	///PROBABLY IT IS BETTER TO RESET OTHER POINTERS TOO
-	
 	return 0;
 }
