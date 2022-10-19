@@ -238,9 +238,9 @@ class Game::dynamicUnits
 	static inline const float pdl_bounce{-0.2f};
 
 	//ABILITIES
-	static inline const float abl_friction{ 7.0f };
-	static inline const float abl_V_step{ 400.0f };
-	static inline const float abl_bounce{ 0.3f };
+	static inline const float abl_friction{ .0f };
+	static inline const float abl_V_step{ 300.0f };
+	static inline const float abl_bounce{ 0.15f };
 	static inline const float abl_mult{ 8.0f };
 
 	//VARIABLES TIMERS

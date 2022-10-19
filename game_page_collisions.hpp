@@ -107,8 +107,8 @@
 #define THIS_ABL_RX_RIGHT	THIS_ABL_RIGHT - THIS_ABL_RAD
 #define THIS_ABL_L_SIDE		(THIS_ABL_Y_CENTER < ABLOCK_BOTTOM) && (THIS_ABL_Y_CENTER > ABLOCK_TOP) && (THIS_ABL_RIGHT < ABLOCK_RIGHT)
 #define THIS_ABL_R_SIDE		(THIS_ABL_Y_CENTER < ABLOCK_BOTTOM) && (THIS_ABL_Y_CENTER > ABLOCK_TOP) && (THIS_ABL_LEFT > ABLOCK_LEFT)
-#define THIS_ABL_T_SIDE		(THIS_ABL_X_CENTER < ABLOCK_RIGHT) && (THIS_ABL_X_CENTER > ABLOCK_LEFT) && (THIS_ABL_TOP < ABLOCK_TOP)
-#define THIS_ABL_B_SIDE		(THIS_ABL_X_CENTER < ABLOCK_RIGHT) && (THIS_ABL_X_CENTER > ABLOCK_LEFT) && (THIS_ABL_BOTTOM > ABLOCK_BOTTOM)
+#define THIS_ABL_T_SIDE		(THIS_ABL_X_CENTER < ABLOCK_RIGHT) && (THIS_ABL_X_CENTER > ABLOCK_LEFT) && (THIS_ABL_BOTTOM > ABLOCK_TOP)
+#define THIS_ABL_B_SIDE		(THIS_ABL_X_CENTER < ABLOCK_RIGHT) && (THIS_ABL_X_CENTER > ABLOCK_LEFT) && (THIS_ABL_TOP < ABLOCK_BOTTOM)
 #define THIS_ABL_UL_CORNER	(THIS_ABL_RX_RIGHT < ABLOCK_LEFT) && (THIS_ABL_Y_CENTER < ABLOCK_TOP)
 #define THIS_ABL_BL_CORNER	(THIS_ABL_RX_RIGHT < ABLOCK_LEFT) && (THIS_ABL_Y_CENTER > ABLOCK_BOTTOM)
 #define THIS_ABL_UR_CORNER	(THIS_ABL_RX_LEFT > ABLOCK_RIGHT) && (THIS_ABL_Y_CENTER < ABLOCK_TOP)
@@ -353,16 +353,6 @@ inline static colission_detection checkCircleCollision(
 	//So now we can setup a proper vector to the BALL movement
 	result.vector = sf::Vector2f(move_x, move_y);
 
-	//std::cout << "centerX_BLL - centerX_PDL = " << centerX_BLL - centerX_PDL << '\n';
-	//std::cout << "centerY_BLL - centerY_PDL = " << centerY_BLL - centerY_PDL << '\n';
-	//std::cout << "hypotenuse = " << hypotenuse << '\n';
-	//std::cout << "rad_a + rad_b = " << rad_PDL + rad_BLL << '\n';
-	//std::cout << "angle = " << angle << '\n';
-	//std::cout << "std::tan(angle) = " << std::tan(angle) << '\n';
-	//std::cout << "tan_alpha = " << tan_alpha << '\n';
-	//std::cout << "move_x = " << move_x << '\n';
-	//std::cout << "move_y = " << move_y << '\n';
-
 	return result;
 }
 
@@ -373,7 +363,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 
 	//SLOWDOWN near the LEFT border line
 	if (
-		(PADDLE_LEFT < GFIELD_LEFT + 20.f)  //15.f pixels near the border is a SLOWDOWN ZONE
+		(PADDLE_LEFT < GFIELD_LEFT + 10.f)  //10.f pixels near the border is a SLOWDOWN ZONE
 		&&
 		(dynamics.paddle_kinematics.at(V_X) < 0)  //ONLY IF we going to the border, and NOT out from the border
 		)
@@ -401,7 +391,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 
 	//SLOWDOWN near the RIGHT border line
 	if (
-		(PADDLE_RIGHT > (GFIELD_RIGHT - 20.f))
+		(PADDLE_RIGHT > (GFIELD_RIGHT - 10.f))
 		&&
 		(dynamics.paddle_kinematics.at(V_X) > 0.1f)  //ONLY IF we going to the border, and NOT out from the border
 		)
@@ -518,8 +508,6 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		(!Game::dynamicUnits::lost_ball)
 	)
 	{
-		//std::cout << "TOP side collision...\n";
-		
 		dynamics.ball->setPosition(
 			sf::Vector2f(
 			dynamics.ball->getPosition().x,
@@ -569,10 +557,6 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 
 		if(collision_detection)
 		{
-			//std::cout << "LEFT side collision...\n";
-			//std::cout << "PADDLE_LOX = " << PADDLE_LOX << '\n';
-			//std::cout << "BALL_OX = " << BALL_OX << '\n';
-			
 			//Move the ball
 			dynamics.ball->move(vector);
 
@@ -623,10 +607,6 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 
 		if (collision_detection)
 		{
-			//std::cout << "RIGHT side collision...\n";
-			//std::cout << "PADDLE_ROX = " << PADDLE_ROX << '\n';
-			//std::cout << "BALL_OX = " << BALL_OX << '\n';
-
 			//Move the ball
 			dynamics.ball->move(vector);
 
@@ -663,25 +643,31 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 			continue;
 		}
 		
-		//FROM THE TOP OF THE PADDLE
-		if (
-			//BOTTOM of the ABILITY go thru paddle top
-			(ABILITY_BOTTOM > PADDLE_TOP)
-			&&
-			( 
-				(ABILITY_LEFT >= PADDLE_LEFT) && (ABILITY_LEFT <= PADDLE_RIGHT)
-				||
-				(ABILITY_RIGHT >= PADDLE_LEFT) && (ABILITY_RIGHT <= PADDLE_RIGHT)
-				||
-				//For small PADDLE
-				(PADDLE_CENTER >= ABILITY_LEFT) && (PADDLE_CENTER <= ABILITY_LEFT)
-			)
-			//REMOVING GLITCH
-			//(!Game::dynamicUnits::lost_ball)
-			)
-		{
-			//std::cout << "TOP side ability collision...\n";
+		sf::Rect ABL_BODY(sf::Vector2f(ABILITY_LEFT, ABILITY_TOP), sf::Vector2f(ABILITY_WIDTH, ABILITY_HEIGHT));
+		sf::Rect PADDLE_BODY(sf::Vector2f(PADDLE_LEFT, PADDLE_TOP), sf::Vector2f(PADDLE_WIDTH, PADDLE_HEIGHT));
 
+		//FROM THE TOP OF THE PADDLE
+		//if (
+		//	//BOTTOM of the ABILITY go thru paddle top
+		//	(ABILITY_BOTTOM >= PADDLE_TOP)
+		//	&&
+		//	( 
+		//		(ABILITY_LEFT >= PADDLE_LEFT) && (ABILITY_LEFT <= PADDLE_RIGHT)
+		//		||
+		//		(ABILITY_RIGHT >= PADDLE_LEFT) && (ABILITY_RIGHT <= PADDLE_RIGHT)
+		//		||
+		//		//For small PADDLE
+		//		(PADDLE_CENTER >= ABILITY_LEFT) && (PADDLE_CENTER <= ABILITY_RIGHT)
+		//	)
+		//	//REMOVING GLITCH
+		//	//&&
+		//	//(!Game::dynamicUnits::lost_ball)
+		//)
+
+		auto diagnose = ABL_BODY.findIntersection(PADDLE_BODY);
+
+		if(diagnose.has_value())
+		{
 			//Choose function to execute
 			executor do_this{ dynamics.conveyor_map.at(indexer).function };
 
@@ -694,19 +680,11 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 			//Also destory a mapper for such block
 			auto eraser_mapper = dynamics.conveyor_map.begin() + indexer;
 
-			std::cout << "Deleting CATCHED ability " << eraser_unit - dynamics.conveyor.begin() << " with operand: " << (*eraser_mapper).operand << '\n';
-
 			dynamics.conveyor_map.erase(eraser_mapper);
 			dynamics.conveyor.erase(eraser_unit);
-
-			std::cout << "ABILITY WERE CATCHED\n";
-			std::cout << "dynamics.conveyor.size() = " << dynamics.conveyor.size() << '\n';
-			std::cout << "dynamics.conveyor_map.size() = " << dynamics.conveyor_map.size() << '\n';
-
 		}
 		else indexer++;
 	}
-
 }
 
 static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d_time)
@@ -1115,10 +1093,10 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 
 				///////////////////RECALCULATE ABILITY KINEMATICS///////////////////////
 
-				(*give_ability).kinematics.at(V_X) += 0.3f * bll(V_X);
-				(*give_ability).kinematics.at(V_Y) += 0.3f * bll(V_Y);
-				(*give_ability).kinematics.at(A_X) += 0.3f * bll(A_X);
-				(*give_ability).kinematics.at(A_Y) += 0.3f * bll(A_Y);
+				(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
+				(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
+				(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
+				(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
 
 				///////////////////RECALCULATE BALL KINEMATICS///////////////////////
 
@@ -1144,10 +1122,10 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 
 				///////////////////RECALCULATE ABILITY KINEMATICS///////////////////////
 
-				(*give_ability).kinematics.at(V_X) += 0.3f * bll(V_X);
-				(*give_ability).kinematics.at(V_Y) += 0.3f * bll(V_Y);
-				(*give_ability).kinematics.at(A_X) += 0.3f * bll(A_X);
-				(*give_ability).kinematics.at(A_Y) += 0.3f * bll(A_Y);
+				(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
+				(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
+				(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
+				(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
 
 				///////////////////RECALCULATE BALL KINEMATICS///////////////////////
 
@@ -1168,10 +1146,10 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 
 				///////////////////RECALCULATE ABILITY KINEMATICS///////////////////////
 
-				(*give_ability).kinematics.at(V_X) += 0.3f * bll(V_X);
-				(*give_ability).kinematics.at(V_Y) += 0.3f * bll(V_Y);
-				(*give_ability).kinematics.at(A_X) += 0.3f * bll(A_X);
-				(*give_ability).kinematics.at(A_Y) += 0.3f * bll(A_Y);
+				(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
+				(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
+				(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
+				(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
 
 				///////////////////RECALCULATE BALL KINEMATICS///////////////////////
 
@@ -1235,8 +1213,8 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 		//Find first BLOCK after the map
 		give_block = std::ranges::find_if(dynamics.conveyor_map, only_blocks);
 
-		if (give_block == this_map)
-			give_block = std::ranges::find_if_not(give_block + 1, dynamics.conveyor_map.end(), only_blocks);
+		//if (give_block == this_map)
+			//give_block = std::ranges::find_if_not(give_block + 1, dynamics.conveyor_map.end(), only_blocks);
 
 		if (give_block != dynamics.conveyor_map.end())
 		{
@@ -1252,7 +1230,7 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 			//Now find unit with collision to it
 			attacked_unit = std::ranges::find_if(attacked_unit, dynamics.conveyor.end(), bounds_collision);
 
-			if (attacked_unit == this_unit) attacked_unit = std::ranges::find_if(attacked_unit + 1, dynamics.conveyor.end(), bounds_collision);
+			//if (attacked_unit == this_unit) attacked_unit = std::ranges::find_if(attacked_unit + 1, dynamics.conveyor.end(), bounds_collision);
 
 			//Attach to the map at this position
 			give_block = dynamics.conveyor_map.begin() + (attacked_unit - dynamics.conveyor.begin());
@@ -1438,8 +1416,8 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 		
 		//Find next ability after the map
 		give_ability = std::ranges::find_if_not(dynamics.conveyor_map, only_blocks);
-		if (give_ability == this_map)
-			give_ability = std::ranges::find_if_not(give_ability+1, dynamics.conveyor_map.end(), only_blocks);
+		//if (give_ability == this_map)
+			//give_ability = std::ranges::find_if_not(give_ability+1, dynamics.conveyor_map.end(), only_blocks);
 		
 		if (give_ability != dynamics.conveyor_map.end())
 		{
@@ -1455,7 +1433,7 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 			//Now find unit with collision to it
 			attacked_unit = std::ranges::find_if(attacked_unit, dynamics.conveyor.end(), bounds_collision);
 
-			if (attacked_unit == this_unit) attacked_unit = std::ranges::find_if(attacked_unit+1, dynamics.conveyor.end(), bounds_collision);
+			//if (attacked_unit == this_unit) attacked_unit = std::ranges::find_if(attacked_unit+1, dynamics.conveyor.end(), bounds_collision);
 
 			//Attach to the map at this position
 			give_ability = dynamics.conveyor_map.begin() + (attacked_unit - dynamics.conveyor.begin());
@@ -1468,7 +1446,9 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 				//CALCULATE COLLISION
 
 				//If it is a circle collision
-				if ((THIS_ABL_RX_RIGHT < AABL_RX_LEFT) || (THIS_ABL_RX_LEFT > AABL_RX_RIGHT))
+				if (
+					(THIS_ABL_RX_RIGHT < AABL_RX_LEFT) || (THIS_ABL_RX_LEFT > AABL_RX_RIGHT)
+				)
 				{
 					colission_detection abl_result;
 
@@ -1586,8 +1566,10 @@ inline static void throwAbilities(Game::dynamicUnits& dynamics, const float& d_t
 
 		//Assuming that ability could hold by only blocks and abilities with index smallest
 		//then tested one
-		for (int holder_index{}; holder_index < index; holder_index++)
+		for (int holder_index{}; holder_index < dynamics.conveyor.size(); holder_index++)
 		{
+			if (holder_index == index) continue;
+			
 			//now bring bounds of the hold element
 			if
 			(
@@ -1613,19 +1595,12 @@ inline static void throwAbilities(Game::dynamicUnits& dynamics, const float& d_t
 		{
 			
 			dynamics.conveyor_map.at(index).kinematics.at(V_Y) = Game::dynamicUnits::abl_V_step;
-
-			std::cout << "Throw ability #" << index << '\n';
-
 			recalculateAblKinematics(dynamics.conveyor_map.at(index).kinematics, d_time);
-
 			dynamics.conveyor.at(index).move(sf::Vector2f(dynamics.conveyor_map.at(index).kinematics.at(DELTA_X), dynamics.conveyor_map.at(index).kinematics.at(DELTA_Y)));
 		}
 		else
 		{
 			dynamics.conveyor_map.at(index).kinematics.at(V_Y) = 0;
 		}
-
 	}
-
-
 }

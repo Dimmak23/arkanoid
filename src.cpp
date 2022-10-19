@@ -1,5 +1,6 @@
 //C++ headers
 #include <memory>
+#include <Windows.h>
 
 //API
 
@@ -11,7 +12,6 @@
 
 //Custom headers
 #include "outline.hpp"
-
 #include "util.hpp"
 
 #include "intro_page.hpp"
@@ -26,13 +26,21 @@
 
 #include "outro_page.hpp"
 
-//#include "physics.hpp"
-//#include "game_objects.hpp"
-//#include "intro_window.hpp"
 
+//=========================================================MAIN================================================================
 
-//int WinMain()
-int main()
+//int wWinMain()
+//int APIENTRY _tWinMain(HINSTANCE hInstance,
+//					   HINSTANCE hPrevInstance,
+//					   LPTSTR    lpCmdLine,
+//					   int       nCmdShow)
+int WinMain(
+	HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPSTR     lpCmdLine,
+	int       nShowCmd
+)
+//int main()
 {
 	//=========================PREPARE UTILITIES========================
 
@@ -62,6 +70,12 @@ int main()
 		"Arkanoid, produced by DimmaK, 24 october 2022, all rights reserved."
 	);
 	application_window.setFramerateLimit(360);//more then 300 gives good physics
+
+	//FOR DEPLOY
+	
+	// change the size of the window
+	//application_window.setSize(sf::Vector2u(1200, 800));
+	//application_window.setPosition(sf::Vector2i(50, 50));
 
 	//First start timer update
 	Util::Process::resetStartPoint();
@@ -157,7 +171,7 @@ int main()
 
 				ablHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
-				throwAbilities(*fork_Game_DUnits, Util::Process::delta_time);
+				if (Game::dynamicUnits::game_time > 0.5f) throwAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
 				//<-----fork_Game_DUnits->collisions();
 
