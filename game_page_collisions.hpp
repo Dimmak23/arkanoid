@@ -45,6 +45,20 @@
 #define ABILITY_RIGHT		dynamics.conveyor.at(indexer).getGlobalBounds().left + dynamics.conveyor.at(indexer).getGlobalBounds().width
 #define ABILITY_WIDTH		dynamics.conveyor.at(indexer).getGlobalBounds().width
 
+#define INDEXER_LEFT		dynamics.conveyor.at(index).getGlobalBounds().left
+#define INDEXER_WIDTH		dynamics.conveyor.at(index).getGlobalBounds().width
+#define INDEXER_RIGHT		INDEXER_LEFT + INDEXER_WIDTH
+#define INDEXER_TOP			dynamics.conveyor.at(index).getGlobalBounds().top
+#define INDEXER_HEIGHT		dynamics.conveyor.at(index).getGlobalBounds().height
+#define INDEXER_BOTTOM		INDEXER_TOP + INDEXER_HEIGHT
+
+#define HOLDER_LEFT			dynamics.conveyor.at(holder_index).getGlobalBounds().left
+#define HOLDER_WIDTH		dynamics.conveyor.at(holder_index).getGlobalBounds().width
+#define HOLDER_RIGHT		HOLDER_LEFT + HOLDER_WIDTH
+#define HOLDER_TOP			dynamics.conveyor.at(holder_index).getGlobalBounds().top
+#define HOLDER_HEIGHT		dynamics.conveyor.at(holder_index).getGlobalBounds().height
+#define HOLDER_BOTTOM		HOLDER_TOP + HOLDER_HEIGHT
+
 #define UNIT_TOP			unit.getGlobalBounds().top
 #define UNIT_LEFT			unit.getGlobalBounds().left
 #define UNIT_HEIGHT			unit.getGlobalBounds().height
@@ -179,12 +193,12 @@ inline static void checkLostBall(Game::dynamicUnits& dynamics)
 }
 
 inline static colission_detection checkCornerCollision(
-	const float& corner_X,
-	const float& corner_Y,
-	const float& centerX_BLL,
-	const float& centerY_BLL,
-	const float& rad_BLL,
-	const float& dy_BLL
+														const float& corner_X,
+														const float& corner_Y,
+														const float& centerX_BLL,
+														const float& centerY_BLL,
+														const float& rad_BLL,
+														const float& dy_BLL
 )
 {
 	colission_detection result;
@@ -637,55 +651,6 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		}
 
 	}
-
-/////////////////////////////////////ABILITIES VS BLOCKS AND ABILITIES//////////////////////////////////////////
-
-	//Go thru all conveyor units
-
-	//for (int index{}; index < dynamics.conveyor.size(); )
-	//{
-
-	//	for (int inner_index{}; inner_index < index; )
-	//	{
-	//		float top_line = dynamics.conveyor.at(inner_index).getGlobalBounds().top;
-	//		float bottom_line = dynamics.conveyor.at(index).getGlobalBounds().top + dynamics.conveyor.at(index).getGlobalBounds().height;
-
-	//		float above_left = dynamics.conveyor.at(index).getGlobalBounds().left;
-	//		float under_left = dynamics.conveyor.at(inner_index).getGlobalBounds().left;
-
-	//		sf::FloatRect abil;
-	//		abil.left = above_left;
-	//		abil.top = dynamics.conveyor.at(index).getGlobalBounds().top;
-	//		abil.width = dynamics.conveyor.at(index).getGlobalBounds().width;
-	//		abil.height = dynamics.conveyor.at(index).getGlobalBounds().height;
-
-	//		sf::FloatRect iterated;
-	//		iterated.left = under_left;
-	//		iterated.top = dynamics.conveyor.at(inner_index).getGlobalBounds().top;
-	//		iterated.width = dynamics.conveyor.at(inner_index).getGlobalBounds().width;
-	//		iterated.height = dynamics.conveyor.at(inner_index).getGlobalBounds().height;
-
-	//		if (abil.findIntersection(iterated).has_value() == true )
-	//		{
-	//			dynamics.conveyor_map.at(index).kinematics.at(V_Y) = 0;
-
-	//			dynamics.conveyor.at(index).setPosition(sf::Vector2f(
-	//				dynamics.conveyor.at(inner_index).getGlobalBounds().left,
-	//				dynamics.conveyor.at(inner_index).getGlobalBounds().top - dynamics.conveyor.at(index).getGlobalBounds().height)
-	//			);
-	//			//std::cout << "Hold this" << index << '\n';
-	//		}
-	//		else
-	//		{
-	//			dynamics.conveyor_map.at(index).kinematics.at(V_Y) = Game::dynamicUnits::abl_V_step;
-
-	//		}
-	//		inner_index++;
-	//	}
-	//	index++;
-	//}
-
-
 
 ////////////////////////////////////////////PADDLE VS ABILITIES///////////////////////////////////////////
 
@@ -1311,28 +1276,33 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 						col_status = checkCornerCollision(ABLOCK_LEFT, ABLOCK_TOP, THIS_ABL_RX_RIGHT, THIS_ABL_Y_CENTER, THIS_ABL_RAD, THIS_MAP_DY);
 						col_status.vector.x -= ABLOCK_LEFT;
 						col_status.vector.y -= ABLOCK_TOP;
+						//Now we got the new position for the ball
+						(*this_unit).setPosition(sf::Vector2f(ABLOCK_LEFT - THIS_ABL_WIDTH, THIS_ABL_TOP));
 					}
 					else if (THIS_ABL_BL_CORNER)
 					{
 						col_status = checkCornerCollision(ABLOCK_LEFT, ABLOCK_BOTTOM, THIS_ABL_RX_RIGHT, THIS_ABL_Y_CENTER, THIS_ABL_RAD, THIS_MAP_DY);
 						col_status.vector.x -= ABLOCK_LEFT;
 						col_status.vector.y -= ABLOCK_BOTTOM;
+						//Now we got the new position for the ball
+						(*this_unit).setPosition(sf::Vector2f(ABLOCK_LEFT - THIS_ABL_WIDTH, THIS_ABL_TOP));
 					}
 					else if (THIS_ABL_UR_CORNER)
 					{
 						col_status = checkCornerCollision(ABLOCK_RIGHT, ABLOCK_TOP, THIS_ABL_RX_LEFT, THIS_ABL_Y_CENTER, THIS_ABL_RAD, THIS_MAP_DY);
 						col_status.vector.x -= ABLOCK_RIGHT;
 						col_status.vector.y -= ABLOCK_TOP;
+						//Now we got the new position for the ball
+						(*this_unit).setPosition(sf::Vector2f(ABLOCK_RIGHT, THIS_ABL_TOP));
 					}
 					else if (THIS_ABL_BR_CORNER)
 					{
 						col_status = checkCornerCollision(ABLOCK_RIGHT, ABLOCK_BOTTOM, THIS_ABL_RX_LEFT, THIS_ABL_Y_CENTER, THIS_ABL_RAD, THIS_MAP_DY);
 						col_status.vector.x -= ABLOCK_RIGHT;
 						col_status.vector.y -= ABLOCK_BOTTOM;
+						//Now we got the new position for the ball
+						(*this_unit).setPosition(sf::Vector2f(ABLOCK_RIGHT, THIS_ABL_TOP));
 					}
-
-					//Now we got the new position for the ball
-					(*this_unit).move(col_status.vector);
 
 					//IMPORTANT thing: kinematics should be swaped
 					//Velocities
@@ -1579,4 +1549,83 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 		//Find the first ability
 		this_unit = dynamics.conveyor.begin() + (this_map - dynamics.conveyor_map.begin());
 	}
+}
+
+inline static void throwAbilities(Game::dynamicUnits& dynamics, const float& d_time)
+{
+
+/////////////////////////////////ABILITY VS ABILITIES & BLOCKS/////////////////////////////////////
+
+	//BOUNDERS
+	float left_coor{};
+	float right_coor{};
+	float btm_coor{};
+
+	//HOLD STATUS
+	bool hold{};  // false: no hold, true: HOLD this ABILITY
+
+	//Go thru all abilities and keep LEFT and RIGHT coordinates
+	for (int index{}; index < dynamics.conveyor.size(); index++)
+	{
+		//if it is a block: go to the next unit
+		if (dynamics.conveyor_map.at(index).block)
+		{
+			continue;
+		}
+
+		//When we finally find the ability:
+
+		//Grab bounds
+		left_coor	= INDEXER_LEFT;
+		right_coor	= INDEXER_RIGHT;
+		btm_coor	= INDEXER_BOTTOM;
+
+		hold = false;  // false: no hold, true: HOLD this ABILITY
+
+		//Now let's search a block or ability that could stop it
+
+		//Assuming that ability could hold by only blocks and abilities with index smallest
+		//then tested one
+		for (int holder_index{}; holder_index < index; holder_index++)
+		{
+			//now bring bounds of the hold element
+			if
+			(
+				//Ability lay own on some block or ability
+				(HOLDER_TOP == btm_coor)
+				&&
+				(
+					//Left side of the ABILITY inside unit bounds
+					( (HOLDER_LEFT < left_coor) && (left_coor < HOLDER_RIGHT) )
+					||
+					//Right side of the ABILITY inside unit bounds
+					( (HOLDER_LEFT < right_coor) && (right_coor < HOLDER_RIGHT) )
+				)
+			)
+			{
+				//Once we hold ABILITY: we never release it again
+				hold = true;
+			}
+		}
+
+		//So if no holder that catch ability we can release it
+		if (!hold)
+		{
+			
+			dynamics.conveyor_map.at(index).kinematics.at(V_Y) = Game::dynamicUnits::abl_V_step;
+
+			std::cout << "Throw ability #" << index << '\n';
+
+			recalculateAblKinematics(dynamics.conveyor_map.at(index).kinematics, d_time);
+
+			dynamics.conveyor.at(index).move(sf::Vector2f(dynamics.conveyor_map.at(index).kinematics.at(DELTA_X), dynamics.conveyor_map.at(index).kinematics.at(DELTA_Y)));
+		}
+		else
+		{
+			dynamics.conveyor_map.at(index).kinematics.at(V_Y) = 0;
+		}
+
+	}
+
+
 }

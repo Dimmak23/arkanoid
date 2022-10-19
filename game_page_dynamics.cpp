@@ -524,10 +524,12 @@ void Game::dynamicUnits::updateExtAwaitTimer()
 			streamer.str("");
 			streamer << "(";
 
-			if (to_extend_await < 10)
-				streamer << "0" << std::fixed << std::setprecision(1) << to_extend_await;
-			else
-				streamer << std::fixed << std::setprecision(1) << to_extend_await;
+			//if (to_extend_await < 10)
+			//	streamer << "0" << std::fixed << std::setprecision(1) << to_extend_await;
+			//else
+			//	streamer << std::fixed << std::setprecision(1) << to_extend_await;
+
+			streamer << std::fixed << std::setprecision(1) << to_extend_await;
 
 			streamer << ")";
 
@@ -647,6 +649,20 @@ void Game::dynamicUnits::waitForBall()
 
 		//
 	}
+}
+
+//maybe we need to finish game because of to long belt
+void Game::dynamicUnits::checkLongBelt()
+{
+	int index{};
+
+	while (!(conveyor_map.at(index).block))
+	{
+		index++;
+	}
+	
+	if (conveyor.at(index).getGlobalBounds().top >= (game_field.origin_y + game_field.overall_height - 2 * Default::block_height))
+		Game::Process::running = false;
 }
 
 //<<<----SIMULATE

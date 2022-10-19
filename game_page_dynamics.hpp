@@ -128,6 +128,11 @@ class Game::dynamicUnits
 
 	//If ball werew lost we are waiting and then reset ball and paddle positions and kinematics
 	void waitForBall();
+
+	//FINISH GAME: TO LONG BELT
+
+	//If conveyor belt will touch top of the paddle - the game is over
+	void checkLongBelt();
 	
 
 	//PROBABILITIES PATTERNS

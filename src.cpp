@@ -59,7 +59,7 @@ int main()
 	//Render APPLICATION WINDOW
 	sf::RenderWindow application_window(
 		sf::VideoMode(screen_s, desktop.bitsPerPixel),
-		"Arkanoid, produced by DimmaK, 17 october 2022, all rights reserved."
+		"Arkanoid, produced by DimmaK, 24 october 2022, all rights reserved."
 	);
 	application_window.setFramerateLimit(360);//more then 300 gives good physics
 
@@ -157,6 +157,8 @@ int main()
 
 				ablHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
+				throwAbilities(*fork_Game_DUnits, Util::Process::delta_time);
+
 				//<-----fork_Game_DUnits->collisions();
 
 
@@ -181,6 +183,9 @@ int main()
 
 				//Check if ball have been lost and we need to reset the ball and paddle
 				fork_Game_DUnits->waitForBall();
+
+				//Check too long belt
+				fork_Game_DUnits->checkLongBelt();
 
 				//<-----fork_Game_DUnits->tooling();
 
