@@ -47,6 +47,7 @@
 
 #define INDEXER_LEFT		dynamics.conveyor.at(index).getGlobalBounds().left
 #define INDEXER_WIDTH		dynamics.conveyor.at(index).getGlobalBounds().width
+#define INDEXER_X_CENTER	INDEXER_LEFT + INDEXER_WIDTH / 2
 #define INDEXER_RIGHT		INDEXER_LEFT + INDEXER_WIDTH
 #define INDEXER_TOP			dynamics.conveyor.at(index).getGlobalBounds().top
 #define INDEXER_HEIGHT		dynamics.conveyor.at(index).getGlobalBounds().height
@@ -105,8 +106,8 @@
 #define THIS_ABL_Y_CENTER	THIS_ABL_TOP + THIS_ABL_RAD
 #define THIS_ABL_RX_LEFT	THIS_ABL_LEFT + THIS_ABL_RAD
 #define THIS_ABL_RX_RIGHT	THIS_ABL_RIGHT - THIS_ABL_RAD
-#define THIS_ABL_L_SIDE		(THIS_ABL_Y_CENTER < ABLOCK_BOTTOM) && (THIS_ABL_Y_CENTER > ABLOCK_TOP) && (THIS_ABL_RIGHT < ABLOCK_RIGHT)
-#define THIS_ABL_R_SIDE		(THIS_ABL_Y_CENTER < ABLOCK_BOTTOM) && (THIS_ABL_Y_CENTER > ABLOCK_TOP) && (THIS_ABL_LEFT > ABLOCK_LEFT)
+#define THIS_ABL_L_SIDE		(THIS_ABL_Y_CENTER < ABLOCK_BOTTOM) && (THIS_ABL_Y_CENTER > ABLOCK_TOP) && (THIS_ABL_RIGHT > ABLOCK_LEFT) && (THIS_ABL_X_CENTER < ABLOCK_LEFT)
+#define THIS_ABL_R_SIDE		(THIS_ABL_Y_CENTER < ABLOCK_BOTTOM) && (THIS_ABL_Y_CENTER > ABLOCK_TOP) && (THIS_ABL_LEFT < ABLOCK_RIGHT) && (THIS_ABL_X_CENTER > ABLOCK_RIGHT)
 #define THIS_ABL_T_SIDE		(THIS_ABL_X_CENTER < ABLOCK_RIGHT) && (THIS_ABL_X_CENTER > ABLOCK_LEFT) && (THIS_ABL_BOTTOM > ABLOCK_TOP)
 #define THIS_ABL_B_SIDE		(THIS_ABL_X_CENTER < ABLOCK_RIGHT) && (THIS_ABL_X_CENTER > ABLOCK_LEFT) && (THIS_ABL_TOP < ABLOCK_BOTTOM)
 #define THIS_ABL_UL_CORNER	(THIS_ABL_RX_RIGHT < ABLOCK_LEFT) && (THIS_ABL_Y_CENTER < ABLOCK_TOP)
@@ -268,8 +269,8 @@ inline static colission_detection checkCornerCollision(
 	else if (move_y < -rad_BLL) move_y = -rad_BLL;
 
 	//And FINALLY go to the absolute values:
-	move_x += corner_X;
-	move_y += corner_Y;
+	//move_x += corner_X;
+	//move_y += corner_Y;
 
 	//So now we can setup a proper vector to the BALL positioning
 	result.vector = sf::Vector2f(move_x, move_y);
@@ -716,11 +717,14 @@ static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d
 		(*this_map).kinematics.at(A_X) *= (-1.f) * Game::dynamicUnits::abl_bounce;
 		(*this_map).kinematics.at(A_Y) *= Game::dynamicUnits::abl_bounce;
 
+		std::cout << "Bounced ability: " << (*this_abl).getGlobalBounds().left << '\n';
+		std::cout << "Bounced ability: " << (*this_abl).getGlobalBounds().top << '\n';
+
 		//Immidiately re-calculate kinematics
-		recalculateAblKinematics((*this_map).kinematics, d_time);
+		//recalculateAblKinematics((*this_map).kinematics, d_time);
 
 		//And move ability
-		(*this_abl).move(sf::Vector2f((*this_map).kinematics.at(DELTA_X), (*this_map).kinematics.at(DELTA_Y)));
+		//(*this_abl).move(sf::Vector2f((*this_map).kinematics.at(DELTA_X), (*this_map).kinematics.at(DELTA_Y)));
 	}
 
 	//Let's check are the ability hit the RIGHT wall?
@@ -745,10 +749,10 @@ static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d
 		(*this_map).kinematics.at(A_Y) *= Game::dynamicUnits::abl_bounce;
 
 		//Immidiately re-calculate kinematics
-		recalculateAblKinematics((*this_map).kinematics, d_time);
+		//recalculateAblKinematics((*this_map).kinematics, d_time);
 
 		//And move ability
-		(*this_abl).move(sf::Vector2f((*this_map).kinematics.at(DELTA_X), (*this_map).kinematics.at(DELTA_Y)));
+		//(*this_abl).move(sf::Vector2f((*this_map).kinematics.at(DELTA_X), (*this_map).kinematics.at(DELTA_Y)));
 	}
 
 	//Let's check are the ability hit the CEILING?
@@ -773,10 +777,10 @@ static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d
 		(*this_map).kinematics.at(A_Y) *= (-1.f) * Game::dynamicUnits::abl_bounce;
 
 		//Immidiately re-calculate kinematics
-		recalculateAblKinematics((*this_map).kinematics, d_time);
+		//recalculateAblKinematics((*this_map).kinematics, d_time);
 
 		//And move ability
-		(*this_abl).move(sf::Vector2f((*this_map).kinematics.at(DELTA_X), (*this_map).kinematics.at(DELTA_Y)));
+		//(*this_abl).move(sf::Vector2f((*this_map).kinematics.at(DELTA_X), (*this_map).kinematics.at(DELTA_Y)));
 	}
 
 //////////////////////////////////////////////LOST ABILITIES///////////////////////////////////////////////
@@ -1093,10 +1097,10 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 
 				///////////////////RECALCULATE ABILITY KINEMATICS///////////////////////
 
-				(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
-				(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
-				(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
-				(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
+				//(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
+				//(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
+				//(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
+				//(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
 
 				///////////////////RECALCULATE BALL KINEMATICS///////////////////////
 
@@ -1122,10 +1126,10 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 
 				///////////////////RECALCULATE ABILITY KINEMATICS///////////////////////
 
-				(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
-				(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
-				(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
-				(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
+				//(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
+				//(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
+				//(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
+				//(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
 
 				///////////////////RECALCULATE BALL KINEMATICS///////////////////////
 
@@ -1146,10 +1150,10 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 
 				///////////////////RECALCULATE ABILITY KINEMATICS///////////////////////
 
-				(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
-				(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
-				(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
-				(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
+				//(*give_ability).kinematics.at(V_X) += 0.1f * bll(V_X);
+				//(*give_ability).kinematics.at(V_Y) += 0.1f * bll(V_Y);
+				//(*give_ability).kinematics.at(A_X) += 0.1f * bll(A_X);
+				//(*give_ability).kinematics.at(A_Y) += 0.1f * bll(A_Y);
 
 				///////////////////RECALCULATE BALL KINEMATICS///////////////////////
 
@@ -1167,6 +1171,158 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 	}
 }
 
+#define T_UNIT_TOP			this_unit.getGlobalBounds().top
+#define T_UNIT_LEFT			this_unit.getGlobalBounds().left
+#define T_UNIT_HEIGHT		this_unit.getGlobalBounds().height
+#define T_UNIT_WIDTH		this_unit.getGlobalBounds().width
+#define T_UNIT_BOTTOM		T_UNIT_TOP + T_UNIT_HEIGHT
+#define T_UNIT_RIGHT		T_UNIT_LEFT + T_UNIT_WIDTH
+
+#define A_UNIT_TOP			attacked_unit.getGlobalBounds().top
+#define A_UNIT_LEFT			attacked_unit.getGlobalBounds().left
+#define A_UNIT_HEIGHT		attacked_unit.getGlobalBounds().height
+#define A_UNIT_WIDTH		attacked_unit.getGlobalBounds().width
+#define A_UNIT_BOTTOM		A_UNIT_TOP + A_UNIT_HEIGHT
+#define A_UNIT_RIGHT		A_UNIT_LEFT + A_UNIT_WIDTH
+
+//RETURNS:
+//TRUE - if two rectangles are intersect
+//FALSE - if there is no intersection between two reactanges 
+inline static bool checkBoundCollision(const sf::Sprite& this_unit, const sf::Sprite& attacked_unit)
+{
+	sf::Rect THIS_U(sf::Vector2f(T_UNIT_LEFT, T_UNIT_TOP), sf::Vector2f(T_UNIT_WIDTH, T_UNIT_HEIGHT));
+	sf::Rect ATTACK_U(sf::Vector2f(A_UNIT_LEFT, A_UNIT_TOP), sf::Vector2f(A_UNIT_WIDTH, A_UNIT_HEIGHT));
+
+	auto diagnose = THIS_U.findIntersection(ATTACK_U);
+
+	return diagnose.has_value();
+}
+
+#define AU_TOP						attacked_unit.getGlobalBounds().top
+#define AU_LEFT						attacked_unit.getGlobalBounds().left
+#define AU_HEIGHT					attacked_unit.getGlobalBounds().height
+#define AU_WIDTH					attacked_unit.getGlobalBounds().width
+#define AU_BOTTOM					AU_TOP + AU_HEIGHT
+#define AU_RIGHT					AU_LEFT + AU_WIDTH
+#define AU_RAD						AU_HEIGHT / 2
+#define AU_Y_CENTER					AU_TOP + AU_HEIGHT / 2
+#define AU_RX_LEFT					AU_LEFT + AU_RAD
+#define AU_RX_RIGHT					AU_RIGHT - AU_RAD
+
+#define TU_TOP						this_unit.getGlobalBounds().top
+#define TU_LEFT						this_unit.getGlobalBounds().left
+#define TU_HEIGHT					this_unit.getGlobalBounds().height
+#define TU_WIDTH					this_unit.getGlobalBounds().width
+#define TU_BOTTOM					TU_TOP + TU_HEIGHT
+#define TU_RIGHT					TU_LEFT + TU_HEIGHT
+#define TU_RAD						TU_HEIGHT / 2
+#define TU_X_CENTER					TU_LEFT + TU_WIDTH / 2
+#define TU_Y_CENTER					TU_TOP + TU_HEIGHT / 2
+#define TU_RX_LEFT					TU_LEFT + TU_RAD
+#define TU_RX_RIGHT					TU_RIGHT - TU_RAD
+
+#define TU_COLLIDE_T_ABL			( (TU_RX_LEFT > AU_RX_LEFT) && (TU_RX_LEFT < AU_RX_RIGHT) || (TU_RX_RIGHT > AU_RX_LEFT) && (TU_RX_RIGHT < AU_RX_RIGHT) ) && (TU_BOTTOM > AU_TOP) && (TU_TOP < AU_TOP)
+#define TU_COLLIDE_B_ABL			( (TU_RX_LEFT > AU_RX_LEFT) && (TU_RX_LEFT < AU_RX_RIGHT) || (TU_RX_RIGHT > AU_RX_LEFT) && (TU_RX_RIGHT < AU_RX_RIGHT) ) && (TU_TOP < AU_BOTTOM) && (TU_BOTTOM > AU_BOTTOM)
+#define TU_COLLIDE_L_ABL			(TU_RIGHT > AU_LEFT) && (TU_RX_RIGHT < AU_RX_LEFT) && ( (TU_TOP < AU_BOTTOM) && (TU_TOP > AU_TOP) || (TU_BOTTOM < AU_BOTTOM) && (TU_BOTTOM > AU_TOP) )
+#define TU_COLLIDE_R_ABL			(TU_LEFT < AU_RIGHT) && (TU_RX_LEFT > AU_RX_RIGHT) && ( (TU_TOP < AU_BOTTOM) && (TU_TOP > AU_TOP) || (TU_BOTTOM < AU_BOTTOM) && (TU_BOTTOM > AU_TOP) )
+
+#define TU_COLLIDE_T_BLK			( (TU_RX_LEFT > AU_LEFT) && (TU_RX_LEFT < AU_RIGHT) || (TU_RX_RIGHT > AU_LEFT) && (TU_RX_RIGHT < AU_RIGHT) ) && (TU_TOP < AU_TOP) && (TU_BOTTOM > AU_TOP)
+#define TU_COLLIDE_B_BLK			( (TU_RX_LEFT > AU_LEFT) && (TU_RX_LEFT < AU_RIGHT) || (TU_RX_RIGHT > AU_LEFT) && (TU_RX_RIGHT < AU_RIGHT) ) && (TU_BOTTOM > AU_BOTTOM) && (TU_TOP < AU_BOTTOM)
+#define TU_COLLIDE_L_BLK			(TU_Y_CENTER > AU_BOTTOM) && (TU_Y_CENTER < AU_TOP) && (TU_RIGHT > AU_LEFT) && (TU_LEFT < AU_LEFT)
+#define TU_COLLIDE_R_BLK			(TU_Y_CENTER > AU_BOTTOM) && (TU_Y_CENTER < AU_TOP) && (TU_LEFT < AU_RIGHT) && (TU_RIGHT > AU_RIGHT)
+#define TU_COLLIDE_UL_BLK			(TU_BOTTOM > AU_TOP) && (TU_Y_CENTER < AU_TOP) && (TU_RIGHT > AU_LEFT) && (TU_LEFT < AU_LEFT)
+#define TU_COLLIDE_BL_BLK			(TU_TOP < AU_BOTTOM) && (TU_Y_CENTER > AU_BOTTOM) && (TU_RIGHT > AU_LEFT) && (TU_LEFT < AU_LEFT)
+#define TU_COLLIDE_UR_BLK			(TU_BOTTOM > AU_TOP) && (TU_Y_CENTER < AU_TOP) && (TU_LEFT < AU_RIGHT) && (TU_RIGHT > AU_RIGHT)
+#define TU_COLLIDE_BR_BLK			(TU_TOP < AU_BOTTOM) && (TU_Y_CENTER > AU_BOTTOM) && (TU_LEFT < AU_RIGHT) && (TU_RIGHT > AU_RIGHT)
+
+#define THIS_MAP_DX					this_map.kinematics.at(DELTA_X)
+#define THIS_MAP_DY					this_map.kinematics.at(DELTA_Y)
+#define THIS_MAP_VX					this_map.kinematics.at(V_X)
+#define THIS_MAP_VY					this_map.kinematics.at(V_Y)
+#define THIS_MAP_AX					this_map.kinematics.at(A_X)
+#define THIS_MAP_AY					this_map.kinematics.at(A_Y)
+
+#define ATACK_MAP_DX				attacked_map.kinematics.at(DELTA_X)
+#define ATACK_MAP_DY				attacked_map.kinematics.at(DELTA_Y)
+#define ATACK_MAP_VX				attacked_map.kinematics.at(V_X)
+#define ATACK_MAP_VY				attacked_map.kinematics.at(V_Y)
+#define ATACK_MAP_AX				attacked_map.kinematics.at(A_X)
+#define ATACK_MAP_AY				attacked_map.kinematics.at(A_Y)
+
+//
+inline static void checkTypeCollision(
+						sf::Sprite& this_unit,
+						sf::Sprite& attacked_unit,
+						Game::block_map_variables& this_map,
+						Game::block_map_variables& attacked_map,
+						const bool& desire
+)
+{
+	if (TU_COLLIDE_T_ABL)
+	{
+
+	}
+}
+
+//
+inline static void iterate2Dcontainers(
+						std::vector<sf::Sprite>& t_unit,
+						std::vector<Game::block_map_variables>& t_map,
+						//TRUE: we desire to test ability/block collisions, FALSE: we desire to test ability/ability collisions
+						const bool& desire
+)
+{
+	auto t_unit_it = t_unit.begin();
+	auto t_map_it = t_map.begin();
+	auto a_unit_it = t_unit.begin();
+	auto a_map_it = t_map.begin();
+
+	//Go thru all units in the container
+	//find ability and test if it collide someone
+	for (; t_unit_it < t_unit.end(); )
+	{
+		//SKIP BLOCKS
+		if ((*t_map_it).block)
+		{
+			t_unit_it++;
+			t_map_it = t_map.begin() + (t_unit_it - t_unit.begin());
+			continue;
+		}
+
+		a_unit_it = t_unit.begin();
+		a_map_it = t_map.begin();
+
+		//iterate stuff that could be attacked
+		for (; a_unit_it < t_unit.end(); )
+		{
+			if ((*a_map_it).block != desire)
+			{
+				a_unit_it++;
+				a_map_it = t_map.begin() + (a_unit_it - t_unit.begin());
+				continue;
+			}
+
+			//If we test for ability/ability collision we also need
+			//to skip a collision on itself
+			if ( (!desire) && (a_unit_it == t_unit_it) )
+			{
+				a_unit_it++;
+				a_map_it = t_map.begin() + (a_unit_it - t_unit.begin());
+				continue;
+			}
+
+			//Now check if there is a basic collision
+			if (checkBoundCollision((*t_unit_it), (*a_unit_it)))
+			{
+				checkTypeCollision((*t_unit_it), (*a_unit_it), (*t_map_it), (*a_map_it), desire);
+			}
+
+		}
+
+	}
+}
+
+
 inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_time)
 {
 
@@ -1182,63 +1338,54 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 	auto attacked_unit = dynamics.conveyor.begin();
 	auto give_block = dynamics.conveyor_map.begin();
 
-	//Seed for only blocks
-	auto only_blocks = [](const Game::block_map_variables& struc)
+	////Seed for only blocks
+	//auto only_blocks = [](const Game::block_map_variables& struc)
+	//{
+	//	return struc.block;
+	//};
+
+	////If there is gonna be a collision?
+	//auto bounds_collision = [&](const sf::Sprite& unit)
+	//{
+	//	sf::Rect HITTER(sf::Vector2f(THIS_ABL_LEFT, THIS_ABL_TOP), sf::Vector2f(THIS_ABL_WIDTH, THIS_ABL_HEIGHT));
+	//	sf::Rect TESTED(sf::Vector2f(UNIT_LEFT, UNIT_TOP), sf::Vector2f(UNIT_WIDTH, UNIT_HEIGHT));
+
+	//	auto diagnose = HITTER.findIntersection(TESTED);
+
+	//	return diagnose.has_value();
+	//};
+
+	for (; this_unit < dynamics.conveyor.end(); )
 	{
-		return struc.block;
-	};
-
-	//If there is gonna be a collision?
-	auto bounds_collision = [&](const sf::Sprite& unit)
-	{
-		return
-			(
-			(U_HOR_TOUCH(THIS_ABL_LEFT) && (U_VER_TOUCH(THIS_ABL_TOP) || U_VER_TOUCH(THIS_ABL_BOTTOM)))
-			||
-			(U_HOR_TOUCH(THIS_ABL_RIGHT) && (U_VER_TOUCH(THIS_ABL_TOP) || U_VER_TOUCH(THIS_ABL_BOTTOM)))
-			);
-	};
-
-	//Make sure it is a ABILITY
-	this_map = std::ranges::find_if_not(dynamics.conveyor_map, only_blocks);
-	//Find the first ABILITY
-	this_unit = dynamics.conveyor.begin() + (this_map - dynamics.conveyor_map.begin());
-
-	//Check if first ABILITY collide some BLOCK, then move to the next one
-	while (this_unit != dynamics.conveyor.end())
-	{
-		//Reset attacking unit
-		attacked_unit = dynamics.conveyor.begin();
-
-		//Find first BLOCK after the map
-		give_block = std::ranges::find_if(dynamics.conveyor_map, only_blocks);
-
-		//if (give_block == this_map)
-			//give_block = std::ranges::find_if_not(give_block + 1, dynamics.conveyor_map.end(), only_blocks);
-
-		if (give_block != dynamics.conveyor_map.end())
+		//THIS_UNIT have to be: ABILITY
+		//We check if there is some abilitites that collide blocks
+		if ( (*this_map).block )
 		{
-			//Attach to the ABILITY unit
-			attacked_unit = dynamics.conveyor.begin() + (give_block - dynamics.conveyor_map.begin());
+			//
+			this_unit++;
+			//
+			this_map = dynamics.conveyor_map.begin() + (this_unit - dynamics.conveyor.begin());
+			continue;
 		}
-		else attacked_unit = dynamics.conveyor.end();
 
-		//If it's not the end of the conveyor - LOOP
-		for (; attacked_unit != dynamics.conveyor.end(); )
+		attacked_unit = dynamics.conveyor.begin();
+		give_block = dynamics.conveyor_map.begin();
+
+		//Now look for the block in the conveyor belt
+		for (; attacked_unit < dynamics.conveyor.end(); )
 		{
+			//THIS_UNIT have to be: BLOCK
+			if (!((*give_block).block))
+			{
+				//
+				attacked_unit++;
+				//
+				give_block = dynamics.conveyor_map.begin() + (attacked_unit - dynamics.conveyor.begin());
+				continue;
+			}
 
-			//Now find unit with collision to it
-			attacked_unit = std::ranges::find_if(attacked_unit, dynamics.conveyor.end(), bounds_collision);
-
-			//if (attacked_unit == this_unit) attacked_unit = std::ranges::find_if(attacked_unit + 1, dynamics.conveyor.end(), bounds_collision);
-
-			//Attach to the map at this position
-			give_block = dynamics.conveyor_map.begin() + (attacked_unit - dynamics.conveyor.begin());
-
-			//If we not reach the end, we can check if it's an ability
-			//AND
-			//If it's an ability again we can break the LOOP
-			if ((attacked_unit != dynamics.conveyor.end()) && ((*give_block).block))
+			//Now check if there is a collision
+			if ( checkBoundCollision((*this_unit), (*attacked_unit)) )
 			{
 				//CALCULATE COLLISION
 
@@ -1256,6 +1403,8 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 						col_status.vector.y -= ABLOCK_TOP;
 						//Now we got the new position for the ball
 						(*this_unit).setPosition(sf::Vector2f(ABLOCK_LEFT - THIS_ABL_WIDTH, THIS_ABL_TOP));
+						//std::cout << "=====RESOLVED COLLISION====={THIS_ABL_UL_CORNER}: [ABILITY -> BLOCK]...\n";
+
 					}
 					else if (THIS_ABL_BL_CORNER)
 					{
@@ -1264,6 +1413,7 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 						col_status.vector.y -= ABLOCK_BOTTOM;
 						//Now we got the new position for the ball
 						(*this_unit).setPosition(sf::Vector2f(ABLOCK_LEFT - THIS_ABL_WIDTH, THIS_ABL_TOP));
+						//std::cout << "=====RESOLVED COLLISION====={THIS_ABL_BL_CORNER}: [ABILITY -> BLOCK]...\n";
 					}
 					else if (THIS_ABL_UR_CORNER)
 					{
@@ -1272,6 +1422,7 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 						col_status.vector.y -= ABLOCK_TOP;
 						//Now we got the new position for the ball
 						(*this_unit).setPosition(sf::Vector2f(ABLOCK_RIGHT, THIS_ABL_TOP));
+						//std::cout << "=====RESOLVED COLLISION====={THIS_ABL_UR_CORNER}: [ABILITY -> BLOCK]...\n";
 					}
 					else if (THIS_ABL_BR_CORNER)
 					{
@@ -1280,7 +1431,9 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 						col_status.vector.y -= ABLOCK_BOTTOM;
 						//Now we got the new position for the ball
 						(*this_unit).setPosition(sf::Vector2f(ABLOCK_RIGHT, THIS_ABL_TOP));
+						//std::cout << "=====RESOLVED COLLISION====={THIS_ABL_BR_CORNER}: [ABILITY -> BLOCK]...\n";
 					}
+
 
 					//IMPORTANT thing: kinematics should be swaped
 					//Velocities
@@ -1291,84 +1444,273 @@ inline static void ablHitBlocks(Game::dynamicUnits& dynamics, const float& d_tim
 					//Bounce velocities
 					THIS_MAP_VX *= Game::dynamicUnits::abl_bounce;
 					THIS_MAP_VY *= Game::dynamicUnits::abl_bounce;
-					//Bounce accelerations
-					//THIS_MAP_AX *= 1.f;
-					//THIS_MAP_AY *= -1.f;
 
 				}
 				//If is a flat surface
 				else
 				{
+					//THIS_ABILITY on the LEFT from ATTACKED_UNIT
 					if (THIS_ABL_L_SIDE)
 					{
-						
+
 						(*this_unit).setPosition(sf::Vector2f(ABLOCK_LEFT - THIS_ABL_WIDTH, THIS_ABL_TOP));
 
 						//Bounce velocities
-						THIS_MAP_VX *= -Game::dynamicUnits::bll_bounce;
-						THIS_MAP_VY *= Game::dynamicUnits::bll_bounce;
+						THIS_MAP_VX *= -Game::dynamicUnits::abl_bounce;
+						THIS_MAP_VY *= Game::dynamicUnits::abl_bounce;
 						//Bounce accelerations
 						THIS_MAP_AX *= -1.f;
-						THIS_MAP_AY *= 1.f;
+
+						//std::cout << "=====RESOLVED COLLISION====={THIS_ABL_L_SIDE}: [ABILITY -> BLOCK]...\n";
 					}
+					//THIS_ABILITY on the RIGHT from ATTACKED_UNIT
 					else if (THIS_ABL_R_SIDE)
 					{
 
 						(*this_unit).setPosition(sf::Vector2f(ABLOCK_RIGHT, THIS_ABL_TOP));
 
 						//Bounce velocities
-						THIS_MAP_VX *= -Game::dynamicUnits::bll_bounce;
-						THIS_MAP_VY *= Game::dynamicUnits::bll_bounce;
+						THIS_MAP_VX *= -Game::dynamicUnits::abl_bounce;
+						THIS_MAP_VY *= Game::dynamicUnits::abl_bounce;
 						//Bounce accelerations
 						THIS_MAP_AX *= -1.f;
-						THIS_MAP_AY *= 1.f;
+
+						//std::cout << "=====RESOLVED COLLISION====={THIS_ABL_R_SIDE}: [ABILITY -> BLOCK]...\n";
 					}
 					else if (THIS_ABL_T_SIDE)
 					{
 
 						(*this_unit).setPosition(sf::Vector2f(THIS_ABL_LEFT, ABLOCK_TOP - THIS_ABL_HEIGHT));
-						
+
 						//Bounce velocities
 						THIS_MAP_VX *= Game::dynamicUnits::abl_bounce;
 						THIS_MAP_VY *= -Game::dynamicUnits::abl_bounce;
 						//Bounce accelerations
-						THIS_MAP_AX *= 1.f;
 						THIS_MAP_AY *= -1.f;
+
+						//std::cout << "=====RESOLVED COLLISION====={THIS_ABL_T_SIDE}: [ABILITY -> BLOCK]...\n";
 					}
 					else if (THIS_ABL_B_SIDE)
 					{
-						
+
 						(*this_unit).setPosition(sf::Vector2f(THIS_ABL_LEFT, ABLOCK_BOTTOM));
 
 						//Bounce velocities
 						THIS_MAP_VX *= Game::dynamicUnits::abl_bounce;
 						THIS_MAP_VY *= -Game::dynamicUnits::abl_bounce;
 						//Bounce accelerations
-						THIS_MAP_AX *= 1.f;
 						THIS_MAP_AY *= -1.f;
+
+						//std::cout << "=====RESOLVED COLLISION====={THIS_ABL_B_SIDE}: [ABILITY -> BLOCK]...\n";
+					}
+					else
+					{
+						//std::cout << "!!!UNRESOLVED COLLISION!!!: [ABILITY -> BLOCK]...\n";
 					}
 				}
+				//std::cout << "ABILITY OPERAND: " << (*this_map).operand << "\n";
+				//std::cout << "BLOCK OPERAND: " << (*give_block).operand << "\n";
 
 				/////////////////////RECALCULATE THIS ABILITY KINEMATICS/////////////////////////
 
 			}
-			
-			//If we reach the end: terminate LOOP
-			else if (attacked_unit == dynamics.conveyor.end()) break;
-			//This was the last conveyor unit, break LOOP
-			else if (give_block == (dynamics.conveyor_map.end() - 1)) break;
 
-			//If not: find next ABILITY
-			give_block = std::ranges::find_if(give_block + 1, dynamics.conveyor_map.end(), only_blocks);
-			//Prepair attacked_unit for checking
-			attacked_unit = dynamics.conveyor.begin() + (give_block - dynamics.conveyor_map.begin());
+			//
+			attacked_unit++;
+			//
+			give_block = dynamics.conveyor_map.begin() + (attacked_unit - dynamics.conveyor.begin());
 		}
 
-		//Find next ability to test
-		this_map = std::ranges::find_if_not(this_map + 1, dynamics.conveyor_map.end(), only_blocks);
-		//Find the first ability
-		this_unit = dynamics.conveyor.begin() + (this_map - dynamics.conveyor_map.begin());
+		//std::cout << "THIS_UNIT: {" << (THIS_ABL_LEFT - game_field.origin_x) << ", " << (THIS_ABL_TOP - game_field.origin_y) << "} not collide anyone...\n";
+		//std::cout << "THIS_MAP: .block = " << std::boolalpha << (*this_map).block << "\n";
+		//std::cout << "THIS_UNIT #" << this_unit - dynamics.conveyor.begin() << "\n";
+		//std::cout << "THIS_MAP #" << this_map - dynamics.conveyor_map.begin() << "\n";
+		//std::cout << "THIS_MAP: .kin.(DELTA_X) = " << (*this_map).kinematics.at(DELTA_X) << "\n";
+		//std::cout << "THIS_MAP: .kin.(DELTA_Y) = " << (*this_map).kinematics.at(DELTA_Y) << "\n";
+
+
+		//Check the next unit
+		this_unit++;
+		//
+		this_map = dynamics.conveyor_map.begin() + (this_unit - dynamics.conveyor.begin());
 	}
+
+	////Make sure it is a ABILITY
+	//this_map = std::ranges::find_if_not(dynamics.conveyor_map, only_blocks);
+	////Find the first ABILITY
+	//this_unit = dynamics.conveyor.begin() + (this_map - dynamics.conveyor_map.begin());
+
+	////Check if first ABILITY collide some BLOCK, then move to the next one
+	//while (this_unit != dynamics.conveyor.end())
+	//{
+	//	//Reset attacking unit
+	//	attacked_unit = dynamics.conveyor.begin();
+
+	//	//Find first BLOCK after the map
+	//	give_block = std::ranges::find_if(dynamics.conveyor_map, only_blocks);
+
+	//	//if (give_block == this_map)
+	//		//give_block = std::ranges::find_if_not(give_block + 1, dynamics.conveyor_map.end(), only_blocks);
+
+	//	if (give_block != dynamics.conveyor_map.end())
+	//	{
+	//		//Attach to the ABILITY unit
+	//		attacked_unit = dynamics.conveyor.begin() + (give_block - dynamics.conveyor_map.begin());
+	//	}
+	//	else attacked_unit = dynamics.conveyor.end();
+
+	//	//If it's not the end of the conveyor - LOOP
+	//	for (; attacked_unit != dynamics.conveyor.end(); )
+	//	{
+
+	//		//Now find unit with collision to it
+	//		attacked_unit = std::ranges::find_if(attacked_unit, dynamics.conveyor.end(), bounds_collision);
+
+	//		//if (attacked_unit == this_unit) attacked_unit = std::ranges::find_if(attacked_unit + 1, dynamics.conveyor.end(), bounds_collision);
+
+	//		//Attach to the map at this position
+	//		give_block = dynamics.conveyor_map.begin() + (attacked_unit - dynamics.conveyor.begin());
+
+	//		//If we not reach the end, we can check if it's an ability
+	//		//AND
+	//		//If it's an ability again we can break the LOOP
+	//		if ((attacked_unit != dynamics.conveyor.end()) && ((*give_block).block))
+	//		{
+	//			//CALCULATE COLLISION
+
+	//			//If it is a corner
+	//			if (
+	//				(THIS_ABL_UL_CORNER || THIS_ABL_BL_CORNER || THIS_ABL_UR_CORNER || THIS_ABL_BR_CORNER)
+	//				)
+	//			{
+	//				colission_detection col_status{};
+
+	//				if (THIS_ABL_UL_CORNER)
+	//				{
+	//					col_status = checkCornerCollision(ABLOCK_LEFT, ABLOCK_TOP, THIS_ABL_RX_RIGHT, THIS_ABL_Y_CENTER, THIS_ABL_RAD, THIS_MAP_DY);
+	//					col_status.vector.x -= ABLOCK_LEFT;
+	//					col_status.vector.y -= ABLOCK_TOP;
+	//					//Now we got the new position for the ball
+	//					(*this_unit).setPosition(sf::Vector2f(ABLOCK_LEFT - THIS_ABL_WIDTH, THIS_ABL_TOP));
+	//				}
+	//				else if (THIS_ABL_BL_CORNER)
+	//				{
+	//					col_status = checkCornerCollision(ABLOCK_LEFT, ABLOCK_BOTTOM, THIS_ABL_RX_RIGHT, THIS_ABL_Y_CENTER, THIS_ABL_RAD, THIS_MAP_DY);
+	//					col_status.vector.x -= ABLOCK_LEFT;
+	//					col_status.vector.y -= ABLOCK_BOTTOM;
+	//					//Now we got the new position for the ball
+	//					(*this_unit).setPosition(sf::Vector2f(ABLOCK_LEFT - THIS_ABL_WIDTH, THIS_ABL_TOP));
+	//				}
+	//				else if (THIS_ABL_UR_CORNER)
+	//				{
+	//					col_status = checkCornerCollision(ABLOCK_RIGHT, ABLOCK_TOP, THIS_ABL_RX_LEFT, THIS_ABL_Y_CENTER, THIS_ABL_RAD, THIS_MAP_DY);
+	//					col_status.vector.x -= ABLOCK_RIGHT;
+	//					col_status.vector.y -= ABLOCK_TOP;
+	//					//Now we got the new position for the ball
+	//					(*this_unit).setPosition(sf::Vector2f(ABLOCK_RIGHT, THIS_ABL_TOP));
+	//				}
+	//				else if (THIS_ABL_BR_CORNER)
+	//				{
+	//					col_status = checkCornerCollision(ABLOCK_RIGHT, ABLOCK_BOTTOM, THIS_ABL_RX_LEFT, THIS_ABL_Y_CENTER, THIS_ABL_RAD, THIS_MAP_DY);
+	//					col_status.vector.x -= ABLOCK_RIGHT;
+	//					col_status.vector.y -= ABLOCK_BOTTOM;
+	//					//Now we got the new position for the ball
+	//					(*this_unit).setPosition(sf::Vector2f(ABLOCK_RIGHT, THIS_ABL_TOP));
+	//				}
+
+	//				//IMPORTANT thing: kinematics should be swaped
+	//				//Velocities
+	//				std::swap(THIS_MAP_VX, THIS_MAP_VY);
+	//				//Accelerations
+	//				std::swap(THIS_MAP_AX, THIS_MAP_AY);
+
+	//				//Bounce velocities
+	//				THIS_MAP_VX *= Game::dynamicUnits::abl_bounce;
+	//				THIS_MAP_VY *= Game::dynamicUnits::abl_bounce;
+	//				//Bounce accelerations
+	//				//THIS_MAP_AX *= 1.f;
+	//				//THIS_MAP_AY *= -1.f;
+
+	//			}
+	//			//If is a flat surface
+	//			else
+	//			{
+	//				if (THIS_ABL_L_SIDE)
+	//				{
+	//					
+	//					(*this_unit).setPosition(sf::Vector2f(ABLOCK_LEFT - THIS_ABL_WIDTH, THIS_ABL_TOP));
+
+	//					//Bounce velocities
+	//					THIS_MAP_VX *= -Game::dynamicUnits::bll_bounce;
+	//					THIS_MAP_VY *= Game::dynamicUnits::bll_bounce;
+	//					//Bounce accelerations
+	//					THIS_MAP_AX *= -1.f;
+	//					THIS_MAP_AY *= 1.f;
+	//				}
+	//				else if (THIS_ABL_R_SIDE)
+	//				{
+
+	//					(*this_unit).setPosition(sf::Vector2f(ABLOCK_RIGHT, THIS_ABL_TOP));
+
+	//					//Bounce velocities
+	//					THIS_MAP_VX *= -Game::dynamicUnits::bll_bounce;
+	//					THIS_MAP_VY *= Game::dynamicUnits::bll_bounce;
+	//					//Bounce accelerations
+	//					THIS_MAP_AX *= -1.f;
+	//					THIS_MAP_AY *= 1.f;
+	//				}
+	//				else if (THIS_ABL_T_SIDE)
+	//				{
+
+	//					(*this_unit).setPosition(sf::Vector2f(THIS_ABL_LEFT, ABLOCK_TOP - THIS_ABL_HEIGHT));
+	//					
+	//					//Bounce velocities
+	//					THIS_MAP_VX *= Game::dynamicUnits::abl_bounce;
+	//					THIS_MAP_VY *= -Game::dynamicUnits::abl_bounce;
+	//					//Bounce accelerations
+	//					THIS_MAP_AX *= 1.f;
+	//					THIS_MAP_AY *= -1.f;
+	//				}
+	//				else if (THIS_ABL_B_SIDE)
+	//				{
+	//					
+	//					(*this_unit).setPosition(sf::Vector2f(THIS_ABL_LEFT, ABLOCK_BOTTOM));
+
+	//					//Bounce velocities
+	//					THIS_MAP_VX *= Game::dynamicUnits::abl_bounce;
+	//					THIS_MAP_VY *= -Game::dynamicUnits::abl_bounce;
+	//					//Bounce accelerations
+	//					THIS_MAP_AX *= 1.f;
+	//					THIS_MAP_AY *= -1.f;
+	//				}
+	//				else
+	//				{
+	//					std::cout << "UNRESOLVED COLLISION: [ABILITY -> BLOCK]...\n";
+	//					std::cout << "ABILITY OPERAND: " << (*this_map).operand << "\n";
+	//					std::cout << "BLOCK OPERAND: " << (*give_block).operand << "\n";
+	//				}
+	//			}
+
+	//			/////////////////////RECALCULATE THIS ABILITY KINEMATICS/////////////////////////
+
+	//		}
+	//		
+	//		//If we reach the end: terminate LOOP
+	//		else if (attacked_unit == dynamics.conveyor.end()) break;
+	//		//This was the last conveyor unit, break LOOP
+	//		else if (give_block == (dynamics.conveyor_map.end() - 1)) break;
+
+	//		//If not: find next ABILITY
+	//		give_block = std::ranges::find_if(give_block + 1, dynamics.conveyor_map.end(), only_blocks);
+	//		//Prepair attacked_unit for checking
+	//		attacked_unit = dynamics.conveyor.begin() + (give_block - dynamics.conveyor_map.begin());
+	//	}
+
+	//	//Find next ability to test
+	//	this_map = std::ranges::find_if_not(this_map + 1, dynamics.conveyor_map.end(), only_blocks);
+	//	//Find the first ability
+	//	this_unit = dynamics.conveyor.begin() + (this_map - dynamics.conveyor_map.begin());
+	//}
 }
 
 inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_time)
@@ -1395,12 +1737,12 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 	//If there is gonna be a collision?
 	auto bounds_collision = [&](const sf::Sprite& unit)
 	{
-		return
-			(
-			(U_HOR_TOUCH(THIS_ABL_LEFT) && (U_VER_TOUCH(THIS_ABL_TOP) || U_VER_TOUCH(THIS_ABL_BOTTOM)))
-			||
-			(U_HOR_TOUCH(THIS_ABL_RIGHT) && (U_VER_TOUCH(THIS_ABL_TOP) || U_VER_TOUCH(THIS_ABL_BOTTOM)))
-			);
+		sf::Rect HITTER(sf::Vector2f(THIS_ABL_LEFT, THIS_ABL_TOP), sf::Vector2f(THIS_ABL_WIDTH, THIS_ABL_HEIGHT));
+		sf::Rect TESTED(sf::Vector2f(UNIT_LEFT, UNIT_TOP), sf::Vector2f(UNIT_WIDTH, UNIT_HEIGHT));
+		
+		auto diagnose = HITTER.findIntersection(TESTED);
+
+		return diagnose.has_value();
 	};
 
 	//Make sure it is an ability
@@ -1416,8 +1758,8 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 		
 		//Find next ability after the map
 		give_ability = std::ranges::find_if_not(dynamics.conveyor_map, only_blocks);
-		//if (give_ability == this_map)
-			//give_ability = std::ranges::find_if_not(give_ability+1, dynamics.conveyor_map.end(), only_blocks);
+		if (give_ability == this_map)
+			give_ability = std::ranges::find_if_not(give_ability+1, dynamics.conveyor_map.end(), only_blocks);
 		
 		if (give_ability != dynamics.conveyor_map.end())
 		{
@@ -1433,7 +1775,7 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 			//Now find unit with collision to it
 			attacked_unit = std::ranges::find_if(attacked_unit, dynamics.conveyor.end(), bounds_collision);
 
-			//if (attacked_unit == this_unit) attacked_unit = std::ranges::find_if(attacked_unit+1, dynamics.conveyor.end(), bounds_collision);
+			if (attacked_unit == this_unit) attacked_unit = std::ranges::find_if(attacked_unit+1, dynamics.conveyor.end(), bounds_collision);
 
 			//Attach to the map at this position
 			give_ability = dynamics.conveyor_map.begin() + (attacked_unit - dynamics.conveyor.begin());
@@ -1483,16 +1825,26 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 				//If it is a flat collision
 				else
 				{
+					//THIS_UNIT are on top of the ATTACKED UNIT
 					if (THIS_ABL_T_SIDE)
 					{
 						//Set ball center ouside bound of the block
 						(*this_unit).setPosition(sf::Vector2f(THIS_ABL_LEFT, ABLOCK_TOP - THIS_ABL_HEIGHT));
+						(*this_map).kinematics.at(V_X) = 0;
+						(*this_map).kinematics.at(V_Y) = 0;
+						(*this_map).kinematics.at(A_X) = 0;
+						(*this_map).kinematics.at(A_Y) = 0;
 
 					}
-					else if (THIS_ABL_B_SIDE)
+					//THIS_UNIT are bellow of the ATTACKED UNIT
+					else /*if (THIS_ABL_B_SIDE)*/
 					{
 						//Set ball center ouside bound of the block
 						(*this_unit).setPosition(sf::Vector2f(THIS_ABL_LEFT, ABLOCK_BOTTOM));
+						(*this_map).kinematics.at(V_X) = 0;
+						(*this_map).kinematics.at(V_Y) = 0;
+						(*this_map).kinematics.at(A_X) = 0;
+						(*this_map).kinematics.at(A_Y) = 0;
 					}
 				}
 
@@ -1503,7 +1855,7 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 				(*give_ability).kinematics.at(A_X) += 0.1f * (*this_map).kinematics.at(A_X);
 				(*give_ability).kinematics.at(A_Y) += 0.1f * (*this_map).kinematics.at(A_Y);
 
-				/////////////////////RECALCULATE THIS ABILITY KINEMATICS/////////////////////////
+				/////////////////////RECALCULATE THIS_ABILITY KINEMATICS/////////////////////////
 
 				//X axis acceleration will be inverted
 				(*this_map).kinematics.at(A_X) *= -1.f;
@@ -1513,6 +1865,7 @@ inline static void ablHitAbilities(Game::dynamicUnits& dynamics, const float& d_
 				(*this_map).kinematics.at(V_Y) *= -Game::dynamicUnits::abl_bounce;
 
 			}
+
 			//If we reach the end: terminate LOOP
 			else if (attacked_unit == dynamics.conveyor.end()) break;
 			//This was the last conveyor unit, break LOOP
@@ -1538,6 +1891,7 @@ inline static void throwAbilities(Game::dynamicUnits& dynamics, const float& d_t
 
 	//BOUNDERS
 	float left_coor{};
+	float center_coor{};
 	float right_coor{};
 	float btm_coor{};
 
@@ -1557,6 +1911,7 @@ inline static void throwAbilities(Game::dynamicUnits& dynamics, const float& d_t
 
 		//Grab bounds
 		left_coor	= INDEXER_LEFT;
+		center_coor = INDEXER_X_CENTER;
 		right_coor	= INDEXER_RIGHT;
 		btm_coor	= INDEXER_BOTTOM;
 
@@ -1577,11 +1932,15 @@ inline static void throwAbilities(Game::dynamicUnits& dynamics, const float& d_t
 				(HOLDER_TOP == btm_coor)
 				&&
 				(
-					//Left side of the ABILITY inside unit bounds
-					( (HOLDER_LEFT < left_coor) && (left_coor < HOLDER_RIGHT) )
-					||
-					//Right side of the ABILITY inside unit bounds
-					( (HOLDER_LEFT < right_coor) && (right_coor < HOLDER_RIGHT) )
+					////Left side of the ABILITY inside unit bounds
+					//( (HOLDER_LEFT <= left_coor) && (left_coor <= HOLDER_RIGHT) )
+					//||
+					////Right side of the ABILITY inside unit bounds
+					//( (HOLDER_LEFT <= right_coor) && (right_coor <= HOLDER_RIGHT) )
+					
+					//!WE ARE ALREADY PUSH ABILITIES WHEN THY ARE COLLIDE BLOCKS AND OTHER ABILITIES!
+					//	SO HERE WE CHECK ONLY CENTER OF THE UNIT
+					((HOLDER_LEFT <= center_coor) && (center_coor <= HOLDER_RIGHT))
 				)
 			)
 			{

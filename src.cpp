@@ -34,13 +34,13 @@
 //					   HINSTANCE hPrevInstance,
 //					   LPTSTR    lpCmdLine,
 //					   int       nCmdShow)
-int WinMain(
-	HINSTANCE hInstance,
-	HINSTANCE hPrevInstance,
-	LPSTR     lpCmdLine,
-	int       nShowCmd
-)
-//int main()
+//int WinMain(
+//	HINSTANCE hInstance,
+//	HINSTANCE hPrevInstance,
+//	LPSTR     lpCmdLine,
+//	int       nShowCmd
+//)
+int main()
 {
 	//=========================PREPARE UTILITIES========================
 
@@ -68,6 +68,7 @@ int WinMain(
 	sf::RenderWindow application_window(
 		sf::VideoMode(screen_s, desktop.bitsPerPixel),
 		"Arkanoid, produced by DimmaK, 24 october 2022, all rights reserved."
+		/*,sf::Style::Fullscreen*/
 	);
 	application_window.setFramerateLimit(360);//more then 300 gives good physics
 
@@ -146,96 +147,96 @@ int WinMain(
 				//User could close the window, so we shouldn't waste resources on processing
 				if (!(application_window.isOpen())) break;
 
+				//If game not on the pause
+				if (!Game::Process::on_pause)
+				{
+					//<-----fork_Game_DUnits->simulations();
 
-				//<-----fork_Game_DUnits->simulations();
+					simulatePhysics(Util::Process::delta_time);
 
-				simulatePhysics(Util::Process::delta_time);
-
-				//<-----fork_Game_DUnits->simulations();
-
-
-
-
-
-				//<-----fork_Game_DUnits->collisions();
-
-				collideUnits(*fork_Game_DUnits, Util::Process::delta_time);
-
-				ablHitPlayGround(*fork_Game_DUnits, Util::Process::delta_time);
-
-				ballHitBlocks(*fork_Game_DUnits, Util::Process::delta_time);
-				
-				ballHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
-
-				ablHitBlocks(*fork_Game_DUnits, Util::Process::delta_time);
-
-				ablHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
-
-				if (Game::dynamicUnits::game_time > 0.5f) throwAbilities(*fork_Game_DUnits, Util::Process::delta_time);
-
-				//<-----fork_Game_DUnits->collisions();
+					//<-----fork_Game_DUnits->simulations();
 
 
 
 
-				//<-----fork_Game_DUnits->movements();
 
-				moveUnits(*fork_Game_DUnits);
+					//<-----fork_Game_DUnits->collisions();
 
-				//<-----fork_Game_DUnits->movements();
+					collideUnits(*fork_Game_DUnits, Util::Process::delta_time);
 
+					ablHitPlayGround(*fork_Game_DUnits, Util::Process::delta_time);
 
+					ballHitBlocks(*fork_Game_DUnits, Util::Process::delta_time);
 
+					ballHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
-				//<-----fork_Game_DUnits->tooling();
+					ablHitBlocks(*fork_Game_DUnits, Util::Process::delta_time);
 
-				//Check do we need to change waiting time
-				fork_Game_DUnits->updateExtAwaitTimer();
+					ablHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
-				//Check and extend conveyor belt, if time is come
-				fork_Game_DUnits->extendConveyor(*fork_Game_SUnits);
+					if (Game::dynamicUnits::game_time > 0.5f) throwAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
-				//Check if ball have been lost and we need to reset the ball and paddle
-				fork_Game_DUnits->waitForBall();
-
-				//Check too long belt
-				fork_Game_DUnits->checkLongBelt();
-
-				//<-----fork_Game_DUnits->tooling();
+					//<-----fork_Game_DUnits->collisions();
 
 
 
 
-				//<-----fork_Game_DUnits->interfaces();
+					//<-----fork_Game_DUnits->movements();
 
-				//update score
-				fork_Game_DUnits->updateScore();
+					moveUnits(*fork_Game_DUnits);
 
-				//blink adder
-				fork_Game_DUnits->blinkScoreAdder();
-
-				//update lifes status
-				fork_Game_DUnits->updateLifeBalls(*fork_Game_SUnits);
-
-				//User could catch some ability, so maybe we need to change paddle texture
-				fork_Game_DUnits->resizePaddle(*fork_Game_SUnits);
-
-				//Update cool electric paddle
-				fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
-
-				//Update game time interface
-				fork_Game_DUnits->updateGTime();
-
-				//Update ball parameters interface
-				fork_Game_DUnits->updateParInterface(Game::dynamicUnits::ball_kinematics, fork_Game_DUnits->ball_parameters);
-
-				//Update paddle parameters interface
-				fork_Game_DUnits->updateParInterface(Game::dynamicUnits::paddle_kinematics, fork_Game_DUnits->paddle_parameters);
-
-				//<-----fork_Game_DUnits->interfaces();
+					//<-----fork_Game_DUnits->movements();
 
 
 
+
+					//<-----fork_Game_DUnits->tooling();
+
+					//Check do we need to change waiting time
+					fork_Game_DUnits->updateExtAwaitTimer();
+
+					//Check and extend conveyor belt, if time is come
+					fork_Game_DUnits->extendConveyor(*fork_Game_SUnits);
+
+					//Check if ball have been lost and we need to reset the ball and paddle
+					fork_Game_DUnits->waitForBall();
+
+					//Check too long belt
+					fork_Game_DUnits->checkLongBelt();
+
+					//<-----fork_Game_DUnits->tooling();
+
+
+
+
+					//<-----fork_Game_DUnits->interfaces();
+
+					//update score
+					fork_Game_DUnits->updateScore();
+
+					//blink adder
+					fork_Game_DUnits->blinkScoreAdder();
+
+					//update lifes status
+					fork_Game_DUnits->updateLifeBalls(*fork_Game_SUnits);
+
+					//User could catch some ability, so maybe we need to change paddle texture
+					fork_Game_DUnits->resizePaddle(*fork_Game_SUnits);
+
+					//Update cool electric paddle
+					fork_Game_DUnits->updateElectricPaddle(*fork_Game_SUnits);
+
+					//Update game time interface
+					fork_Game_DUnits->updateGTime();
+
+					//Update ball parameters interface
+					fork_Game_DUnits->updateParInterface(Game::dynamicUnits::ball_kinematics, fork_Game_DUnits->ball_parameters);
+
+					//Update paddle parameters interface
+					fork_Game_DUnits->updateParInterface(Game::dynamicUnits::paddle_kinematics, fork_Game_DUnits->paddle_parameters);
+
+					//<-----fork_Game_DUnits->interfaces();
+				}
 
 				//Render screen the Game static objects
 				fork_Game_Process->render(application_window, *fork_Game_SUnits, *fork_Game_DUnits);
@@ -243,34 +244,42 @@ int WinMain(
 				//Check user inputs
 				fork_Game_Process->interact(application_window, *fork_Game_DUnits, Util::Process::delta_time);;
 
+				///TIME IS UPDATING WHEN GAME ON PAUSE
+				///SO WE DON"T END IT UP WITH REALY BEG DELTA WHEN GAME GO FROM PAUSE
 				//We need to get new delta time
 				Util::Process::updateDelta();  //new end time, begin time is also the new end time, delta between new end time and old begin time 
 
-				///<-----TIMERS
-
-				//Update game time
-				Game::dynamicUnits::game_time += Util::Process::delta_time;
-
-				//Update conveyor belt extender timer
-				//NOTE: If we have lost ball, we don't wait to extend conveyor belt
-				if (!Game::dynamicUnits::lost_ball) Game::dynamicUnits::extender_timer -= Util::Process::delta_time;
-
-				//Update paddle changer timer
-				Game::dynamicUnits::pdl_upd_timer += Util::Process::delta_time;
-
-				//Update score adder blink timer
-				if (Game::dynamicUnits::score_adder) Game::dynamicUnits::score_add_timer += Util::Process::delta_time;
-
-				//if ball was lost, then wait for the new one
-				if (Game::dynamicUnits::lost_ball) Game::dynamicUnits::ball_timer += Util::Process::delta_time;
-
-				///<-----TIMERS
-
-				//Check if there is no lifes
-				if (!(Game::dynamicUnits::lifes))
+				//If game not on the pause
+				if(!Game::Process::on_pause)
 				{
-					//Reset bool state of the Game process
-					Game::Process::running = false;
+					
+					///<-----TIMERS
+					
+
+					//Update game time
+					Game::dynamicUnits::game_time += Util::Process::delta_time;
+
+					//Update conveyor belt extender timer
+					//NOTE: If we have lost ball, we don't wait to extend conveyor belt
+					if (!Game::dynamicUnits::lost_ball) Game::dynamicUnits::extender_timer -= Util::Process::delta_time;
+
+					//Update paddle changer timer
+					Game::dynamicUnits::pdl_upd_timer += Util::Process::delta_time;
+
+					//Update score adder blink timer
+					if (Game::dynamicUnits::score_adder) Game::dynamicUnits::score_add_timer += Util::Process::delta_time;
+
+					//if ball was lost, then wait for the new one
+					if (Game::dynamicUnits::lost_ball) Game::dynamicUnits::ball_timer += Util::Process::delta_time;
+
+					///<-----TIMERS
+
+					//Check if there is no lifes
+					if (!(Game::dynamicUnits::lifes))
+					{
+						//Reset bool state of the Game process
+						Game::Process::running = false;
+					}
 				}
 
 			}

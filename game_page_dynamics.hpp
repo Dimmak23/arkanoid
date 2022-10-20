@@ -133,7 +133,6 @@ class Game::dynamicUnits
 
 	//If conveyor belt will touch top of the paddle - the game is over
 	void checkLongBelt();
-	
 
 	//PROBABILITIES PATTERNS
 
@@ -199,6 +198,10 @@ class Game::dynamicUnits
 	//BASEMENT PAINTING
 
 	sf::RectangleShape basement;
+
+	//PAUSE PAINTING
+
+	sf::RectangleShape pause_page;
 
 	//PADDLE TEXTURE CHANGE HANDLERS
 

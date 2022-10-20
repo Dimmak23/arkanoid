@@ -996,5 +996,10 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	basement.setFillColor(sf::Color::Black);
 	basement.setPosition(sf::Vector2f(to_f(game_field.origin_x), to_f(game_field.origin_y + game_field.overall_height + game_field.outside_thk)));
 
+//=================================PAUSE PAGE===============================
+
+	pause_page.setSize(sf::Vector2f(to_f(outline.overall_width - 2 * outline.empty_thk), to_f(outline.overall_height - 2 * outline.empty_thk)));
+	pause_page.setFillColor(sf::Color(255,255,255,to_i(0.4f*255)));
+	pause_page.setPosition(sf::Vector2f(to_f(outline.empty_thk), to_f(outline.empty_thk)));
 
 }

@@ -41,6 +41,7 @@ class Game::Process
 		~Process() = default;
 
 		static inline bool running{ false };
+		static inline bool on_pause{ false };
 
 		void render(
 					sf::RenderWindow& window,
@@ -58,6 +59,8 @@ class Game::Process
 
 
 inline Game::Process::Process()
-{
+{	
+	//IMPLEMENT STRATEGY FOR REPLAY
 	running = true;
+	on_pause = false;
 }
