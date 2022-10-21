@@ -82,6 +82,7 @@ int main()
 
 	//Get user screen properties
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+
 	//Specify opening screen ratio
 	sf::Vector2u screen_s(outline.overall_width, outline.overall_height);
 
@@ -98,15 +99,15 @@ int main()
 	// change the size of the window
 	//application_window.setSize(sf::Vector2u(1200, 800));
 	//application_window.setPosition(sf::Vector2i(50, 50));  //There is some issue when window oppenning to high
-
-	//First start timer update
-	Util::Process::resetStartPoint();
 	
 	//Initialize pointer to Intro object with texts property
 	std::unique_ptr<Intro::staticUnits> fork_Intro_SUnits = std::make_unique<Intro::staticUnits>(*fork_Util_SUnits);
 	
 	//Initialize pointer to Intro object with event property
 	std::unique_ptr<Intro::Process> fork_Intro_Process = std::make_unique<Intro::Process>();
+	
+	//Start timer update
+	Util::Process::resetStartPoint();
 
 	while (application_window.isOpen())
 	{

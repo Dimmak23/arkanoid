@@ -1012,18 +1012,18 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 //=================================PAUSE PAGE===============================
 
 	pause_page.setSize(sf::Vector2f(to_f(outline.overall_width - 2 * outline.empty_thk), to_f(outline.overall_height - 2 * outline.empty_thk)));
-	pause_page.setFillColor(sf::Color(255,255,255,to_i(0.6f*255)));
+	pause_page.setFillColor(sf::Color(255, 255, 255, to_i(0.6f * 255)));
 	pause_page.setPosition(sf::Vector2f(to_f(outline.empty_thk), to_f(outline.empty_thk)));
 
 	int picture_address{ 66 };
 	Util::safe_parse(
-						pause_texture,
-						(pictures_path + std::to_string(picture_address) + Game::staticUnits::adder_path),
-						(pictures_path + std::to_string(picture_address) + Game::staticUnits::adder_path + Game::staticUnits::template_message).c_str()
+		pause_texture,
+		(pictures_path + std::to_string(picture_address) + Game::staticUnits::adder_path),
+		(pictures_path + std::to_string(picture_address) + Game::staticUnits::adder_path + Game::staticUnits::template_message).c_str()
 	);
 
 	pause_icon.setTexture(pause_texture, true);
-	pause_icon.setColor(sf::Color(255,255,255,to_i(0.8f*255)));
+	pause_icon.setColor(sf::Color(255, 255, 255, to_i(0.8f * 255)));
 	pause_icon.setOrigin(sf::Vector2f(pause_icon.getGlobalBounds().width / 2, pause_icon.getGlobalBounds().height / 2));
 	pause_icon.setScale(sf::Vector2f(0.5f, 0.5f));
 	pause_icon.setPosition(sf::Vector2f(to_f(outline.overall_width) / 2, to_f(outline.overall_height) / 2));
