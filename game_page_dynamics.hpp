@@ -126,9 +126,16 @@ class Game::dynamicUnits
 
 	//SIMULATE BALL AWAIT
 
-	//If ball werew lost we are waiting and then reset ball and paddle positions and kinematics
+	//Until we are wait for the user response - we holding the ball
+	void holdBall();
+
+	//If ball were lost we are waiting some time and place ball to the paddle
 	void waitForBall();
-	
+
+	//FINISH GAME: TO LONG BELT
+
+	//If conveyor belt will touch top of the paddle - the game is over
+	void checkLongBelt();
 
 	//PROBABILITIES PATTERNS
 
@@ -195,6 +202,12 @@ class Game::dynamicUnits
 
 	sf::RectangleShape basement;
 
+	//PAUSE PAINTING
+
+	sf::RectangleShape pause_page;
+	sf::Sprite pause_icon;
+	sf::Texture pause_texture;
+
 	//PADDLE TEXTURE CHANGE HANDLERS
 
 	static inline int paddle_state{};							//current state of paddle signalized that it's a basic CAPSULE_1 variant
@@ -233,9 +246,9 @@ class Game::dynamicUnits
 	static inline const float pdl_bounce{-0.2f};
 
 	//ABILITIES
-	static inline const float abl_friction{ 7.0f };
-	static inline const float abl_V_step{ 400.0f };
-	static inline const float abl_bounce{ 0.3f };
+	static inline const float abl_friction{ .0f };
+	static inline const float abl_V_step{ 300.0f };
+	static inline const float abl_bounce{ 0.15f };
 	static inline const float abl_mult{ 8.0f };
 
 	//VARIABLES TIMERS
@@ -289,7 +302,13 @@ class Game::dynamicUnits
 		8,17,26
 	};
 	
+	//Are we hold ball on the paddle?
+	static inline bool catched_ball{ true };
+
 	//static inline const float plus_abl_await{0.5f};
+
+	//UTILITIES
+	static inline const std::string pictures_path{ "data/pictures/" };
 
 };
 
