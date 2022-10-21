@@ -92,7 +92,7 @@ inline Outro::staticUnits::staticUnits(const Util::staticUnits& utils)
 
 	//=====GAME OVER PICTURE=====
 
-	Util::safe_parse(game_over_texture, gameoverPicPath,gameoverPicParseError	);
+	Util::safe_parse(game_over_texture, gameoverPicPath, gameoverPicParseError);
 
 	game_over.setTexture(game_over_texture, true);
 
@@ -101,9 +101,9 @@ inline Outro::staticUnits::staticUnits(const Util::staticUnits& utils)
 	game_over.setOrigin(sf::Vector2f(game_over.getGlobalBounds().width / 2, game_over.getGlobalBounds().height / 2));
 
 	game_over.setPosition(
-						sf::Vector2f(
-												(to_f(outline.overall_width / 2) - 54.492f),
-												(to_f(outline.overall_height / 2) - 23.502f)
+		sf::Vector2f(
+		(to_f(outline.overall_width / 2) - 54.492f),
+		(to_f(outline.overall_height / 2) - 23.502f)
 											)
 	);
 
