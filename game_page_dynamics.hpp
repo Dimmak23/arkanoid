@@ -126,7 +126,10 @@ class Game::dynamicUnits
 
 	//SIMULATE BALL AWAIT
 
-	//If ball werew lost we are waiting and then reset ball and paddle positions and kinematics
+	//Until we are wait for the user response - we holding the ball
+	void holdBall();
+
+	//If ball were lost we are waiting some time and place ball to the paddle
 	void waitForBall();
 
 	//FINISH GAME: TO LONG BELT
@@ -202,6 +205,8 @@ class Game::dynamicUnits
 	//PAUSE PAINTING
 
 	sf::RectangleShape pause_page;
+	sf::Sprite pause_icon;
+	sf::Texture pause_texture;
 
 	//PADDLE TEXTURE CHANGE HANDLERS
 
@@ -297,7 +302,13 @@ class Game::dynamicUnits
 		8,17,26
 	};
 	
+	//Are we hold ball on the paddle?
+	static inline bool catched_ball{ true };
+
 	//static inline const float plus_abl_await{0.5f};
+
+	//UTILITIES
+	static inline const std::string pictures_path{ "data/pictures/" };
 
 };
 

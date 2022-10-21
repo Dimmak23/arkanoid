@@ -118,7 +118,11 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 //=================================PAUSE PAGE==============================
 
 	//If game on the pause we will see the PAUSE page
-	if(on_pause) window.draw(dynamo.pause_page);
+	if (on_pause)
+	{
+		window.draw(dynamo.pause_page);
+		window.draw(dynamo.pause_icon);
+	}
 
 //==================================DYNAMICS===============================
 	
@@ -152,6 +156,36 @@ void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynam
 				//Only if we already on the pause
 				if(on_pause) on_pause = false;
 				break;
+			}
+
+			//If user lost the ball
+			//we wait until it appears on the paddle
+			//then
+			//pressing A: will pass it diagonally - left
+			//pressing D: will pass it diagonally - right
+			else if (event.key.code == sf::Keyboard::A)
+			{
+				//Only for the catched ball we can aply
+				//such initial impulse
+				if (Game::dynamicUnits::catched_ball)
+				{
+					bll(V_X) -= Game::dynamicUnits::bll_V_step;
+					bll(V_Y) -= Game::dynamicUnits::bll_V_step;
+					//and reset status, so we don't hold the ball anymore
+					Game::dynamicUnits::catched_ball = false;
+				}
+			}
+			else if (event.key.code == sf::Keyboard::D)
+			{
+				//Only for the catched ball we can aply
+				//such initial impulse
+				if (Game::dynamicUnits::catched_ball)
+				{
+					bll(V_X) = Game::dynamicUnits::bll_V_step;
+					bll(V_Y) -= Game::dynamicUnits::bll_V_step;
+					//and reset status, so we don't hold the ball anymore
+					Game::dynamicUnits::catched_ball = false;
+				}
 			}
 
 			//We can quicly quit by pressing Q

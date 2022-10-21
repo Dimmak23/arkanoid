@@ -182,10 +182,10 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 			conveyor_map.back().function = abl_function_map.at(ABILITY_TYPE);
 
 			//Now set up initial kinematic parameters
-			//conveyor_map.back().kinematics.at(V_X) = 0;
-			//conveyor_map.back().kinematics.at(V_Y) = abl_V_step;
-			//conveyor_map.back().kinematics.at(A_X) = 0;
-			//conveyor_map.back().kinematics.at(A_Y) = 0;
+			conveyor_map.back().kinematics.at(V_X) = 0;
+			conveyor_map.back().kinematics.at(V_Y) = 0;
+			conveyor_map.back().kinematics.at(A_X) = 0;
+			conveyor_map.back().kinematics.at(A_Y) = 0;
 
 			///<-
 
@@ -606,7 +606,20 @@ void Game::dynamicUnits::updateParInterface(const std::vector<float>& kinematics
 
 //<<<----SIMULATE
 
-//Wait some time before reset game tools: BALL and PADDLE. Although paddle can be skipped
+//Until user released ball - hold it
+void Game::dynamicUnits::holdBall()
+{
+	if (catched_ball)
+	{
+		//reset ball position
+		(*ball).setPosition(sf::Vector2f(
+			(*paddle).getGlobalBounds().left + (*paddle).getGlobalBounds().width / 2,
+			(*paddle).getGlobalBounds().top - (*ball).getGlobalBounds().height / 2)
+		);
+	}
+}
+
+//Wait some time before placing ball to the paddle
 void Game::dynamicUnits::waitForBall()
 {
 
@@ -615,18 +628,18 @@ void Game::dynamicUnits::waitForBall()
 		//reset ball position
 		(*ball).setPosition(
 					sf::Vector2f(
-											to_f(game_field.origin_x + game_field.overall_width / 2),
-											(to_f(game_field.origin_y + game_field.overall_height - Default::block_height) - ((*ball).getLocalBounds().height / 2))
+											(*paddle).getGlobalBounds().left + (*paddle).getGlobalBounds().width / 2,
+											(*paddle).getGlobalBounds().top - (*ball).getGlobalBounds().height / 2
 										)
 		);
 
 		//reset ball kinematics
 		bll(DELTA_X) = 0;
 		bll(DELTA_Y) = 0;
-		bll(V_X) = -bll_V_step;
-		bll(V_Y) = -bll_V_step;
-		//bll(A_X) = bll_A_step;
-		//bll(A_Y) = bll_A_step;
+		bll(V_X) = 0;
+		bll(V_Y) = 0;
+		bll(A_X) = 0;
+		bll(A_Y) = 0;
 
 		//reset paddle position
 		//(*paddle).setPosition(
@@ -637,9 +650,9 @@ void Game::dynamicUnits::waitForBall()
 		//);
 
 		//reset paddle kinematics
-		pdl(DELTA_X) = 0;
-		pdl(V_X) = 0;
-		pdl(A_X) = 0;
+		//pdl(DELTA_X) = 0;
+		//pdl(V_X) = 0;
+		//pdl(A_X) = 0;
 
 		//reset timer
 		ball_timer = 0;
@@ -647,7 +660,8 @@ void Game::dynamicUnits::waitForBall()
 		//we are not loosing ball anymore here
 		lost_ball = false;
 
-		//
+		//we hold ball on the paddle
+		catched_ball = true;
 	}
 }
 
@@ -724,6 +738,9 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	score_adder = 0;
 
 	lifes = 9;
+
+	//Are we hold ball on the paddle?
+	catched_ball = true;
 
 //==================================CONVEYOR===============================
 
@@ -891,12 +908,8 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	ball_kinematics.resize(statics.ball_parameters.size());
 
 	//Initial velocities for the ball
-	ball_kinematics.at(V_X) = -bll_V_step;
-	ball_kinematics.at(V_Y) = -bll_V_step;
-
-	//Initial acceleration for the ball
-	//ball_kinematics.at(A_X) = bll_A_step;
-	//ball_kinematics.at(A_Y) = bll_A_step;
+	//ball_kinematics.at(V_X) = -bll_V_step;
+	//ball_kinematics.at(V_Y) = -bll_V_step;
 
 	//==INITALIZE BALL PARAMETERS STATUS TEXTS==
 
@@ -999,7 +1012,20 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 //=================================PAUSE PAGE===============================
 
 	pause_page.setSize(sf::Vector2f(to_f(outline.overall_width - 2 * outline.empty_thk), to_f(outline.overall_height - 2 * outline.empty_thk)));
-	pause_page.setFillColor(sf::Color(255,255,255,to_i(0.4f*255)));
+	pause_page.setFillColor(sf::Color(255,255,255,to_i(0.6f*255)));
 	pause_page.setPosition(sf::Vector2f(to_f(outline.empty_thk), to_f(outline.empty_thk)));
+
+	int picture_address{ 66 };
+	Util::safe_parse(
+						pause_texture,
+						(pictures_path + std::to_string(picture_address) + Game::staticUnits::adder_path),
+						(pictures_path + std::to_string(picture_address) + Game::staticUnits::adder_path + Game::staticUnits::template_message).c_str()
+	);
+
+	pause_icon.setTexture(pause_texture, true);
+	pause_icon.setColor(sf::Color(255,255,255,to_i(0.8f*255)));
+	pause_icon.setOrigin(sf::Vector2f(pause_icon.getGlobalBounds().width / 2, pause_icon.getGlobalBounds().height / 2));
+	pause_icon.setScale(sf::Vector2f(0.5f, 0.5f));
+	pause_icon.setPosition(sf::Vector2f(to_f(outline.overall_width) / 2, to_f(outline.overall_height) / 2));
 
 }

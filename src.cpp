@@ -29,16 +29,37 @@
 
 //=========================================================MAIN================================================================
 
-//int wWinMain()
-//int APIENTRY _tWinMain(HINSTANCE hInstance,
-//					   HINSTANCE hPrevInstance,
-//					   LPTSTR    lpCmdLine,
-//					   int       nCmdShow)
-//int WinMain(
-//	HINSTANCE hInstance,
-//	HINSTANCE hPrevInstance,
-//	LPSTR     lpCmdLine,
-//	int       nShowCmd
+//int WINAPI WinMain(
+//	_In_		HINSTANCE hInstance,
+//	//A handle to the current instance of the application.
+//	_In_opt_	HINSTANCE hPrevInstance,
+//	/*
+//	A handle to the previous instance of the application.
+//	This parameter is always NULL.
+//	If you need to detect whether another instance already exists,
+//	create a uniquely named mutex using the CreateMutex function.
+//	CreateMutex will succeed even if the mutex already exists,
+//	but the function will return ERROR_ALREADY_EXISTS.
+//	This indicates that another instance of your application exists,
+//	because it created the mutex first. However, a malicious user can create
+//	this mutex before you doand prevent your application from starting.
+//	To prevent this situation, create a randomly named mutexand store
+//	the name so that it can only be obtained by an authorized user.
+//	Alternatively, you can use a file for this purpose.
+//	To limit your application to one instance per user,
+//	create a locked file in the user's profile directory.
+//	*/
+//	_In_		LPSTR     lpCmdLine,
+//	/*
+//	The command line for the application, excluding the program name.
+//	To retrieve the entire command line, use the GetCommandLine function.
+//	*/
+//	_In_		int       nShowCmd
+//	/*
+//	Controls how the window is to be shown.
+//	This parameter can be any of the values that can be specified
+//	in the nCmdShow parameter for the ShowWindow function.
+//	*/
 //)
 int main()
 {
@@ -68,15 +89,15 @@ int main()
 	sf::RenderWindow application_window(
 		sf::VideoMode(screen_s, desktop.bitsPerPixel),
 		"Arkanoid, produced by DimmaK, 24 october 2022, all rights reserved."
+		///FOR DEPLOY
 		/*,sf::Style::Fullscreen*/
 	);
 	application_window.setFramerateLimit(360);//more then 300 gives good physics
 
-	//FOR DEPLOY
-	
+	///FOR DEPLOY ON SMALL SCREENS
 	// change the size of the window
 	//application_window.setSize(sf::Vector2u(1200, 800));
-	//application_window.setPosition(sf::Vector2i(50, 50));
+	//application_window.setPosition(sf::Vector2i(50, 50));  //There is some issue when window oppenning to high
 
 	//First start timer update
 	Util::Process::resetStartPoint();
@@ -170,9 +191,7 @@ int main()
 
 					ballHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
-					ablHitBlocks(*fork_Game_DUnits, Util::Process::delta_time);
-
-					ablHitAbilities(*fork_Game_DUnits, Util::Process::delta_time);
+					abilityHitBelt(*fork_Game_DUnits, Util::Process::delta_time);
 
 					if (Game::dynamicUnits::game_time > 0.5f) throwAbilities(*fork_Game_DUnits, Util::Process::delta_time);
 
@@ -197,6 +216,9 @@ int main()
 
 					//Check and extend conveyor belt, if time is come
 					fork_Game_DUnits->extendConveyor(*fork_Game_SUnits);
+
+					//Check if we are still holding the ball until user response
+					fork_Game_DUnits->holdBall();
 
 					//Check if ball have been lost and we need to reset the ball and paddle
 					fork_Game_DUnits->waitForBall();
