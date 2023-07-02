@@ -15,3 +15,7 @@ You will see a "GAME OVER" page when will press on the close button or when you 
 ![image](https://user-images.githubusercontent.com/36036315/215073466-44d09c44-bf82-4a6b-beb8-87df8f4cfcdb.png)
 
 If you have lost all the lives you can start a new game.
+
+### Game play:
+
+![image](markdown_images/arkanoid_gameplay.gif)
