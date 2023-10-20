@@ -1,0 +1,39 @@
+{
+  "configurations": [
+    {
+      "name": "Win",
+      "includePath": [
+        // "${workspaceFolder}/**"
+        // "D:/CPP/SDL_CMAKE_projects/SDL2Renders/build/_deps",
+        "build/_deps/sdl2-src/include",
+        "build/_deps/sdl2_image-src/include",
+        "build/_deps/sdl2_ttf-src",
+        "build/_deps/sdl2_mixer-src/include",
+        // "L:/SDL2_mixer-devel-2.6.3-mingw/SDL2_mixer-2.6.3/x86_64-w64-mingw32/include/SDL2",
+        // "build/_deps/sdl2-build/include"
+        "tested_headers/libs/application",
+        "tested_headers/inheritance",
+        "tested_headers/libs/text_widget",
+        "tested_headers/libs/image_widget",
+        "tested_headers/libs/text_widget",
+        "tested_headers/libs/chunk_wrapper",
+        "tested_headers/pages/startup_animation",
+        "tested_headers/pages/settings",
+        "tested_headers/pages/gameplay",
+        "tested_headers/modules/artist",
+        "tested_headers/modules/locator",
+        "tested_headers/modules/shaper",
+        "tested_headers/modules/physics_engine",
+        "tested_headers/utils"
+      ],
+      "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
+      "windowsSdkVersion": "10.0.22000.0",
+      "compilerPath": "g++.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-gcc-x64",
+      "configurationProvider": "ms-vscode.cmake-tools"
+    }
+  ],
+  "version": 4
+}
