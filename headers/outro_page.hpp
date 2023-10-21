@@ -8,86 +8,66 @@
 //										    												//
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-//C++ headers
+// C++ headers
 
+// API
 
-//API
-
-
-//SFML headers
+// SFML headers
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
-
-//Custom headers
-#include "util.hpp"  //For fonts and other...
-
+// Custom headers
+#include "util.hpp"	   //For fonts and other...
 
 namespace Outro
 {
 	class staticUnits;
 	class Process;
-};
+};	  // namespace Outro
 
 class Outro::staticUnits
 {
-	public:
+public:
+	staticUnits();
+	staticUnits(const Util::staticUnits& utils);	// constructor dependable on 'Util::staticUnits' object declaration
 
-		staticUnits();
-		staticUnits(const Util::staticUnits& utils);			//constructor dependable on 'Util::staticUnits' object declaration
+	//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's
+	//! property
+	sf::Text escape_label;
+	sf::Text continue_label;
 
+	sf::Texture game_over_texture;
+	sf::Sprite game_over;
 
-		//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's property
-		sf::Text escape_label;
-		sf::Text continue_label;
+private:
+	// Be sure that here we parse independently on the Debug, Release, and USAGE
+	//<-
+	static inline const std::string gameoverPicPath{ "assets/pictures/65-Breakout-Tiles.png" };
+	//<-
 
-		sf::Texture game_over_texture;
-		sf::Sprite game_over;
-
-	private:
-
-		//Be sure that here we parse independently on the Debug, Release, and USAGE
-		//<-
-		static inline const std::string gameoverPicPath{ "data/pictures/65-Breakout-Tiles.png" };
-		//<-
-
-		static inline const char* gameoverPicParseError{ "_____game over parse error...\n" };
+	static inline const char* gameoverPicParseError{ "_____game over parse error...\n" };
 };
 
 inline Outro::staticUnits::staticUnits(const Util::staticUnits& utils)
 {
 	//=====ESCAPE LABEL SETTINGS=====
 
-	Util::initialize_text(
-		escape_label,
-		"Press the ESC key to close",
-		utils.main_font,
-		14,
-		true,
-		0.f,
-		0.f,
-		sf::Text::Bold,
-		sf::Color::Red
-	);
+	Util::initialize_text(escape_label, "Press the ESC key to close", utils.main_font, 14, true, 0.f, 0.f,
+						  sf::Text::Bold, sf::Color::Red);
 
 	escape_label.setOrigin(sf::Vector2f(escape_label.getGlobalBounds().width, 0));
 	escape_label.setPosition(sf::Vector2f(to_f(outline.overall_width - 20), 20.f));
 
 	//=====INSTRUCTION TO START SETTINGS=====
 
-	Util::initialize_text(
-		continue_label,
-		"Please, press the ENTER or the SPACE keys to start game over",
-		utils.main_font,
-		14,
-		true,
-		0.f,				//Position depend on the one that we have set up in the outline
-		0.f,		//Position depend on the one that we have set up in the outline
-		sf::Text::Bold,
-		sf::Color::Red
-	);
+	Util::initialize_text(continue_label, "Please, press the ENTER or the SPACE keys to start game over",
+						  utils.main_font, 14, true,
+						  0.f,	  // Position depend on the one that we have set up in the outline
+						  0.f,	  // Position depend on the one that we have set up in the outline
+						  sf::Text::Bold, sf::Color::Red);
 
-	continue_label.setOrigin(sf::Vector2f(continue_label.getGlobalBounds().width / 2, continue_label.getGlobalBounds().height / 2));
+	continue_label.setOrigin(
+		sf::Vector2f(continue_label.getGlobalBounds().width / 2, continue_label.getGlobalBounds().height / 2));
 	continue_label.setPosition(sf::Vector2f(to_f(outline.overall_width / 2), to_f(outline.overall_height / 2 + 400)));
 
 	//=====GAME OVER PICTURE=====
@@ -101,33 +81,26 @@ inline Outro::staticUnits::staticUnits(const Util::staticUnits& utils)
 	game_over.setOrigin(sf::Vector2f(game_over.getGlobalBounds().width / 2, game_over.getGlobalBounds().height / 2));
 
 	game_over.setPosition(
-		sf::Vector2f(
-		(to_f(outline.overall_width / 2) - 54.492f),
-		(to_f(outline.overall_height / 2) - 23.502f)
-											)
-	);
-
+		sf::Vector2f((to_f(outline.overall_width / 2) - 54.492f), (to_f(outline.overall_height / 2) - 23.502f)));
 }
 
 class Outro::Process
 {
-	public:
+public:
+	Process();
 
-		Process();
+	static void blinkInstruction(Outro::staticUnits& utils);
 
-		static void blinkInstruction(Outro::staticUnits& utils);
+	static inline bool running{ true };
+	static inline bool result{ false };
+	static inline float blink_timer{};	  // instruction to start are blinked
+	static inline const float blink_await{ 0.25f };
 
-		static inline bool running{ true };
-		static inline bool result{ false };
-		static inline float blink_timer{};				//instruction to start are blinked
-		static inline const float blink_await{ 0.25f };
+	void render(sf::RenderWindow& window, const Outro::staticUnits& utils);
+	void interact(sf::RenderWindow& window);
 
-		void render(sf::RenderWindow& window, const Outro::staticUnits& utils);
-		void interact(sf::RenderWindow& window);
-
-	private:
-
-		sf::Event event{};  //!NOT SURE IF I NEED ANY NON-STATIC MEMBERS
+private:
+	sf::Event event{};	  //! NOT SURE IF I NEED ANY NON-STATIC MEMBERS
 };
 
 inline Outro::Process::Process()
@@ -156,17 +129,17 @@ inline void Outro::Process::blinkInstruction(Outro::staticUnits& utils)
 
 inline void Outro::Process::render(sf::RenderWindow& window, const Outro::staticUnits& utils)
 {
-	//Before do anything: clear screen
+	// Before do anything: clear screen
 	window.clear(sf::Color::Black);
 
-	//Draw escape instruction
+	// Draw escape instruction
 	window.draw(utils.escape_label);
-	//Draw continue instruction
+	// Draw continue instruction
 	window.draw(utils.continue_label);
-	//Draw game over pic
+	// Draw game over pic
 	window.draw(utils.game_over);
 
-	//Now send drawings to the screen
+	// Now send drawings to the screen
 	window.display();
 }
 
@@ -177,23 +150,23 @@ inline void Outro::Process::interact(sf::RenderWindow& window)
 		// application_window closed
 		if (event.type == sf::Event::Closed)
 		{
-			running = false;  // also should be here
+			running = false;	// also should be here
 			result = true;
 			window.close();
 			break;
 		}
 		else if (event.type == sf::Event::KeyPressed)
 		{
-			//Also close by 'Esc' keyboard button
+			// Also close by 'Esc' keyboard button
 			if (event.key.code == sf::Keyboard::Escape)
 			{
-				running = false;  // also should be here
+				running = false;	// also should be here
 				result = false;
 				window.close();
 				break;
 			}
-			//Press enter and winish Intro page
-			else if ( (event.key.code == sf::Keyboard::Enter) || (event.key.code == sf::Keyboard::Space) )
+			// Press enter and winish Intro page
+			else if ((event.key.code == sf::Keyboard::Enter) || (event.key.code == sf::Keyboard::Space))
 			{
 				running = false;
 				result = true;
