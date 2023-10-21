@@ -2,7 +2,7 @@
 
 // Colossal class constructor moved here
 
-Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
+Game::StaticUnits::StaticUnits(const Utilities::StaticUnits& utils)
 {
 	// std::cout << "Games::StaticUnits construction\n";
 
@@ -42,8 +42,9 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 
 	//=====BLOCKS LABEL SETTINGS=====
 
-	Util::initialize_text(blocks_label, "Blocks legend:", utils.main_font, 12, false, to_f(legend_field.origin_x + 20),
-						  to_f(legend_field.origin_y + 20), sf::Text::Underlined | sf::Text::Bold, sf::Color::Red);
+	Utilities::initialize_text(blocks_label, "Blocks legend:", utils.main_font, 12, false,
+							   to_f(legend_field.origin_x + 20), to_f(legend_field.origin_y + 20),
+							   sf::Text::Underlined | sf::Text::Bold, sf::Color::Red);
 
 	//=====BLOCKS DESCRIPTIONS SETTINGS=====
 
@@ -54,20 +55,20 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 	for (auto& description : blocks_descriptions)
 	{
 		block_value_label = "+";
-		block_value_label += std::to_string(Util::block_values.at(index));
+		block_value_label += std::to_string(Utilities::block_values.at(index));
 		block_value_label += " points";
 
-		Util::initialize_text(description, block_value_label, utils.main_font, 9, false,
-							  to_f(legend_field.origin_x + 20),
-							  to_f(legend_field.origin_y + blocks_label.getGlobalBounds().top +
-								   blocks_label.getGlobalBounds().height + 50 * (index + 1)),
-							  sf::Text::Regular, sf::Color::Red);
+		Utilities::initialize_text(description, block_value_label, utils.main_font, 9, false,
+								   to_f(legend_field.origin_x + 20),
+								   to_f(legend_field.origin_y + blocks_label.getGlobalBounds().top +
+										blocks_label.getGlobalBounds().height + 50 * (index + 1)),
+								   sf::Text::Regular, sf::Color::Red);
 		index++;
 	}
 
 	//=====ABILITIES LABEL SETTINGS=====
 
-	Util::initialize_text(
+	Utilities::initialize_text(
 		abilities_label, "Abilities legend:", utils.main_font, 12, false, to_f(legend_field.origin_x + 20),
 		to_f(legend_field.origin_y + blocks_descriptions.at(BLK_T_COUNT / 2 - 1).getGlobalBounds().top +
 			 blocks_descriptions.at(BLK_T_COUNT / 2 - 1).getGlobalBounds().height + 30),
@@ -80,11 +81,11 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 	index = 0;
 	for (auto& description : abilities_descriptions)
 	{
-		Util::initialize_text(description, ab_names.at(index), utils.main_font, 9, false,
-							  to_f(legend_field.origin_x + 20),
-							  to_f(legend_field.origin_y + abilities_label.getGlobalBounds().top +
-								   abilities_label.getGlobalBounds().height + 50 * (index + 1)),
-							  sf::Text::Regular, sf::Color::Red);
+		Utilities::initialize_text(description, ab_names.at(index), utils.main_font, 9, false,
+								   to_f(legend_field.origin_x + 20),
+								   to_f(legend_field.origin_y + abilities_label.getGlobalBounds().top +
+										abilities_label.getGlobalBounds().height + 50 * (index + 1)),
+								   sf::Text::Regular, sf::Color::Red);
 		index++;
 	}
 
@@ -97,9 +98,10 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 	index = 0;
 	for (auto& label : status_labels)
 	{
-		Util::initialize_text(label, st_names.at(index), utils.main_font, 12, false, to_f(status_field.origin_x + 20),
-							  to_f(status_field.origin_y + pos_y_st_labels.at(index)),
-							  sf::Text::Underlined | sf::Text::Bold, sf::Color::Red);
+		Utilities::initialize_text(label, st_names.at(index), utils.main_font, 12, false,
+								   to_f(status_field.origin_x + 20),
+								   to_f(status_field.origin_y + pos_y_st_labels.at(index)),
+								   sf::Text::Underlined | sf::Text::Bold, sf::Color::Red);
 		index++;
 	}
 
@@ -107,7 +109,7 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 
 	// Game time:
 
-	// Util::initialize_text(
+	// Utilities::initialize_text(
 	//	timer_adder,
 	//	sec,
 	//	utils.main_font,
@@ -123,7 +125,7 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 
 	// Countdown timer:
 
-	// Util::initialize_text(
+	// Utilities::initialize_text(
 	//	countdown_adder,
 	//	sec,
 	//	utils.main_font,
@@ -175,11 +177,11 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 	float ver_adder{};
 	for (auto& parameter : ball_parameters)
 	{
-		Util::initialize_text(parameter, parameters_names.at(index), utils.main_font, 9, false,
-							  to_f(status_field.origin_x + 20 + hor_adder),
-							  to_f(status_field.origin_y + status_labels.at(BALL_LABEL).getGlobalBounds().top +
-								   status_labels.at(BALL_LABEL).getGlobalBounds().height + 20 + ver_adder),
-							  sf::Text::Regular, sf::Color::Red);
+		Utilities::initialize_text(parameter, parameters_names.at(index), utils.main_font, 9, false,
+								   to_f(status_field.origin_x + 20 + hor_adder),
+								   to_f(status_field.origin_y + status_labels.at(BALL_LABEL).getGlobalBounds().top +
+										status_labels.at(BALL_LABEL).getGlobalBounds().height + 20 + ver_adder),
+								   sf::Text::Regular, sf::Color::Red);
 
 		index++;
 
@@ -210,11 +212,11 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 	index = 0;
 	for (auto& parameter : paddle_parameters)
 	{
-		Util::initialize_text(parameter, parameters_names.at(index), utils.main_font, 9, false,
-							  to_f(status_field.origin_x + 20),
-							  to_f(status_field.origin_y + status_labels.at(PADDLE_LABEL).getGlobalBounds().top +
-								   status_labels.at(PADDLE_LABEL).getGlobalBounds().height + 20 + 30 * index),
-							  sf::Text::Regular, sf::Color::Red);
+		Utilities::initialize_text(parameter, parameters_names.at(index), utils.main_font, 9, false,
+								   to_f(status_field.origin_x + 20),
+								   to_f(status_field.origin_y + status_labels.at(PADDLE_LABEL).getGlobalBounds().top +
+										status_labels.at(PADDLE_LABEL).getGlobalBounds().height + 20 + 30 * index),
+								   sf::Text::Regular, sf::Color::Red);
 		index++;
 	}
 
@@ -246,7 +248,7 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 	blk_textures.resize(BLK_T_COUNT);
 	for (auto& texture : blk_textures)
 	{
-		Util::safe_parse(
+		Utilities::safe_parse(
 			texture,
 			(textures_path + ((texture_address < 10) ? "0" : "") + std::to_string(texture_address) + adder_path),
 			(textures_path + std::to_string(texture_address) + adder_path + template_message).c_str());
@@ -264,8 +266,9 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 		{
 			texture_address++;
 		}
-		Util::safe_parse(texture, (textures_path + std::to_string(texture_address) + adder_path),
-						 (textures_path + std::to_string(texture_address) + adder_path + template_message).c_str());
+		Utilities::safe_parse(
+			texture, (textures_path + std::to_string(texture_address) + adder_path),
+			(textures_path + std::to_string(texture_address) + adder_path + template_message).c_str());
 		texture_address++;
 	}
 
@@ -280,16 +283,17 @@ Game::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 		{
 			texture_address++;
 		}
-		Util::safe_parse(texture, (textures_path + std::to_string(texture_address) + adder_path),
-						 (textures_path + std::to_string(texture_address) + adder_path + template_message).c_str());
+		Utilities::safe_parse(
+			texture, (textures_path + std::to_string(texture_address) + adder_path),
+			(textures_path + std::to_string(texture_address) + adder_path + template_message).c_str());
 		texture_address++;
 	}
 
 	// BALL
 
 	texture_address = 63;
-	Util::safe_parse(bll_texture, (textures_path + std::to_string(texture_address) + adder_path),
-					 (textures_path + std::to_string(texture_address) + adder_path + template_message).c_str());
+	Utilities::safe_parse(bll_texture, (textures_path + std::to_string(texture_address) + adder_path),
+						  (textures_path + std::to_string(texture_address) + adder_path + template_message).c_str());
 
 	//================================SPRITES==============================
 

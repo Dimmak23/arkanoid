@@ -8,6 +8,8 @@
 #include <SFML/Graphics/Rect.hpp>
 
 // * Custom
+#include "Intro.hpp"
+#include "Utilities.hpp"
 #include "game_page.hpp"
 #include "game_page_collisions.hpp"
 #include "game_page_dynamics.hpp"
@@ -15,10 +17,9 @@
 #include "game_page_physics.hpp"
 #include "game_page_process.hpp"
 #include "game_page_statics.hpp"
-#include "intro_page.hpp"
+// #include "intro_page.hpp"
 #include "outline.hpp"
 #include "outro_page.hpp"
-#include "util.hpp"
 
 namespace Arkanoid
 {
@@ -54,12 +55,11 @@ namespace Arkanoid
 		//* Sound
 
 		//* Supports
-		std::unique_ptr<Util::StaticUnits> _statics;
+		std::unique_ptr<Utilities::StaticUnits> _statics;
 
 		//* Pages
 		//@ Intro
-		std::unique_ptr<Intro::StaticUnits> _introStatics{ nullptr };
-		std::unique_ptr<Intro::Process> _introProcess{ nullptr };
+		std::unique_ptr<Intro::Page> _introPage{ nullptr };
 		//@ Game
 		std::unique_ptr<Game::StaticUnits> _gameplayStatics{ nullptr };
 		std::unique_ptr<Game::Process> _gameProcess{ nullptr };
@@ -68,14 +68,14 @@ namespace Arkanoid
 		std::unique_ptr<Outro::StaticUnits> _outroStatics{ nullptr };
 		std::unique_ptr<Outro::Process> _outroProcess{ nullptr };
 
-		//* Utilities
+		//* Utilitiesities
 		sf::VideoMode _desktopMode;
 		sf::Vector2u _screenSize;
 		unsigned int _appWidth{};	  //! We don't really need to keep this
 		unsigned int _appHeight{};	  //! We don't really need to keep this
 
 		//! Time, not using this currently
-		// Utilities::Timer<float, std::milli>* _timer{ nullptr };
+		// Utilitiesities::Timer<float, std::milli>* _timer{ nullptr };
 		// float _deltaT{};
 	};
 

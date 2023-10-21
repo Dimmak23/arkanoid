@@ -96,7 +96,30 @@ set(HEADERS "${CMAKE_SOURCE_DIR}/headers")
 # ? Which type of libraries is it gonna be?
 set(LIB_TYPE "SHARED")
 
-# ? Create main executable
+# ? Create intro page library
+add_library(
+	intro
+	${LIB_TYPE}
+	${LIBRARIES}/intro/Intro.cpp
+	${LIBRARIES}/intro/Process.cpp
+	${LIBRARIES}/intro/Statics.cpp
+)
+
+# ? Include needed folders
+target_include_directories(
+	intro
+	PUBLIC ${LIBRARIES}/intro
+	PUBLIC ${HEADERS}
+)
+
+# ? Link needed libraries
+target_link_libraries(
+	intro
+	PUBLIC sfml-graphics
+	PUBLIC sfml-window
+)
+
+# ? Create application library
 add_library(
 	application
 	${LIB_TYPE}
@@ -113,12 +136,14 @@ target_include_directories(
 	PUBLIC ${LIBRARIES}/outline
 	PUBLIC ${LIBRARIES}/process
 	PUBLIC ${LIBRARIES}/statics
+	PUBLIC ${LIBRARIES}/intro
 	PUBLIC ${HEADERS}
 )
 
 # ? Link needed libraries
 target_link_libraries(
 	application
+	PUBLIC intro
 	PUBLIC sfml-graphics
 	PUBLIC sfml-audio
 	PUBLIC sfml-system
@@ -218,6 +243,7 @@ if(WIN32) # ! Why Linux don't need it?
 		)
 	endfunction()
 
+	copy_custom_dll(intro)
 	copy_custom_dll(application)
 	copy_dll(sfml-audio)
 	copy_dll(sfml-graphics)

@@ -8,22 +8,16 @@
 //										    												//
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-// C++ headers
+//* C++ STD
 #include <random>
 #include <ranges>
 #include <vector>
 
-// API
+//* SFML
 
-// SFML headers
-
-// Custom headers
+//* Custom
+#include "Utilities.hpp"
 #include "game_page.hpp"
-#include "util.hpp"
-
-// #include "game_page_statics.hpp"
-// #include "game_page_process.hpp"
-// #include "game_page_executor.hpp"
 
 // DEFINES
 
@@ -68,7 +62,8 @@ class Game::DynamicUnits
 public:
 	DynamicUnits() = default;	 // default-constructor declaration
 	DynamicUnits(const Game::StaticUnits& statics,
-				 const Util::StaticUnits& utils);	 // constructor dependable on 'Game::StaticUnits' object declaration
+				 const Utilities::StaticUnits& utils);	  // constructor dependable on 'Game::StaticUnits' object
+														  // declaration
 
 	// INTERNAL CLASS UTILITIES
 

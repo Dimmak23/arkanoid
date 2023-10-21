@@ -13,8 +13,8 @@
 //* SFML
 
 //* Custom
+#include "Utilities.hpp"
 #include "game_page.hpp"
-#include "util.hpp"
 
 // Forward Game namespace declaration in the 'game_page_process.hpp'
 namespace Game

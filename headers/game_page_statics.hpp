@@ -16,8 +16,8 @@
 #include <SFML/Graphics/VertexArray.hpp>
 
 //* Custom
+#include "Utilities.hpp"
 #include "game_page.hpp"
-#include "util.hpp"
 
 enum status_lbls
 {
@@ -47,12 +47,12 @@ namespace Game
 
 };	  // namespace Game
 
-// class definition
 class Game::StaticUnits
 {
 public:
-	StaticUnits() = default;						// default-constructor declaration
-	StaticUnits(const Util::StaticUnits& utils);	// constructor dependable on 'Util::StaticUnits' object declaration
+	StaticUnits() = default;							 // default-constructor declaration
+	StaticUnits(const Utilities::StaticUnits& utils);	 // constructor dependable on 'Util::StaticUnits' object
+														 // declaration
 
 	// BASIC FRAMES
 

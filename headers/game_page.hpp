@@ -23,7 +23,7 @@
 #include <SFML/Window/Event.hpp>
 
 //* Custom
-#include "util.hpp"
+#include "Utilities.hpp"
 
 // dependable headers with some class definitions
 #include "game_page_dynamics.hpp"

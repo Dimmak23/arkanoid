@@ -8,33 +8,24 @@
 //										    												//
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-// * WinAPI
+//* WinAPI
 #include <Windows.h>
 
-// * C++ headers
+//* C++ STD
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 
-// API
-
-// SFML headers
-// #include <SFML/System/Vector2.hpp>//???
+//* SFML
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-// Custom headers
+//* Custom
 #include "outline.hpp"
 
 // Tired to write long hard readeble code
 #define to_f(lvalue) static_cast<float>(lvalue)
 #define to_i(lvalue) static_cast<int>(lvalue)
-
-// static sf::Vector2f individual_nscale(const float& nscale, sf::Vector2f indi_sprite)//???
-//{
-//	indi_sprite *= nscale;
-//	return indi_sprite;
-// }
 
 // Abilities textures enumerator from 'util.hpp'
 enum ability_textures
@@ -109,7 +100,7 @@ enum paddle_textures
 	PADDLE_COUNT	// 3: three not available now, 2 not needed
 };
 
-namespace Util
+namespace Utilities
 {
 	class StaticUnits;
 
@@ -148,11 +139,11 @@ namespace Util
 		0
 	};
 
-};	  // namespace Util
+};	  // namespace Utilities
 
 //? This could be a template for Fonts and texture parse
 template <typename Parsable>
-inline void Util::safe_parse(Parsable& destination, const std::string& path, const char* message) noexcept
+inline void Utilities::safe_parse(Parsable& destination, const std::string& path, const char* message) noexcept
 {
 	bool parsing_result = destination.loadFromFile(path);
 	try
@@ -167,18 +158,18 @@ inline void Util::safe_parse(Parsable& destination, const std::string& path, con
 }
 
 // This could be used for other Texts in other namespaces
-inline void Util::initialize_text(sf::Text& label,				// destination
-								  const std::string& value,		// value that would be written
-								  const sf::Font& font,			// what font
-								  const int& char_s,			// characters size
-								  const bool& self_centered,	// should it be self-centered
-								  const float& pos_x,			// position by x
-								  const float& pos_y,			// position by y
-								  const uint32_t& style,		// Regular, Bold, Italic, Underlined, StrikeThrough
-								  const sf::Color& color	// Black, White, Red, Green, Blue, Yellow, Magenta, Cyan,
-															// Transparent
+inline void Utilities::initialize_text(sf::Text& label,				 // destination
+									   const std::string& value,	 // value that would be written
+									   const sf::Font& font,		 // what font
+									   const int& char_s,			 // characters size
+									   const bool& self_centered,	 // should it be self-centered
+									   const float& pos_x,			 // position by x
+									   const float& pos_y,			 // position by y
+									   const uint32_t& style,		 // Regular, Bold, Italic, Underlined, StrikeThrough
+									   const sf::Color& color		 // Black, White, Red, Green, Blue, Yellow, Magenta,
+																	 // Cyan, Transparent
 
-								  ) noexcept
+									   ) noexcept
 {
 	label.setString(value);
 	label.setFont(font);
@@ -199,7 +190,7 @@ inline void Util::initialize_text(sf::Text& label,				// destination
 	label.setFillColor(color);
 }
 
-class Util::StaticUnits
+class Utilities::StaticUnits
 {
 public:
 	StaticUnits();	  // constructor declaration
@@ -228,16 +219,16 @@ private:
 };
 
 // Constructor definition
-inline Util::StaticUnits::StaticUnits()
+inline Utilities::StaticUnits::StaticUnits()
 {
-	// std::cout << "Util::StaticUnits construction\n";
+	// std::cout << "Utilities::StaticUnits construction\n";
 
 	safe_parse(logo_font, logoFontPath, logoFontParseError);
 	safe_parse(main_font, mainFontPath, mainFontParseError);
 	safe_parse(score_font, scoreFontPath, scoreFontParseError);
 }
 
-class Util::Process
+class Utilities::Process
 {
 public:
 	static void resetStartPoint();
@@ -256,7 +247,7 @@ public:
 	static inline bool running{ true };
 };
 
-inline void Util::Process::resetStartPoint()
+inline void Utilities::Process::resetStartPoint()
 {
 	// Get CPU time
 	QueryPerformanceCounter(&frame_begin_time);	   // here we start to calculate time in the CPU units
@@ -267,7 +258,7 @@ inline void Util::Process::resetStartPoint()
 	perfomance_frequancy = to_f(perf.QuadPart);	   // this return how mane cycles(frames) in one second
 }
 
-inline void Util::Process::updateDelta()
+inline void Utilities::Process::updateDelta()
 {
 	// here we finish to calculate time in the CPU units
 	QueryPerformanceCounter(&frame_end_time);

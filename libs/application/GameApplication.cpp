@@ -12,32 +12,14 @@ Arkanoid::GameApplication::~GameApplication() {}
 
 bool Arkanoid::GameApplication::run()
 {
-	// Start timer update
-	Util::Process::resetStartPoint();
+	//? Start timer update
+	Utilities::Process::resetStartPoint();
 
 	while (_mainWindow->isOpen())
 	{
 		//=============================INTRO PAGE============================
 
-		// Hold Intro page until user will respond
-		while (Intro::Process::running)
-		{
-			// Check timer and blink instruction
-			Intro::Process::blinkInstruction(*_introStatics);
-
-			// Render screen the Intro objects
-			_introProcess->render(*_mainWindow, *_introStatics);
-
-			// Check user inputs
-			_introProcess->interact(*_mainWindow);
-
-			Util::Process::updateDelta();
-			Intro::Process::blink_timer += Util::Process::delta_time;
-		}
-
-		// Release Intro's that we don't need anymore
-		_introStatics.reset(nullptr);
-		_introProcess.reset(nullptr);
+		_introPage->run();
 
 		//=============================GAME PAGE============================
 
@@ -48,21 +30,18 @@ bool Arkanoid::GameApplication::run()
 		_gameplayStatics = std::make_unique<Game::StaticUnits>(*_statics);
 
 		// Reset start point before the first Game session
-		Util::Process::updateDelta();	 // new end time, begin time is also the new end time, delta between new end
-										 // time and old begin time
+		Utilities::Process::updateDelta();	  // new end time, begin time is also the new end time, delta between new
+											  // end time and old begin time
 
-		while (Util::Process::running)
+		while (Utilities::Process::running)
 		{
 			_gameProcess.reset(new Game::Process());
-
-			// std::cout << "&_gameProcess = " << _gameProcess.get() << '\n';
-			// std::cout << "Game::Process::running: " << std::boolalpha << Game::Process::running << '\n';
 
 			_gameDynamics.reset(new Game::DynamicUnits(*_gameplayStatics, *_statics));
 
 			// Reset start point before new Game session
-			Util::Process::updateDelta();	 // new end time, begin time is also the new end time, delta between new end
-											 // time and old begin time
+			Utilities::Process::updateDelta();	  // new end time, begin time is also the new end time, delta between
+												  // new end time and old begin time
 
 			while (Game::Process::running)
 			{
@@ -74,23 +53,24 @@ bool Arkanoid::GameApplication::run()
 				{
 					//<-----_gameDynamics->simulations();
 
-					simulatePhysics(Util::Process::delta_time);
+					simulatePhysics(Utilities::Process::delta_time);
 
 					//<-----_gameDynamics->simulations();
 
 					//<-----_gameDynamics->collisions();
 
-					collideUnits(*_gameDynamics, Util::Process::delta_time);
+					collideUnits(*_gameDynamics, Utilities::Process::delta_time);
 
-					ablHitPlayGround(*_gameDynamics, Util::Process::delta_time);
+					ablHitPlayGround(*_gameDynamics, Utilities::Process::delta_time);
 
-					ballHitBlocks(*_gameDynamics, Util::Process::delta_time);
+					ballHitBlocks(*_gameDynamics, Utilities::Process::delta_time);
 
-					ballHitAbilities(*_gameDynamics, Util::Process::delta_time);
+					ballHitAbilities(*_gameDynamics, Utilities::Process::delta_time);
 
-					abilityHitBelt(*_gameDynamics, Util::Process::delta_time);
+					abilityHitBelt(*_gameDynamics, Utilities::Process::delta_time);
 
-					if (Game::DynamicUnits::game_time > 0.5f) throwAbilities(*_gameDynamics, Util::Process::delta_time);
+					if (Game::DynamicUnits::game_time > 0.5f)
+						throwAbilities(*_gameDynamics, Utilities::Process::delta_time);
 
 					//<-----_gameDynamics->collisions();
 
@@ -154,36 +134,37 @@ bool Arkanoid::GameApplication::run()
 				_gameProcess->render(*_mainWindow, *_gameplayStatics, *_gameDynamics);
 
 				// Check user inputs
-				_gameProcess->interact(*_mainWindow, *_gameDynamics, Util::Process::delta_time);
+				_gameProcess->interact(*_mainWindow, *_gameDynamics, Utilities::Process::delta_time);
 				;
 
 				/// TIME IS UPDATING WHEN GAME ON PAUSE
 				/// SO WE DON"T END IT UP WITH REALY BEG DELTA WHEN GAME GO FROM PAUSE
 				// We need to get new delta time
-				Util::Process::updateDelta();	 // new end time, begin time is also the new end time, delta between new
-												 // end time and old begin time
+				Utilities::Process::updateDelta();	  // new end time, begin time is also the new end time, delta
+													  // between new end time and old begin time
 
-				// If game not on the pause
+				//? If game not on the pause
 				if (!Game::Process::on_pause)
 				{
 					///<-----TIMERS
 
 					// Update game time
-					Game::DynamicUnits::game_time += Util::Process::delta_time;
+					Game::DynamicUnits::game_time += Utilities::Process::delta_time;
 
 					// Update conveyor belt extender timer
 					// NOTE: If we have lost ball, we don't wait to extend conveyor belt
-					if (!Game::DynamicUnits::lost_ball) Game::DynamicUnits::extender_timer -= Util::Process::delta_time;
+					if (!Game::DynamicUnits::lost_ball)
+						Game::DynamicUnits::extender_timer -= Utilities::Process::delta_time;
 
 					// Update paddle changer timer
-					Game::DynamicUnits::pdl_upd_timer += Util::Process::delta_time;
+					Game::DynamicUnits::pdl_upd_timer += Utilities::Process::delta_time;
 
 					// Update score adder blink timer
 					if (Game::DynamicUnits::score_adder)
-						Game::DynamicUnits::score_add_timer += Util::Process::delta_time;
+						Game::DynamicUnits::score_add_timer += Utilities::Process::delta_time;
 
 					// if ball was lost, then wait for the new one
-					if (Game::DynamicUnits::lost_ball) Game::DynamicUnits::ball_timer += Util::Process::delta_time;
+					if (Game::DynamicUnits::lost_ball) Game::DynamicUnits::ball_timer += Utilities::Process::delta_time;
 
 					///<-----TIMERS
 
@@ -226,8 +207,8 @@ bool Arkanoid::GameApplication::run()
 			// Outro::Process _outroProcess;
 
 			// Reset start point before new Game session
-			Util::Process::updateDelta();	 // new end time, begin time is also the new end time, delta between new end
-											 // time and old begin time
+			Utilities::Process::updateDelta();	  // new end time, begin time is also the new end time, delta between
+												  // new end time and old begin time
 
 			// Hold Outro page until user will respond
 			while (Outro::Process::running)
@@ -244,13 +225,13 @@ bool Arkanoid::GameApplication::run()
 				// Check user inputs
 				_outroProcess->interact(*_mainWindow);
 
-				Util::Process::updateDelta();
+				Utilities::Process::updateDelta();
 
-				Outro::Process::blink_timer += Util::Process::delta_time;
+				Outro::Process::blink_timer += Utilities::Process::delta_time;
 			}
 
 			// Set to the application running status result of the user input
-			Util::Process::running = Outro::Process::result;
+			Utilities::Process::running = Outro::Process::result;
 
 			// Reset pointer to Outro object with texts property
 			_outroStatics.reset(nullptr);
@@ -263,24 +244,18 @@ bool Arkanoid::GameApplication::run()
 	//
 	_statics.reset(nullptr);
 
-	// Reset pointer to Intro object with texts property
-	_introStatics.reset(nullptr);
-
-	// Reset pointer to Intro object with event property
-	_introProcess.reset(nullptr);
-
 	return true;
 }
 
 bool Arkanoid::GameApplication::initialize()
 {
-	//=========================PREPARE UTILITIES========================
+	//=========================PREPARE UTILITIESITIES========================
 
-	// Because we have included "util.hpp"
-	// pointer 'fork_SUnits' to 'Util::StaticUnits' class object will initialize
-	// access to the utilities. They (Texts, Fonts,...) can't be global, so we initialize them in the main function
-	// std::unique_ptr<Util::StaticUnits> fork_Util_SUnits = std::make_unique<Util::StaticUnits>();
-	_statics = std::make_unique<Util::StaticUnits>();
+	// Because we have included "utilities.hpp"
+	// pointer 'fork_SUnits' to 'Utilities::StaticUnits' class object will initialize
+	// access to the utilitiesities. They (Texts, Fonts,...) can't be global, so we initialize them in the main function
+	// std::unique_ptr<Utilities::StaticUnits> fork_Utilities_SUnits = std::make_unique<Utilities::StaticUnits>();
+	_statics = std::make_unique<Utilities::StaticUnits>();
 
 	// Properties frame_begin_time, perfomance_frequancy, frame_end_time, delta_time
 	// are visible as well
@@ -312,10 +287,8 @@ bool Arkanoid::GameApplication::initialize()
 	// _mainWindow.setPosition(sf::Vector2i(50, 50));  //There is some issue when window oppenning to high
 
 	// Initialize pointer to Intro object with texts property
-	_introStatics = std::make_unique<Intro::StaticUnits>(*_statics);
-
 	// Initialize pointer to Intro object with event property
-	_introProcess = std::make_unique<Intro::Process>();
+	_introPage = std::make_unique<Intro::Page>(_mainWindow.get(), _statics.get());
 
 	return _mainWindow->isOpen();
 }

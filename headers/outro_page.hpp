@@ -17,7 +17,7 @@
 #include <SFML/Window/Event.hpp>
 
 // Custom headers
-#include "util.hpp"	   //For fonts and other...
+#include "Utilities.hpp"	//For fonts and other...
 
 namespace Outro
 {
@@ -29,7 +29,8 @@ class Outro::StaticUnits
 {
 public:
 	StaticUnits();
-	StaticUnits(const Util::StaticUnits& utils);	// constructor dependable on 'Util::StaticUnits' object declaration
+	StaticUnits(const Utilities::StaticUnits& utils);	 // constructor dependable on 'Utilities::StaticUnits' object
+														 // declaration
 
 	//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's
 	//! property
@@ -48,23 +49,23 @@ private:
 	static inline const char* gameoverPicParseError{ "_____game over parse error...\n" };
 };
 
-inline Outro::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
+inline Outro::StaticUnits::StaticUnits(const Utilities::StaticUnits& utils)
 {
 	//=====ESCAPE LABEL SETTINGS=====
 
-	Util::initialize_text(escape_label, "Press the ESC key to close", utils.main_font, 14, true, 0.f, 0.f,
-						  sf::Text::Bold, sf::Color::Red);
+	Utilities::initialize_text(escape_label, "Press the ESC key to close", utils.main_font, 14, true, 0.f, 0.f,
+							   sf::Text::Bold, sf::Color::Red);
 
 	escape_label.setOrigin(sf::Vector2f(escape_label.getGlobalBounds().width, 0));
 	escape_label.setPosition(sf::Vector2f(to_f(outline.overall_width - 20), 20.f));
 
 	//=====INSTRUCTION TO START SETTINGS=====
 
-	Util::initialize_text(continue_label, "Please, press the ENTER or the SPACE keys to start game over",
-						  utils.main_font, 14, true,
-						  0.f,	  // Position depend on the one that we have set up in the outline
-						  0.f,	  // Position depend on the one that we have set up in the outline
-						  sf::Text::Bold, sf::Color::Red);
+	Utilities::initialize_text(continue_label, "Please, press the ENTER or the SPACE keys to start game over",
+							   utils.main_font, 14, true,
+							   0.f,	   // Position depend on the one that we have set up in the outline
+							   0.f,	   // Position depend on the one that we have set up in the outline
+							   sf::Text::Bold, sf::Color::Red);
 
 	continue_label.setOrigin(
 		sf::Vector2f(continue_label.getGlobalBounds().width / 2, continue_label.getGlobalBounds().height / 2));
@@ -72,7 +73,7 @@ inline Outro::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 
 	//=====GAME OVER PICTURE=====
 
-	Util::safe_parse(game_over_texture, gameoverPicPath, gameoverPicParseError);
+	Utilities::safe_parse(game_over_texture, gameoverPicPath, gameoverPicParseError);
 
 	game_over.setTexture(game_over_texture, true);
 

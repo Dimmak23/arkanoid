@@ -173,7 +173,7 @@ void Game::DynamicUnits::setLine(const Game::StaticUnits& statics, const bool& f
 			// NOPE, it is not a block, it's an ability
 			conveyor_map.back().block = false;
 			// Operand?
-			conveyor_map.back().operand = Util::ability_values.at(ABILITY_TYPE);
+			conveyor_map.back().operand = Utilities::ability_values.at(ABILITY_TYPE);
 			// What we will do with the operand?
 			conveyor_map.back().function = abl_function_map.at(ABILITY_TYPE);
 
@@ -234,7 +234,7 @@ void Game::DynamicUnits::setLine(const Game::StaticUnits& statics, const bool& f
 			// YEP, it is a block
 			conveyor_map.back().block = true;
 			// How many points to add?
-			conveyor_map.back().operand = Util::block_values.at(BLOCK_TYPE);
+			conveyor_map.back().operand = Utilities::block_values.at(BLOCK_TYPE);
 			// What we will do with the operand?
 			conveyor_map.back().function = blk_function_map.at(BLOCK_TYPE);
 
@@ -667,7 +667,7 @@ void Game::DynamicUnits::checkLongBelt()
 
 // Colossal class constructor moved here
 
-Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Util::StaticUnits& utils)
+Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Utilities::StaticUnits& utils)
 {
 	//==================================RESET STATIC NON-CONSTS===============================
 
@@ -764,27 +764,27 @@ Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Util::S
 
 	//==INITALIZE GAME SCORE STATUS TEXT==
 
-	Util::initialize_text(score_label, std::to_string(score), utils.score_font, 35, false,
-						  statics.status_labels.at(SCORE_LABEL).getGlobalBounds().left,
-						  statics.status_labels.at(SCORE_LABEL).getGlobalBounds().top +
-							  statics.status_labels.at(SCORE_LABEL).getGlobalBounds().height + 10.f,
-						  sf::Text::Regular, sf::Color::Red);
+	Utilities::initialize_text(score_label, std::to_string(score), utils.score_font, 35, false,
+							   statics.status_labels.at(SCORE_LABEL).getGlobalBounds().left,
+							   statics.status_labels.at(SCORE_LABEL).getGlobalBounds().top +
+								   statics.status_labels.at(SCORE_LABEL).getGlobalBounds().height + 10.f,
+							   sf::Text::Regular, sf::Color::Red);
 
 	//==INITALIZE GAME SCORE ADDER TEXT==
 
-	Util::initialize_text(score_add_label, std::to_string(score_adder), utils.score_font, 35, false,
-						  statics.status_labels.at(SCORE_LABEL).getGlobalBounds().left +
-							  statics.status_labels.at(SCORE_LABEL).getGlobalBounds().width + 10.f,
-						  statics.status_labels.at(SCORE_LABEL).getGlobalBounds().top, sf::Text::Regular,
-						  sf::Color::Black);
+	Utilities::initialize_text(score_add_label, std::to_string(score_adder), utils.score_font, 35, false,
+							   statics.status_labels.at(SCORE_LABEL).getGlobalBounds().left +
+								   statics.status_labels.at(SCORE_LABEL).getGlobalBounds().width + 10.f,
+							   statics.status_labels.at(SCORE_LABEL).getGlobalBounds().top, sf::Text::Regular,
+							   sf::Color::Black);
 
 	//==INITALIZE GAME TIMER TEXT==
 
-	Util::initialize_text(game_timer, "000.0", utils.main_font, 10, false,
-						  statics.status_labels.at(TIMER_LABEL).getGlobalBounds().left,
-						  statics.status_labels.at(TIMER_LABEL).getGlobalBounds().top +
-							  statics.status_labels.at(TIMER_LABEL).getGlobalBounds().height + 20.f,
-						  sf::Text::Regular, sf::Color::Red);
+	Utilities::initialize_text(game_timer, "000.0", utils.main_font, 10, false,
+							   statics.status_labels.at(TIMER_LABEL).getGlobalBounds().left,
+							   statics.status_labels.at(TIMER_LABEL).getGlobalBounds().top +
+								   statics.status_labels.at(TIMER_LABEL).getGlobalBounds().height + 20.f,
+							   sf::Text::Regular, sf::Color::Red);
 
 	//==INITIALIZE EXTENDER COUNTDOWN TEXT==
 
@@ -797,11 +797,11 @@ Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Util::S
 
 	streamer << " sec";
 
-	Util::initialize_text(extender_countdown, streamer.str(), utils.main_font, 10, false,
-						  statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().left,
-						  statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top +
-							  statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height + 20.f,
-						  sf::Text::Regular, sf::Color::Red);
+	Utilities::initialize_text(extender_countdown, streamer.str(), utils.main_font, 10, false,
+							   statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().left,
+							   statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top +
+								   statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height + 20.f,
+							   sf::Text::Regular, sf::Color::Red);
 
 	//==INITIALIZE EXTENDER AWAITER TEXT==
 
@@ -814,11 +814,12 @@ Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Util::S
 
 	streamer << ")";
 
-	Util::initialize_text(extender_await, streamer.str(), utils.main_font, 10, false,
-						  extender_countdown.getGlobalBounds().left + extender_countdown.getGlobalBounds().width + 10.f,
-						  statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top +
-							  statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height + 20.f,
-						  sf::Text::Regular, sf::Color::Red);
+	Utilities::initialize_text(extender_await, streamer.str(), utils.main_font, 10, false,
+							   extender_countdown.getGlobalBounds().left + extender_countdown.getGlobalBounds().width +
+								   10.f,
+							   statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().top +
+								   statics.status_labels.at(REV_COUNT_LABEL).getGlobalBounds().height + 20.f,
+							   sf::Text::Regular, sf::Color::Red);
 
 	// std::cout << "Timers were instatiated." << '\n';
 
@@ -854,9 +855,9 @@ Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Util::S
 	int index{};
 	for (auto& parameter : ball_parameters)
 	{
-		Util::initialize_text(parameter, "000.000", utils.main_font, 10, false,
-							  statics.ball_parameters.at(index).getPosition().x + 35.f,
-							  statics.ball_parameters.at(index).getPosition().y, sf::Text::Regular, sf::Color::Red);
+		Utilities::initialize_text(
+			parameter, "000.000", utils.main_font, 10, false, statics.ball_parameters.at(index).getPosition().x + 35.f,
+			statics.ball_parameters.at(index).getPosition().y, sf::Text::Regular, sf::Color::Red);
 
 		index++;
 	}
@@ -873,9 +874,10 @@ Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Util::S
 	index = 0;
 	for (auto& parameter : paddle_parameters)
 	{
-		Util::initialize_text(parameter, "000.000", utils.main_font, 10, false,
-							  statics.paddle_parameters.at(index).getPosition().x + 35.f,
-							  statics.paddle_parameters.at(index).getPosition().y, sf::Text::Regular, sf::Color::Red);
+		Utilities::initialize_text(parameter, "000.000", utils.main_font, 10, false,
+								   statics.paddle_parameters.at(index).getPosition().x + 35.f,
+								   statics.paddle_parameters.at(index).getPosition().y, sf::Text::Regular,
+								   sf::Color::Red);
 
 		index++;
 	}
@@ -924,10 +926,11 @@ Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Util::S
 	pause_page.setPosition(sf::Vector2f(to_f(outline.empty_thk), to_f(outline.empty_thk)));
 
 	int picture_address{ 66 };
-	Util::safe_parse(pause_texture, (pictures_path + std::to_string(picture_address) + Game::StaticUnits::adder_path),
-					 (pictures_path + std::to_string(picture_address) + Game::StaticUnits::adder_path +
-					  Game::StaticUnits::template_message)
-						 .c_str());
+	Utilities::safe_parse(pause_texture,
+						  (pictures_path + std::to_string(picture_address) + Game::StaticUnits::adder_path),
+						  (pictures_path + std::to_string(picture_address) + Game::StaticUnits::adder_path +
+						   Game::StaticUnits::template_message)
+							  .c_str());
 
 	pause_icon.setTexture(pause_texture, true);
 	pause_icon.setColor(sf::Color(255, 255, 255, to_i(0.8f * 255)));
