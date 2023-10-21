@@ -182,16 +182,16 @@ inline static bool hasValue(sf::Rect<Type>& rectangle)
 	return hypotenous > 0;
 }
 
-inline static void checkLostBall(Game::dynamicUnits& dynamics)
+inline static void checkLostBall(Game::DynamicUnits& dynamics)
 {
 	// Let's check are ball lost?
 	if (BALL_TOP >= (GFIELD_BOTTOM + game_field.empty_thk))
 	{
 		// Decrement lifes
-		if (!Game::dynamicUnits::lost_ball) Game::dynamicUnits::lifes -= 1;
+		if (!Game::DynamicUnits::lost_ball) Game::DynamicUnits::lifes -= 1;
 
 		// Set lost ball status for new ball await
-		Game::dynamicUnits::lost_ball = true;
+		Game::DynamicUnits::lost_ball = true;
 
 		bll(DELTA_X) = 0;
 		bll(DELTA_Y) = 0;
@@ -368,7 +368,7 @@ inline static colission_detection checkCircleCollision(const float& centerX_PDL,
 	return result;
 }
 
-inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_time)
+inline static void collideUnits(Game::DynamicUnits& dynamics, const float& d_time)
 {
 	///////////////////////////////////////PADDLE TO WALL////////////////////////////////////////////
 
@@ -388,7 +388,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 			sf::Vector2f(GFIELD_LEFT + PADDLE_WIDTH / 2, to_f(GFIELD_BOTTOM - Default::block_height)));
 
 		pdl(A_X) *= -1.f;
-		pdl(V_X) *= Game::dynamicUnits::pdl_bounce;
+		pdl(V_X) *= Game::DynamicUnits::pdl_bounce;
 		// dynamics.paddle_kinematics.at(DELTA_X) += 5.f;
 		pdl(DELTA_X) = pdl(V_X) * d_time + pdl(A_X) * d_time * d_time / 2.f;
 	}
@@ -409,7 +409,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 			sf::Vector2f(GFIELD_RIGHT - PADDLE_WIDTH / 2, to_f(GFIELD_BOTTOM - Default::block_height)));
 
 		pdl(A_X) *= -1.f;
-		pdl(V_X) *= Game::dynamicUnits::pdl_bounce;
+		pdl(V_X) *= Game::DynamicUnits::pdl_bounce;
 		// dynamics.paddle_kinematics.at(DELTA_X) += 5.f;
 		pdl(DELTA_X) = pdl(V_X) * d_time + pdl(A_X) * d_time * d_time / 2.f;
 	}
@@ -425,8 +425,8 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		bll(A_X) *= -1.f;
 
 		// Bouncing from the wall
-		bll(V_X) *= -Game::dynamicUnits::bll_bounce;
-		bll(V_Y) *= Game::dynamicUnits::bll_bounce;
+		bll(V_X) *= -Game::DynamicUnits::bll_bounce;
+		bll(V_Y) *= Game::DynamicUnits::bll_bounce;
 
 		// coordinates re-calculation
 		bll(DELTA_X) = bll(V_X) * d_time + bll(A_X) * d_time * d_time / 2.f;
@@ -442,8 +442,8 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		bll(A_X) *= -1.f;
 
 		// Bouncing from the wall
-		bll(V_X) *= -Game::dynamicUnits::bll_bounce;
-		bll(V_Y) *= Game::dynamicUnits::bll_bounce;
+		bll(V_X) *= -Game::DynamicUnits::bll_bounce;
+		bll(V_Y) *= Game::DynamicUnits::bll_bounce;
 
 		// coordinates re-calculation
 		bll(DELTA_X) = bll(V_X) * d_time + bll(A_X) * d_time * d_time / 2.f;
@@ -459,8 +459,8 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		bll(A_Y) *= -1.f;
 
 		// Bouncing from the wall
-		bll(V_X) *= Game::dynamicUnits::bll_bounce;
-		bll(V_Y) *= -Game::dynamicUnits::bll_bounce;
+		bll(V_X) *= Game::DynamicUnits::bll_bounce;
+		bll(V_Y) *= -Game::DynamicUnits::bll_bounce;
 
 		// coordinates re-calculation
 		bll(DELTA_X) = bll(V_X) * d_time + bll(A_X) * d_time * d_time / 2.f;
@@ -483,7 +483,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		// AND MOST IMPORTANTLY: it is not a side of the paddle
 		(PADDLE_LOX < BALL_OX) && (BALL_OX < PADDLE_ROX) &&
 		// REMOVING GLITCH
-		(!Game::dynamicUnits::lost_ball))
+		(!Game::DynamicUnits::lost_ball))
 	{
 		dynamics.ball->setPosition(sf::Vector2f(dynamics.ball->getPosition().x, PADDLE_TOP - BALL_HEIGHT / 2));
 
@@ -491,12 +491,12 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		bll(A_Y) *= -1.f;
 
 		// Bouncing from the PADDLE
-		bll(V_X) *= Game::dynamicUnits::bll_bounce;
-		bll(V_Y) *= -Game::dynamicUnits::bll_bounce;
+		bll(V_X) *= Game::DynamicUnits::bll_bounce;
+		bll(V_Y) *= -Game::DynamicUnits::bll_bounce;
 
 		// Now we can accelerate ball with PADDLE IMPULSE
 		// bll(V_X) += pdl(V_X);
-		bll(V_X) += Game::dynamicUnits::bll_mult * pdl(V_X);
+		bll(V_X) += Game::DynamicUnits::bll_mult * pdl(V_X);
 
 		// coordinates re-calculation
 		bll(DELTA_X) = bll(V_X) * d_time + bll(A_X) * d_time * d_time / 2.f;
@@ -512,7 +512,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		// RIGHT side of the BALL got thru LEFT side of the PADDLE
 		(BALL_RIGHT > PADDLE_LEFT) &&
 		// REMOVING GLITCH
-		(!Game::dynamicUnits::lost_ball))
+		(!Game::DynamicUnits::lost_ball))
 	{
 		// set up containers to catch result of possible collision
 		// And, MOST IMPORTANTLY: Do the circle of the BALL go thru PADDLE circle?
@@ -533,8 +533,8 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 			bll(A_Y) *= -1.f;
 
 			// Bouncing from the wall
-			bll(V_X) *= -Game::dynamicUnits::bll_bounce;
-			bll(V_Y) *= -Game::dynamicUnits::bll_bounce;
+			bll(V_X) *= -Game::DynamicUnits::bll_bounce;
+			bll(V_Y) *= -Game::DynamicUnits::bll_bounce;
 
 			// Now we can accelerate ball with PADDLE IMPULSE
 			bll(V_X) += pdl(V_X);
@@ -554,7 +554,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		// LEFT side of the BALL got thru RIGHT side of the PADDLE
 		(BALL_LEFT < PADDLE_RIGHT) &&
 		// REMOVING GLITCH
-		(!Game::dynamicUnits::lost_ball))
+		(!Game::DynamicUnits::lost_ball))
 	{
 		// set up containers to catch result of possible collision
 		// And, MOST IMPORTANTLY: Do the circle of the BALL go thru PADDLE circle?
@@ -575,8 +575,8 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 			bll(A_Y) *= -1.f;
 
 			// Bouncing from the wall
-			bll(V_X) *= -Game::dynamicUnits::bll_bounce;
-			bll(V_Y) *= -Game::dynamicUnits::bll_bounce;
+			bll(V_X) *= -Game::DynamicUnits::bll_bounce;
+			bll(V_Y) *= -Game::DynamicUnits::bll_bounce;
 
 			// Now we can accelerate ball with PADDLE IMPULSE
 			bll(V_X) += pdl(V_X);
@@ -616,7 +616,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 		//	)
 		//	//REMOVING GLITCH
 		//	//&&
-		//	//(!Game::dynamicUnits::lost_ball)
+		//	//(!Game::DynamicUnits::lost_ball)
 		//)
 		sf::Rect<float> diagnose;
 		diagnose.getSize();
@@ -644,7 +644,7 @@ inline static void collideUnits(Game::dynamicUnits& dynamics, const float& d_tim
 	}
 }
 
-static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d_time)
+static inline void ablHitPlayGround(Game::DynamicUnits& dynamics, const float& d_time)
 {
 	auto this_abl = dynamics.conveyor.begin();
 	auto this_map = dynamics.conveyor_map.begin();
@@ -664,10 +664,10 @@ static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d
 		(*this_abl).setPosition(sf::Vector2f(to_f(GFIELD_LEFT), (*this_abl).getGlobalBounds().top));
 
 		// Invert speed_X, acceleration_X and bounce them
-		(*this_map).kinematics.at(V_X) *= (-1.f) * Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(V_Y) *= Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(A_X) *= (-1.f) * Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(A_Y) *= Game::dynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(V_X) *= (-1.f) * Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(V_Y) *= Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(A_X) *= (-1.f) * Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(A_Y) *= Game::DynamicUnits::abl_bounce;
 
 		std::cout << "Bounced ability: " << (*this_abl).getGlobalBounds().left << '\n';
 		std::cout << "Bounced ability: " << (*this_abl).getGlobalBounds().top << '\n';
@@ -695,10 +695,10 @@ static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d
 			sf::Vector2f(GFIELD_RIGHT - (*this_abl).getGlobalBounds().width, (*this_abl).getGlobalBounds().top));
 
 		// Invert speed_X, acceleration_X and bounce them
-		(*this_map).kinematics.at(V_X) *= (-1.f) * Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(V_Y) *= Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(A_X) *= (-1.f) * Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(A_Y) *= Game::dynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(V_X) *= (-1.f) * Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(V_Y) *= Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(A_X) *= (-1.f) * Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(A_Y) *= Game::DynamicUnits::abl_bounce;
 
 		// Immidiately re-calculate kinematics
 		// recalculateAblKinematics((*this_map).kinematics, d_time);
@@ -720,10 +720,10 @@ static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d
 		(*this_abl).setPosition(sf::Vector2f((*this_abl).getGlobalBounds().left, to_f(GFIELD_TOP)));
 
 		// Invert speed_Y, acceleration_Y and bounce them
-		(*this_map).kinematics.at(V_X) *= Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(V_Y) *= (-1.f) * Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(A_X) *= Game::dynamicUnits::abl_bounce;
-		(*this_map).kinematics.at(A_Y) *= (-1.f) * Game::dynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(V_X) *= Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(V_Y) *= (-1.f) * Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(A_X) *= Game::DynamicUnits::abl_bounce;
+		(*this_map).kinematics.at(A_Y) *= (-1.f) * Game::DynamicUnits::abl_bounce;
 
 		// Immidiately re-calculate kinematics
 		// recalculateAblKinematics((*this_map).kinematics, d_time);
@@ -751,7 +751,7 @@ static inline void ablHitPlayGround(Game::dynamicUnits& dynamics, const float& d
 	}
 }
 
-inline static void ballHitBlocks(Game::dynamicUnits& dynamics, const float& d_time)
+inline static void ballHitBlocks(Game::DynamicUnits& dynamics, const float& d_time)
 {
 	/////////////////////////////////////BALL VS BLOCKS//////////////////////////////////////////
 
@@ -850,8 +850,8 @@ inline static void ballHitBlocks(Game::dynamicUnits& dynamics, const float& d_ti
 			std::swap(BALL_AX, BALL_AY);
 
 			// Bounce velocities
-			BALL_VX *= Game::dynamicUnits::bll_bounce;
-			BALL_VY *= Game::dynamicUnits::bll_bounce;
+			BALL_VX *= Game::DynamicUnits::bll_bounce;
+			BALL_VY *= Game::DynamicUnits::bll_bounce;
 		}
 		// If is a flat surface
 		else
@@ -861,8 +861,8 @@ inline static void ballHitBlocks(Game::dynamicUnits& dynamics, const float& d_ti
 				// Set ball center ouside bound of the block
 				dynamics.ball->setPosition(sf::Vector2f(ABLOCK_LEFT - BALL_RAD, BALL_OY));
 				// Bounce velocities
-				BALL_VX *= -Game::dynamicUnits::bll_bounce;
-				BALL_VY *= Game::dynamicUnits::bll_bounce;
+				BALL_VX *= -Game::DynamicUnits::bll_bounce;
+				BALL_VY *= Game::DynamicUnits::bll_bounce;
 				// Bounce accelerations
 				BALL_AX *= -1.f;
 				BALL_AY *= 1.f;
@@ -872,8 +872,8 @@ inline static void ballHitBlocks(Game::dynamicUnits& dynamics, const float& d_ti
 				// Set ball center ouside bound of the block
 				dynamics.ball->setPosition(sf::Vector2f(ABLOCK_RIGHT + BALL_RAD, BALL_OY));
 				// Bounce velocities
-				BALL_VX *= -Game::dynamicUnits::bll_bounce;
-				BALL_VY *= Game::dynamicUnits::bll_bounce;
+				BALL_VX *= -Game::DynamicUnits::bll_bounce;
+				BALL_VY *= Game::DynamicUnits::bll_bounce;
 				// Bounce accelerations
 				BALL_AX *= -1.f;
 				BALL_AY *= 1.f;
@@ -883,8 +883,8 @@ inline static void ballHitBlocks(Game::dynamicUnits& dynamics, const float& d_ti
 				// Set ball center ouside bound of the block
 				dynamics.ball->setPosition(sf::Vector2f(BALL_OX, ABLOCK_TOP - BALL_RAD));
 				// Bounce velocities
-				BALL_VX *= Game::dynamicUnits::bll_bounce;
-				BALL_VY *= -Game::dynamicUnits::bll_bounce;
+				BALL_VX *= Game::DynamicUnits::bll_bounce;
+				BALL_VY *= -Game::DynamicUnits::bll_bounce;
 				// Bounce accelerations
 				BALL_AX *= 1.f;
 				BALL_AY *= -1.f;
@@ -894,8 +894,8 @@ inline static void ballHitBlocks(Game::dynamicUnits& dynamics, const float& d_ti
 				// Set ball center ouside bound of the block
 				dynamics.ball->setPosition(sf::Vector2f(BALL_OX, ABLOCK_BOTTOM + BALL_RAD));
 				// Bounce velocities
-				BALL_VX *= Game::dynamicUnits::bll_bounce;
-				BALL_VY *= -Game::dynamicUnits::bll_bounce;
+				BALL_VX *= Game::DynamicUnits::bll_bounce;
+				BALL_VY *= -Game::DynamicUnits::bll_bounce;
 				// Bounce accelerations
 				BALL_AX *= 1.f;
 				BALL_AY *= -1.f;
@@ -920,7 +920,7 @@ inline static void ballHitBlocks(Game::dynamicUnits& dynamics, const float& d_ti
 	}
 }
 
-inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d_time)
+inline static void ballHitAbilities(Game::DynamicUnits& dynamics, const float& d_time)
 {
 	/////////////////////////////////////BALL VS ABILITIES//////////////////////////////////////////
 
@@ -1030,8 +1030,8 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 				bll(A_Y) *= -1.f;
 
 				// Bouncing from the wall
-				bll(V_X) *= -Game::dynamicUnits::bll_bounce;
-				bll(V_Y) *= -Game::dynamicUnits::bll_bounce;
+				bll(V_X) *= -Game::DynamicUnits::bll_bounce;
+				bll(V_Y) *= -Game::DynamicUnits::bll_bounce;
 
 				// Immidiately do the kinematics recalculations
 				recalculate2DKinematics(dynamics.ball_kinematics, d_time);
@@ -1055,8 +1055,8 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 				///////////////////RECALCULATE BALL KINEMATICS///////////////////////
 
 				// Bounce velocities
-				BALL_VX *= Game::dynamicUnits::bll_bounce;
-				BALL_VY *= -Game::dynamicUnits::bll_bounce;
+				BALL_VX *= Game::DynamicUnits::bll_bounce;
+				BALL_VY *= -Game::DynamicUnits::bll_bounce;
 				// Bounce accelerations
 				BALL_AX *= 1.f;
 				BALL_AY *= -1.f;
@@ -1079,8 +1079,8 @@ inline static void ballHitAbilities(Game::dynamicUnits& dynamics, const float& d
 				///////////////////RECALCULATE BALL KINEMATICS///////////////////////
 
 				// Bounce velocities
-				BALL_VX *= Game::dynamicUnits::bll_bounce;
-				BALL_VY *= -Game::dynamicUnits::bll_bounce;
+				BALL_VX *= Game::DynamicUnits::bll_bounce;
+				BALL_VY *= -Game::DynamicUnits::bll_bounce;
 				// Bounce accelerations
 				BALL_AX *= 1.f;
 				BALL_AY *= -1.f;
@@ -1225,18 +1225,18 @@ static inline const std::vector<int> sign_Y{
 
 static inline const std::vector<float> bouncer{
 	1,								   // UNDEFINED_TYPE
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_TOP_ABL,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_BOTTOM_ABL,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_LEFT_ABL,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_RIGHT_ABL,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_TOP_BLK,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_BOTTOM_BLK,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_LEFT_BLK,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_RIGHT_BLK,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_UL_BLK,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_BL_BLK,
-	Game::dynamicUnits::abl_bounce,	   // ABL_AT_UR_BLK,
-	Game::dynamicUnits::abl_bounce	   // ABL_AT_BR_BLK,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_TOP_ABL,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_BOTTOM_ABL,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_LEFT_ABL,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_RIGHT_ABL,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_TOP_BLK,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_BOTTOM_BLK,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_LEFT_BLK,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_RIGHT_BLK,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_UL_BLK,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_BL_BLK,
+	Game::DynamicUnits::abl_bounce,	   // ABL_AT_UR_BLK,
+	Game::DynamicUnits::abl_bounce	   // ABL_AT_BR_BLK,
 
 };
 
@@ -1474,7 +1474,7 @@ inline static void iterate2Dcontainers(std::vector<sf::Sprite>& t_unit, std::vec
 	}
 }
 
-inline static void abilityHitBelt(Game::dynamicUnits& dynamics, const float& d_time)
+inline static void abilityHitBelt(Game::DynamicUnits& dynamics, const float& d_time)
 {
 	/////////////////////////////////////ABILITY VS ABILITIES//////////////////////////////////////////
 
@@ -1485,7 +1485,7 @@ inline static void abilityHitBelt(Game::dynamicUnits& dynamics, const float& d_t
 	iterate2Dcontainers(dynamics.conveyor, dynamics.conveyor_map, true);
 }
 
-inline static void throwAbilities(Game::dynamicUnits& dynamics, const float& d_time)
+inline static void throwAbilities(Game::DynamicUnits& dynamics, const float& d_time)
 {
 	/////////////////////////////////ABILITY VS ABILITIES & BLOCKS/////////////////////////////////////
 
@@ -1548,7 +1548,7 @@ inline static void throwAbilities(Game::dynamicUnits& dynamics, const float& d_t
 		// So if no holder that catch ability we can release it
 		if (!hold)
 		{
-			dynamics.conveyor_map.at(index).kinematics.at(V_Y) = Game::dynamicUnits::abl_V_step;
+			dynamics.conveyor_map.at(index).kinematics.at(V_Y) = Game::DynamicUnits::abl_V_step;
 			recalculateAblKinematics(dynamics.conveyor_map.at(index).kinematics, d_time);
 			dynamics.conveyor.at(index).move(sf::Vector2f(dynamics.conveyor_map.at(index).kinematics.at(DELTA_X),
 														  dynamics.conveyor_map.at(index).kinematics.at(DELTA_Y)));

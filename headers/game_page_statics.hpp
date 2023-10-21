@@ -8,20 +8,16 @@
 //										    												//
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-// C++ headers
+//* C++ std
 
-// API
-
-// SFML headers
+//* SFML
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/Vertex.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-
-// Custom headers
+//* Custom
 #include "game_page.hpp"
 #include "util.hpp"
-
 
 enum status_lbls
 {
@@ -38,25 +34,25 @@ enum status_lbls
 // Forward Game namespace declaration in the 'game_page_statics.hpp'
 namespace Game
 {
-	class staticUnits;	   // forward declaration already declared class (game_page_statics.hpp)
-	class dynamicUnits;	   // forward declaration already declared class (game_page_statics.hpp)
+	class StaticUnits;	   // forward declaration already declared class (game_page_statics.hpp)
+	class DynamicUnits;	   // forward declaration already declared class (game_page_statics.hpp)
 
 	// forward declaration already declared function
 	static void initialize_frame(sf::RectangleShape& rect, const float& size_x, const float& size_y,
 								 const sf::Color& border_color,	   // Black, White, Red, Green, Blue, Yellow, Magenta,
 																   // Cyan, Transparent
-								 const sf::Color& fill_color,	 // Black, White, Red, Green, Blue, Yellow, Magenta,
-																 // Cyan, Transparent
+								 const sf::Color& fill_color,	   // Black, White, Red, Green, Blue, Yellow, Magenta,
+																   // Cyan, Transparent
 								 const float& thikness, const float& pos_x, const float& pos_y) noexcept;
 
 };	  // namespace Game
 
 // class definition
-class Game::staticUnits
+class Game::StaticUnits
 {
 public:
-	staticUnits() = default;						// default-constructor declaration
-	staticUnits(const Util::staticUnits& utils);	// constructor dependable on 'Util::staticUnits' object declaration
+	StaticUnits() = default;						// default-constructor declaration
+	StaticUnits(const Util::StaticUnits& utils);	// constructor dependable on 'Util::StaticUnits' object declaration
 
 	// BASIC FRAMES
 

@@ -46,8 +46,8 @@ enum t_kinematics
 // Forward Game namespace declaration in the 'game_page_dynamics.hpp'
 namespace Game
 {
-	class staticUnits;	   // forward declaration already declared class (game_page_dynamics.hpp)
-	class dynamicUnits;	   // forward declaration already declared class (game_page_dynamics.hpp)
+	class StaticUnits;	   // forward declaration already declared class (game_page_dynamics.hpp)
+	class DynamicUnits;	   // forward declaration already declared class (game_page_dynamics.hpp)
 	class Process;		   // forward declaration already declared class (game_page_dynamics.hpp)
 
 	// enum ability_textures;
@@ -63,17 +63,17 @@ namespace Game
 
 };	  // namespace Game
 
-class Game::dynamicUnits
+class Game::DynamicUnits
 {
 public:
-	dynamicUnits() = default;	 // default-constructor declaration
-	dynamicUnits(const Game::staticUnits& statics,
-				 const Util::staticUnits& utils);	 // constructor dependable on 'Game::staticUnits' object declaration
+	DynamicUnits() = default;	 // default-constructor declaration
+	DynamicUnits(const Game::StaticUnits& statics,
+				 const Util::StaticUnits& utils);	 // constructor dependable on 'Game::StaticUnits' object declaration
 
 	// INTERNAL CLASS UTILITIES
 
 	// set one line of the conveyor
-	void setLine(const Game::staticUnits& statics, const bool& first);
+	void setLine(const Game::StaticUnits& statics, const bool& first);
 
 	// get random number
 	int getRandomNumber(const int& limit);
@@ -83,7 +83,7 @@ public:
 							std::vector<int>& recipient_positions);
 
 	// Update visibility of every '+100' ability block if there any such
-	// void updatePlusHundredAbility(const Game::staticUnits& utils);
+	// void updatePlusHundredAbility(const Game::StaticUnits& utils);
 
 	///<<<---INTERFACE
 
@@ -94,22 +94,22 @@ public:
 	void blinkScoreAdder();
 
 	// Update lifes visibility
-	void updateLifeBalls(const Game::staticUnits& statics);
+	void updateLifeBalls(const Game::StaticUnits& statics);
 
 	// Get initial texture by current state
 	int getTextureNumber(const int& p_state);
 
 	// If there was such ability: resize paddle
-	void resizePaddle(const Game::staticUnits& utils);
+	void resizePaddle(const Game::StaticUnits& utils);
 
 	// Update paddle texture depending on the time
-	void updateElectricPaddle(const Game::staticUnits& utils);
+	void updateElectricPaddle(const Game::StaticUnits& utils);
 
 	// Adjust paddle sprite
 	// void adjustPaddle();
 
 	// Move down conveyor array
-	void extendConveyor(const Game::staticUnits& statics);
+	void extendConveyor(const Game::StaticUnits& statics);
 
 	// Update awaiting time label
 	void updateExtAwaitTimer();
@@ -295,35 +295,35 @@ public:
 
 static inline void increaseScore(const int& operand)
 {
-	Game::dynamicUnits::score += operand;
-	Game::dynamicUnits::score_adder = operand;
+	Game::DynamicUnits::score += operand;
+	Game::DynamicUnits::score_adder = operand;
 }
 
 static inline void chageBallSpeed(const int& operand)
 {
-	Game::dynamicUnits::bll_V_step += to_f(operand);
+	Game::DynamicUnits::bll_V_step += to_f(operand);
 
-	if (Game::dynamicUnits::bll_V_step > Game::dynamicUnits::bll_max)
-		Game::dynamicUnits::bll_V_step = Game::dynamicUnits::bll_max;
+	if (Game::DynamicUnits::bll_V_step > Game::DynamicUnits::bll_max)
+		Game::DynamicUnits::bll_V_step = Game::DynamicUnits::bll_max;
 
-	if (Game::dynamicUnits::bll_V_step < Game::dynamicUnits::bll_min)
-		Game::dynamicUnits::bll_V_step = Game::dynamicUnits::bll_min;
+	if (Game::DynamicUnits::bll_V_step < Game::DynamicUnits::bll_min)
+		Game::DynamicUnits::bll_V_step = Game::DynamicUnits::bll_min;
 }
 
-static inline void increaseLifes(const int& operand) { Game::dynamicUnits::lifes += operand; }
+static inline void increaseLifes(const int& operand) { Game::DynamicUnits::lifes += operand; }
 
 static inline void adjustPaddleSize(const int& operand)
 {
-	Game::dynamicUnits::paddle_ext += operand;
+	Game::DynamicUnits::paddle_ext += operand;
 
-	if ((Game::dynamicUnits::paddle_ext > Game::dynamicUnits::paddle_max))
+	if ((Game::DynamicUnits::paddle_ext > Game::DynamicUnits::paddle_max))
 	{
-		Game::dynamicUnits::paddle_ext = Game::dynamicUnits::paddle_max;
+		Game::DynamicUnits::paddle_ext = Game::DynamicUnits::paddle_max;
 		return;
 	}
-	else if ((Game::dynamicUnits::paddle_ext < Game::dynamicUnits::paddle_min))
+	else if ((Game::DynamicUnits::paddle_ext < Game::DynamicUnits::paddle_min))
 	{
-		Game::dynamicUnits::paddle_ext = Game::dynamicUnits::paddle_min;
+		Game::DynamicUnits::paddle_ext = Game::DynamicUnits::paddle_min;
 		return;
 	}
 }

@@ -111,7 +111,7 @@ enum paddle_textures
 
 namespace Util
 {
-	class staticUnits;
+	class StaticUnits;
 
 	class Process;
 
@@ -199,10 +199,10 @@ inline void Util::initialize_text(sf::Text& label,				// destination
 	label.setFillColor(color);
 }
 
-class Util::staticUnits
+class Util::StaticUnits
 {
 public:
-	staticUnits();	  // constructor declaration
+	StaticUnits();	  // constructor declaration
 
 public:
 	//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's
@@ -228,9 +228,9 @@ private:
 };
 
 // Constructor definition
-inline Util::staticUnits::staticUnits()
+inline Util::StaticUnits::StaticUnits()
 {
-	// std::cout << "Util::staticUnits construction\n";
+	// std::cout << "Util::StaticUnits construction\n";
 
 	safe_parse(logo_font, logoFontPath, logoFontParseError);
 	safe_parse(main_font, mainFontPath, mainFontParseError);

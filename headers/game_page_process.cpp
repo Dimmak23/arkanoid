@@ -1,18 +1,18 @@
-#include "game_page.hpp"
-#include "game_page_statics.hpp"
-#include "game_page_dynamics.hpp"
 #include "game_page_process.hpp"
+
+#include "game_page.hpp"
+#include "game_page_dynamics.hpp"
 #include "game_page_physics.hpp"
+#include "game_page_statics.hpp"
 
+// METHODS
 
-//METHODS
-
-void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& utils, const Game::dynamicUnits& dynamo)
+void Game::Process::render(sf::RenderWindow& window, const Game::StaticUnits& utils, const Game::DynamicUnits& dynamo)
 {
-	//Before do anything: clear screen
+	// Before do anything: clear screen
 	window.clear(sf::Color::Black);
 
-//==================================STATICS===============================
+	//==================================STATICS===============================
 
 	//===========FRAMES=============
 
@@ -22,58 +22,46 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 
 	//===========EXTENSION LINES=============
 
-	for (auto& line : utils.extension_lines)
-		window.draw(line);
+	for (auto& line : utils.extension_lines) window.draw(line);
 
 	//===========LABELS=============
 
-	//LEGEND
+	// LEGEND
 	window.draw(utils.blocks_label);
-	for (auto& description : utils.blocks_descriptions)
-		window.draw(description);
+	for (auto& description : utils.blocks_descriptions) window.draw(description);
 
-	for (auto& block : utils.blk_sprites)
-		window.draw(block);
+	for (auto& block : utils.blk_sprites) window.draw(block);
 
 	window.draw(utils.abilities_label);
-	for (auto& description : utils.abilities_descriptions)
-		window.draw(description);
+	for (auto& description : utils.abilities_descriptions) window.draw(description);
 
-	for (auto& ability : utils.abl_sprites)
-		window.draw(ability);
+	for (auto& ability : utils.abl_sprites) window.draw(ability);
 
-	//STATUS
-	for (auto& label : utils.status_labels)
-		window.draw(label);
+	// STATUS
+	for (auto& label : utils.status_labels) window.draw(label);
 
-	//STATUS LABELS ADDERS
-	//window.draw(utils.timer_adder);
-	//window.draw(utils.countdown_adder);
+	// STATUS LABELS ADDERS
+	// window.draw(utils.timer_adder);
+	// window.draw(utils.countdown_adder);
 
-	//LIFES CIRCLES
-	for (auto& circle : utils.lifes_outline)
-		window.draw(circle);
+	// LIFES CIRCLES
+	for (auto& circle : utils.lifes_outline) window.draw(circle);
 
-	for (auto& parameter : utils.ball_parameters)
-		window.draw(parameter);
+	for (auto& parameter : utils.ball_parameters) window.draw(parameter);
 
-	//BALL STATUS FRAMES
-	for (auto& frame : utils.ball_p_frames)
-		window.draw(frame);
+	// BALL STATUS FRAMES
+	for (auto& frame : utils.ball_p_frames) window.draw(frame);
 
-	for (auto& parameter : utils.paddle_parameters)
-		window.draw(parameter);
+	for (auto& parameter : utils.paddle_parameters) window.draw(parameter);
 
-	//PADDLE STATUS FRAMES
-	for (auto& frame : utils.paddle_p_frames)
-		window.draw(frame);
+	// PADDLE STATUS FRAMES
+	for (auto& frame : utils.paddle_p_frames) window.draw(frame);
 
-//==================================DYNAMICS===============================
+	//==================================DYNAMICS===============================
 
 	//===========CONVEYOR BELT=============
 
-	for (auto& unit : dynamo.conveyor)
-		window.draw(unit);
+	for (auto& unit : dynamo.conveyor) window.draw(unit);
 
 	//===========PADDLE=============
 
@@ -85,134 +73,129 @@ void Game::Process::render(sf::RenderWindow& window, const Game::staticUnits& ut
 
 	//===========STATUSES=============
 
-	//SCORE
+	// SCORE
 	window.draw(dynamo.score_label);
 	window.draw(dynamo.score_add_label);
 
-	//LIFE BALLS
-	for (auto& ball : dynamo.lifes_balls)
-		window.draw((*ball));
+	// LIFE BALLS
+	for (auto& ball : dynamo.lifes_balls) window.draw((*ball));
 
-	//GAME TIME
+	// GAME TIME
 	window.draw(dynamo.game_timer);
 
-	//COUNTDOWN TO THE NEW LINE
+	// COUNTDOWN TO THE NEW LINE
 	window.draw(dynamo.extender_countdown);
 
-	//AWAIT FOR THE NEW LINE
+	// AWAIT FOR THE NEW LINE
 	window.draw(dynamo.extender_await);
 
-	//KINEMATIC PARAMETERS INTERFACE
+	// KINEMATIC PARAMETERS INTERFACE
 
-	for(auto& parameter: dynamo.ball_parameters)
-		window.draw(parameter);
+	for (auto& parameter : dynamo.ball_parameters) window.draw(parameter);
 
-	for(auto& parameter: dynamo.paddle_parameters)
-		window.draw(parameter);
+	for (auto& parameter : dynamo.paddle_parameters) window.draw(parameter);
 
-//==================================BASEMENT===============================
+	//==================================BASEMENT===============================
 
-	//This should help with hiding ball in the textures
+	// This should help with hiding ball in the textures
 	window.draw(dynamo.basement);
 
-//=================================PAUSE PAGE==============================
+	//=================================PAUSE PAGE==============================
 
-	//If game on the pause we will see the PAUSE page
+	// If game on the pause we will see the PAUSE page
 	if (on_pause)
 	{
 		window.draw(dynamo.pause_page);
 		window.draw(dynamo.pause_icon);
 	}
 
-//==================================DYNAMICS===============================
-	
-	//Now send drawings to the screen
+	//==================================DYNAMICS===============================
+
+	// Now send drawings to the screen
 	window.display();
 }
 
-void Game::Process::interact(sf::RenderWindow& window, Game::dynamicUnits& dynamo, const float& d_time)
+void Game::Process::interact(sf::RenderWindow& window, Game::DynamicUnits& dynamo, const float& d_time)
 {
 	while (window.pollEvent(event))
 	{
 		// application_window closed
 		if (event.type == sf::Event::Closed)
 		{
-			running = false;  // also should be here
-			//Game finished, but don't close window
-			//window.close();
+			running = false;	// also should be here
+			// Game finished, but don't close window
+			// window.close();
 			break;
 		}
 		else if (event.type == sf::Event::KeyPressed)
 		{
-			//INITIATE PAUSE when Esc is pressed
+			// INITIATE PAUSE when Esc is pressed
 			if (event.key.code == sf::Keyboard::Escape)
 			{
 				on_pause = true;
 				break;
 			}
-			//DESTROY PAUSE when Space is pressed
+			// DESTROY PAUSE when Space is pressed
 			else if (event.key.code == sf::Keyboard::Space)
 			{
-				//Only if we already on the pause
-				if(on_pause) on_pause = false;
+				// Only if we already on the pause
+				if (on_pause) on_pause = false;
 				break;
 			}
 
-			//If user lost the ball
-			//we wait until it appears on the paddle
-			//then
-			//pressing A: will pass it diagonally - left
-			//pressing D: will pass it diagonally - right
+			// If user lost the ball
+			// we wait until it appears on the paddle
+			// then
+			// pressing A: will pass it diagonally - left
+			// pressing D: will pass it diagonally - right
 			else if (event.key.code == sf::Keyboard::A)
 			{
-				//Only for the catched ball we can aply
-				//such initial impulse
-				if (Game::dynamicUnits::catched_ball)
+				// Only for the catched ball we can aply
+				// such initial impulse
+				if (Game::DynamicUnits::catched_ball)
 				{
-					bll(V_X) -= Game::dynamicUnits::bll_V_step;
-					bll(V_Y) -= Game::dynamicUnits::bll_V_step;
-					//and reset status, so we don't hold the ball anymore
-					Game::dynamicUnits::catched_ball = false;
+					bll(V_X) -= Game::DynamicUnits::bll_V_step;
+					bll(V_Y) -= Game::DynamicUnits::bll_V_step;
+					// and reset status, so we don't hold the ball anymore
+					Game::DynamicUnits::catched_ball = false;
 				}
 			}
 			else if (event.key.code == sf::Keyboard::D)
 			{
-				//Only for the catched ball we can aply
-				//such initial impulse
-				if (Game::dynamicUnits::catched_ball)
+				// Only for the catched ball we can aply
+				// such initial impulse
+				if (Game::DynamicUnits::catched_ball)
 				{
-					bll(V_X) = Game::dynamicUnits::bll_V_step;
-					bll(V_Y) -= Game::dynamicUnits::bll_V_step;
-					//and reset status, so we don't hold the ball anymore
-					Game::dynamicUnits::catched_ball = false;
+					bll(V_X) = Game::DynamicUnits::bll_V_step;
+					bll(V_Y) -= Game::DynamicUnits::bll_V_step;
+					// and reset status, so we don't hold the ball anymore
+					Game::DynamicUnits::catched_ball = false;
 				}
 			}
 
-			//We can quicly quit by pressing Q
+			// We can quicly quit by pressing Q
 			else if (event.key.code == sf::Keyboard::Q)
 			{
-				running = false;  // also should be here
+				running = false;	// also should be here
 				break;
 			}
 
-			//LEFT button we use for loosing speed in the X axis
+			// LEFT button we use for loosing speed in the X axis
 			else if (event.key.code == sf::Keyboard::Left)
 			{
-				pdl(V_X) -= Game::dynamicUnits::pdl_V_step;
-				pdl(A_X) -= Game::dynamicUnits::pdl_A_step;
+				pdl(V_X) -= Game::DynamicUnits::pdl_V_step;
+				pdl(A_X) -= Game::DynamicUnits::pdl_A_step;
 			}
-			//RIGHT button we use for increasing speed in the X axis
+			// RIGHT button we use for increasing speed in the X axis
 			else if (event.key.code == sf::Keyboard::Right)
 			{
-				pdl(V_X) += Game::dynamicUnits::pdl_V_step;
-				pdl(A_X) += Game::dynamicUnits::pdl_A_step;
+				pdl(V_X) += Game::DynamicUnits::pdl_V_step;
+				pdl(A_X) += Game::DynamicUnits::pdl_A_step;
 			}
 
-			recalculate1DKinematics(Game::dynamicUnits::paddle_kinematics, d_time);
+			recalculate1DKinematics(Game::DynamicUnits::paddle_kinematics, d_time);
 
 			dynamo.paddle->move(sf::Vector2f(pdl(DELTA_X), 0));
 		}
-
 	}
-
 }

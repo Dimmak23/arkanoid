@@ -8,24 +8,22 @@
 //										    												//
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-// C++ headers
+//* C++ std
 #include <algorithm>
+#include <iterator>
 #include <ranges>
 #include <string>
 #include <vector>
 
-// API
-
-// SFML headers
+//* SFML
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Window/Event.hpp>
 
-// Custom headers
+//* Custom
 #include "util.hpp"
-// #include "physics.hpp"
 
 // dependable headers with some class definitions
 #include "game_page_dynamics.hpp"
@@ -34,14 +32,14 @@
 // DEFINES
 // It seems that here construction paddle_kinematics.at(L_VALUE) and ball_kinematics.at(L_VALUE) are spreading a lot,
 // so why not simpliy this moment
-#define pdl(lvalue) Game::dynamicUnits::paddle_kinematics.at(lvalue)
-#define bll(lvalue) Game::dynamicUnits::ball_kinematics.at(lvalue)
+#define pdl(lvalue) Game::DynamicUnits::paddle_kinematics.at(lvalue)
+#define bll(lvalue) Game::DynamicUnits::ball_kinematics.at(lvalue)
 
 // First Game namespace declaration
 namespace Game
 {
-	class staticUnits;
-	class dynamicUnits;
+	class StaticUnits;
+	class DynamicUnits;
 	class Process;
 
 	static void initialize_frame(sf::RectangleShape& rect, const float& size_x, const float& size_y,

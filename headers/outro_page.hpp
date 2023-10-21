@@ -21,15 +21,15 @@
 
 namespace Outro
 {
-	class staticUnits;
+	class StaticUnits;
 	class Process;
 };	  // namespace Outro
 
-class Outro::staticUnits
+class Outro::StaticUnits
 {
 public:
-	staticUnits();
-	staticUnits(const Util::staticUnits& utils);	// constructor dependable on 'Util::staticUnits' object declaration
+	StaticUnits();
+	StaticUnits(const Util::StaticUnits& utils);	// constructor dependable on 'Util::StaticUnits' object declaration
 
 	//! REMEMBER: Fonts, Texts, Textures, ContextSettings,...(what else?) - can't be global. They should be someone's
 	//! property
@@ -48,7 +48,7 @@ private:
 	static inline const char* gameoverPicParseError{ "_____game over parse error...\n" };
 };
 
-inline Outro::staticUnits::staticUnits(const Util::staticUnits& utils)
+inline Outro::StaticUnits::StaticUnits(const Util::StaticUnits& utils)
 {
 	//=====ESCAPE LABEL SETTINGS=====
 
@@ -89,14 +89,14 @@ class Outro::Process
 public:
 	Process();
 
-	static void blinkInstruction(Outro::staticUnits& utils);
+	static void blinkInstruction(Outro::StaticUnits& utils);
 
 	static inline bool running{ true };
 	static inline bool result{ false };
 	static inline float blink_timer{};	  // instruction to start are blinked
 	static inline const float blink_await{ 0.25f };
 
-	void render(sf::RenderWindow& window, const Outro::staticUnits& utils);
+	void render(sf::RenderWindow& window, const Outro::StaticUnits& utils);
 	void interact(sf::RenderWindow& window);
 
 private:
@@ -110,7 +110,7 @@ inline Outro::Process::Process()
 	blink_timer = 0.f;
 }
 
-inline void Outro::Process::blinkInstruction(Outro::staticUnits& utils)
+inline void Outro::Process::blinkInstruction(Outro::StaticUnits& utils)
 {
 	if (blink_timer > blink_await)
 	{
@@ -127,7 +127,7 @@ inline void Outro::Process::blinkInstruction(Outro::staticUnits& utils)
 	}
 }
 
-inline void Outro::Process::render(sf::RenderWindow& window, const Outro::staticUnits& utils)
+inline void Outro::Process::render(sf::RenderWindow& window, const Outro::StaticUnits& utils)
 {
 	// Before do anything: clear screen
 	window.clear(sf::Color::Black);

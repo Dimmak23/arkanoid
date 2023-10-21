@@ -19,7 +19,7 @@
 
 //<<<----UTILITIES
 
-int Game::dynamicUnits::getRandomNumber(const int& limit)
+int Game::DynamicUnits::getRandomNumber(const int& limit)
 {
 	// A uniformly-distributed integer random number generator that produces non-deterministic random numbers
 	std::random_device device;
@@ -36,7 +36,7 @@ int Game::dynamicUnits::getRandomNumber(const int& limit)
 	return distribute_number(generator);
 }
 
-void Game::dynamicUnits::getRandomPositions(const int& maxUnits, std::vector<int>& donor_positions,
+void Game::DynamicUnits::getRandomPositions(const int& maxUnits, std::vector<int>& donor_positions,
 											std::vector<int>& recipient_positions)
 {
 	// How many units will be randomized?
@@ -79,7 +79,7 @@ void Game::dynamicUnits::getRandomPositions(const int& maxUnits, std::vector<int
 
 // UPDATER PLUS_100 ABILITY: for later
 
-// void Game::dynamicUnits::updatePlusHundredAbility(const Game::staticUnits& utils)
+// void Game::DynamicUnits::updatePlusHundredAbility(const Game::StaticUnits& utils)
 //{
 //	if (plus_abl_updater > plus_abl_await)
 //	{
@@ -95,9 +95,9 @@ void Game::dynamicUnits::getRandomPositions(const int& maxUnits, std::vector<int
 //	}
 // }
 
-void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& first = false)
+void Game::DynamicUnits::setLine(const Game::StaticUnits& statics, const bool& first = false)
 {
-	// std::cout << "Calling Game::dynamicUnits::setLine() method\n";
+	// std::cout << "Calling Game::DynamicUnits::setLine() method\n";
 
 	std::vector<int> available_positions(Default::maxInLine);
 	// available_positions.resize(Default::maxInLine);
@@ -227,7 +227,7 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 
 			///<-
 			// Connect needed function from executor by BLOCK_TYPE
-			// BLOCK_TYPE from enum is a twice smaller then enum for Game::staticUnits::blk_textures
+			// BLOCK_TYPE from enum is a twice smaller then enum for Game::StaticUnits::blk_textures
 			int BLOCK_TYPE = block_probability.at(random_block) /
 							 2;	   // NOTE: There is 20 textures loaded, we are using only every second from them
 
@@ -269,7 +269,7 @@ void Game::dynamicUnits::setLine(const Game::staticUnits& statics, const bool& f
 // When we score have been changed we are sill not have been erase adder
 // we pop him up to the interface
 // and wait some time
-void Game::dynamicUnits::blinkScoreAdder()
+void Game::DynamicUnits::blinkScoreAdder()
 {
 	if (score_add_timer > score_adder_appear_await)
 	{
@@ -285,7 +285,7 @@ void Game::dynamicUnits::blinkScoreAdder()
 
 // So when score have neen changed it is visible on the label
 // and we also see adder poping up
-void Game::dynamicUnits::updateScore()
+void Game::DynamicUnits::updateScore()
 {
 	if (score > score_max)
 	{
@@ -313,7 +313,7 @@ void Game::dynamicUnits::updateScore()
 }
 
 // So when life variable have been changed - update life status
-void Game::dynamicUnits::updateLifeBalls(const Game::staticUnits& statics)
+void Game::DynamicUnits::updateLifeBalls(const Game::StaticUnits& statics)
 {
 	if (lifes > lifes_max)
 	{
@@ -355,7 +355,7 @@ void Game::dynamicUnits::updateLifeBalls(const Game::staticUnits& statics)
 }
 
 // Adjust paddle if paddle level were changed
-// void Game::dynamicUnits::adjustPaddle()
+// void Game::DynamicUnits::adjustPaddle()
 //{
 //	if (paddle_scale_x >= paddle_scale_x_max)
 //	{
@@ -377,7 +377,7 @@ void Game::dynamicUnits::updateLifeBalls(const Game::staticUnits& statics)
 // }
 
 // Get initial texture by current state
-int Game::dynamicUnits::getTextureNumber(const int& p_state)
+int Game::DynamicUnits::getTextureNumber(const int& p_state)
 {
 	// Get true when current paddle state suit mapped paddle state
 	auto first_in_pair = [&](const std::pair<int, int>& unit) { return (unit.first == p_state); };
@@ -392,7 +392,7 @@ int Game::dynamicUnits::getTextureNumber(const int& p_state)
 }
 
 // If there was such ability: resize paddle
-void Game::dynamicUnits::resizePaddle(const Game::staticUnits& utils)
+void Game::DynamicUnits::resizePaddle(const Game::StaticUnits& utils)
 {
 	// Check if paddle have been adjusted
 	if (paddle_state != paddle_ext)
@@ -407,7 +407,7 @@ void Game::dynamicUnits::resizePaddle(const Game::staticUnits& utils)
 }
 
 // Update electric visibility paddle
-void Game::dynamicUnits::updateElectricPaddle(const Game::staticUnits& utils)
+void Game::DynamicUnits::updateElectricPaddle(const Game::StaticUnits& utils)
 {
 	if (pdl_upd_timer > paddle_upd_await)
 	{
@@ -439,7 +439,7 @@ void Game::dynamicUnits::updateElectricPaddle(const Game::staticUnits& utils)
 
 // Move down conveyor array
 // Also update await extender label
-void Game::dynamicUnits::extendConveyor(const Game::staticUnits& statics)
+void Game::DynamicUnits::extendConveyor(const Game::StaticUnits& statics)
 {
 	std::stringstream streamer;
 
@@ -473,7 +473,7 @@ void Game::dynamicUnits::extendConveyor(const Game::staticUnits& statics)
 // Wait for the new line:
 //	- Longer, if there a lot of blocks;
 //	- less, if there is a few blocks.
-void Game::dynamicUnits::updateExtAwaitTimer()
+void Game::DynamicUnits::updateExtAwaitTimer()
 {
 	std::stringstream streamer;
 
@@ -519,7 +519,7 @@ void Game::dynamicUnits::updateExtAwaitTimer()
 
 // Time
 
-void Game::dynamicUnits::updateGTime() noexcept
+void Game::DynamicUnits::updateGTime() noexcept
 {
 	std::stringstream streamer;
 
@@ -538,7 +538,7 @@ void Game::dynamicUnits::updateGTime() noexcept
 
 // so when ball kinematics have been changed, they would be updated here
 // and when paddle kinematics have been changed, they would be updated here
-void Game::dynamicUnits::updateParInterface(const std::vector<float>& kinematics, std::vector<sf::Text>& texts)
+void Game::DynamicUnits::updateParInterface(const std::vector<float>& kinematics, std::vector<sf::Text>& texts)
 {
 	std::stringstream streamer;
 	float buffer{};
@@ -590,7 +590,7 @@ void Game::dynamicUnits::updateParInterface(const std::vector<float>& kinematics
 //<<<----SIMULATE
 
 // Until user released ball - hold it
-void Game::dynamicUnits::holdBall()
+void Game::DynamicUnits::holdBall()
 {
 	if (catched_ball)
 	{
@@ -601,7 +601,7 @@ void Game::dynamicUnits::holdBall()
 }
 
 // Wait some time before placing ball to the paddle
-void Game::dynamicUnits::waitForBall()
+void Game::DynamicUnits::waitForBall()
 {
 	if (ball_timer > to_new_ball_await)
 	{
@@ -643,7 +643,7 @@ void Game::dynamicUnits::waitForBall()
 }
 
 // maybe we need to finish game because of to long belt
-void Game::dynamicUnits::checkLongBelt()
+void Game::DynamicUnits::checkLongBelt()
 {
 	int index{};
 
@@ -667,7 +667,7 @@ void Game::dynamicUnits::checkLongBelt()
 
 // Colossal class constructor moved here
 
-Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::staticUnits& utils)
+Game::DynamicUnits::DynamicUnits(const Game::StaticUnits& statics, const Util::StaticUnits& utils)
 {
 	//==================================RESET STATIC NON-CONSTS===============================
 
@@ -725,8 +725,8 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	Conveyor line consist with blocks, abilities and empty spaces... what are we living for.
 
 	So container parsed with different textures from:
-		- Game::staticUnits::std::vector<sf::Texture> blk_textures;
-		- Game::staticUnits::std::vector<sf::Texture> abl_textures;
+		- Game::StaticUnits::std::vector<sf::Texture> blk_textures;
+		- Game::StaticUnits::std::vector<sf::Texture> abl_textures;
 	*/
 
 	//==INITALIZE DEFAULT CONVEYOR ARRAY==
@@ -924,9 +924,9 @@ Game::dynamicUnits::dynamicUnits(const Game::staticUnits& statics, const Util::s
 	pause_page.setPosition(sf::Vector2f(to_f(outline.empty_thk), to_f(outline.empty_thk)));
 
 	int picture_address{ 66 };
-	Util::safe_parse(pause_texture, (pictures_path + std::to_string(picture_address) + Game::staticUnits::adder_path),
-					 (pictures_path + std::to_string(picture_address) + Game::staticUnits::adder_path +
-					  Game::staticUnits::template_message)
+	Util::safe_parse(pause_texture, (pictures_path + std::to_string(picture_address) + Game::StaticUnits::adder_path),
+					 (pictures_path + std::to_string(picture_address) + Game::StaticUnits::adder_path +
+					  Game::StaticUnits::template_message)
 						 .c_str());
 
 	pause_icon.setTexture(pause_texture, true);

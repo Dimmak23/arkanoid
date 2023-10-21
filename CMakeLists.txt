@@ -87,13 +87,20 @@ FetchContent_MakeAvailable(SFML)
 # ! What is the main source file?
 set(MAIN Arkanoid)
 
+# ? Where is spurce libraries is kept
+set(LIBRARIES "${CMAKE_SOURCE_DIR}/libs")
+
 # ? Where is header only libraries is kept
 set(HEADERS "${CMAKE_SOURCE_DIR}/headers")
 
+# ? Which type of libraries is it gonna be?
+set(LIB_TYPE "SHARED")
+
 # ? Create main executable
-add_executable(
-	${MAIN}
-	source/${MAIN}.cpp
+add_library(
+	application
+	${LIB_TYPE}
+	${LIBRARIES}/application/GameApplication.cpp
 	${HEADERS}/game_page_dynamics.cpp
 	${HEADERS}/game_page_statics.cpp
 	${HEADERS}/game_page_process.cpp
@@ -101,7 +108,7 @@ add_executable(
 
 # ? Include needed folders
 target_include_directories(
-	${MAIN}
+	application
 	PUBLIC ${LIBRARIES}/dynamics
 	PUBLIC ${LIBRARIES}/outline
 	PUBLIC ${LIBRARIES}/process
@@ -111,11 +118,29 @@ target_include_directories(
 
 # ? Link needed libraries
 target_link_libraries(
+	application
+	PUBLIC sfml-graphics
+	PUBLIC sfml-audio
+	PUBLIC sfml-system
+	PUBLIC sfml-window
+)
+
+# ? Create main executable
+add_executable(
 	${MAIN}
-	PRIVATE sfml-graphics
-	PRIVATE sfml-audio
-	PRIVATE sfml-system
-	PRIVATE sfml-window
+	source/${MAIN}.cpp
+)
+
+# ? Include needed folders
+target_include_directories(
+	${MAIN}
+	PUBLIC ${LIBRARIES}/application
+)
+
+# ? Link needed libraries
+target_link_libraries(
+	${MAIN}
+	PRIVATE application
 )
 
 # ?
@@ -147,6 +172,24 @@ if(WIN32) # ! Why Linux don't need it?
 	set(PREFIX "")
 
 	# Define function to copy DLL's on Windows
+	function(copy_custom_dll MODULE)
+		set(PREFIX "lib")
+
+		if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+			set(POSTFIX_DLL_NAME "") # set to 'd' when Debug
+		else()
+			set(POSTFIX_DLL_NAME "")
+		endif()
+
+		add_custom_command(
+			TARGET ${MAIN} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			"$<TARGET_FILE_DIR:${MODULE}>/${PREFIX}${MODULE}${POSTFIX_DLL_NAME}.${EXTENSION_NAME}"
+			"$<TARGET_FILE_DIR:${MAIN}>/${PREFIX}${MODULE}${POSTFIX_DLL_NAME}.${EXTENSION_NAME}"
+		)
+	endfunction()
+
+	# Define function to copy DLL's on Windows
 	function(copy_dll MODULE)
 		if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 			set(POSTFIX_DLL_NAME "-d-2") # set to 'd' when Debug
@@ -175,6 +218,7 @@ if(WIN32) # ! Why Linux don't need it?
 		)
 	endfunction()
 
+	copy_custom_dll(application)
 	copy_dll(sfml-audio)
 	copy_dll(sfml-graphics)
 	copy_dll(sfml-system)
