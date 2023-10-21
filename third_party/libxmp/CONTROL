@@ -1,0 +1,21 @@
+Package: libxmp
+Version: 4.6.0
+Port-Version: 1
+Depends: vcpkg-cmake, vcpkg-cmake-config
+Architecture: x64-windows
+Multi-Arch: same
+Abi: 551a5e0114278fa3df74cd088e9c0a8476a715f2104d513112b98d0310d05298
+Description: Libxmp is a library that renders module files to PCM data.
+Default-Features: depackers, prowizard
+
+Package: libxmp
+Feature: depackers
+Architecture: x64-windows
+Multi-Arch: same
+Description: Enable archive depackers.
+
+Package: libxmp
+Feature: prowizard
+Architecture: x64-windows
+Multi-Arch: same
+Description: Enable ProWizard format loaders.
