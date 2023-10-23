@@ -202,9 +202,6 @@ public:
 	sf::Font main_font;
 	sf::Font score_font;
 
-	// Sharable event
-	// static inline sf::Event event{};
-
 private:
 	// Be sure that here we parse independently on the Debug, Release, and USAGE
 	//<-

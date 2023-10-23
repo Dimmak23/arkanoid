@@ -34,15 +34,15 @@ void Intro::Process::blinkInstruction(Intro::Statics& utils)
 
 void Intro::Process::render(const Intro::Statics& utils)
 {
-	// Before do anything: clear screen
+	//? Before do anything: clear screen
 	_parent->clear(sf::Color::Black);
 
-	// Draw LOGO
+	//? Draw LOGO
 	_parent->draw(utils.getLogo());
-	// Draw INSTRUCTION
+	//? Draw INSTRUCTION
 	_parent->draw(utils.getInstruction());
 
-	// Now send drawings to the screen
+	//? Now send drawings to the screen
 	_parent->display();
 }
 
@@ -50,7 +50,7 @@ void Intro::Process::interact(sf::RenderWindow& window)
 {
 	while (window.pollEvent(_event))
 	{
-		// application_window closed
+		//? Application_window closed
 		if (_event.type == sf::Event::Closed)
 		{
 			_running = false;	 // also should be here
@@ -59,14 +59,14 @@ void Intro::Process::interact(sf::RenderWindow& window)
 		}
 		else if (_event.type == sf::Event::KeyPressed)
 		{
-			// Also close by 'Esc' keyboard button
+			//? Also close by 'Esc' keyboard button
 			if (_event.key.code == sf::Keyboard::Escape)
 			{
 				_running = false;	 // also should be here
 				window.close();
 				break;
 			}
-			// Press enter and winish Intro page
+			//? Press enter and winish Intro page
 			else if (_event.key.code == sf::Keyboard::Enter)
 			{
 				_running = false;

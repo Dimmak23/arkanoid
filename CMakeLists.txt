@@ -84,6 +84,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SFML)
 
+# * Icon
+# ! Implement for Linux also
+set(APP_ICON_WIN "${CMAKE_SOURCE_DIR}/resources/icon.rc")
+
 # ! What is the main source file?
 set(MAIN Arkanoid)
 
@@ -151,10 +155,14 @@ target_link_libraries(
 )
 
 # ? Create main executable
-add_executable(
-	${MAIN}
-	source/${MAIN}.cpp
-)
+if(WIN32)
+	add_executable(
+		${MAIN}
+		WIN32
+		source/${MAIN}.cpp
+		"${APP_ICON_WIN}"
+	)
+endif()
 
 # ? Include needed folders
 target_include_directories(

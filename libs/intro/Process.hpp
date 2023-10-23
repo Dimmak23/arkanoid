@@ -22,7 +22,7 @@ namespace Intro
 
 		// # API
 		bool isRunning() const;
-		void tickTimer(float tickvod);
+		void tickTimer(float tick);
 		void blinkInstruction(Intro::Statics& utils);
 		void render(const Intro::Statics& utils);
 		void interact(sf::RenderWindow& window);
